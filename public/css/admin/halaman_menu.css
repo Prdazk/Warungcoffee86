@@ -56,13 +56,24 @@
 
 /* Tombol Tambah */
 #menu .btn-tambah {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
   background: linear-gradient(135deg, #28a745, #218838);
-  border: none;          /* hilangkan border */
-  outline: none;         /* hilangkan outline */
-  appearance: none;      /* hapus style default browser */
+  border: none !important;          /* pastikan border hilang */
+  outline: none !important;         /* pastikan outline hilang */
+  text-decoration: none;            /* hilangkan underline link */
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15); /* tetap ada shadow normal */
 }
 
 #menu .btn-tambah:hover {
@@ -71,11 +82,11 @@
   box-shadow: 0 5px 14px rgba(0,0,0,0.25);
 }
 
-#menu .btn-tambah:focus {
-  outline: none;         /* hilangkan garis fokus */
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15); /* shadow normal saat fokus */
+#menu .btn-tambah:focus,
+#menu .btn-tambah:active {
+  outline: none !important;        /* hilangkan outline di focus/active */
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
 }
-
 
 
 /* Tombol Edit */
