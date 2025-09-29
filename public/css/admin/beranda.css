@@ -1,0 +1,231 @@
+/* =======================
+   Reset & Global
+======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #000; /* semua teks hitam */
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  background: #dbd3cd; /* coklat hangat */
+  color: #000;
+  transition: background 0.3s ease;
+  font-family: Arial, sans-serif;
+}
+
+/* =======================
+   Sidebar
+======================= */
+.sidebar {
+  width: 240px;
+  background: #5C4033;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 4px 0 12px rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 10;
+  border-radius: 0 12px 12px 0;
+}
+
+.sidebar h2 {
+  font-size: 22px;
+  margin-bottom: 50px;
+  color: #fff5e6; /* lebih terang agar terbaca */
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  animation: fadeInDown 1s ease-in-out;
+  text-shadow: none;
+}
+
+/* Sidebar Menu */
+.menu {
+  list-style: none;
+  width: 100%;
+  padding: 0;
+}
+
+.menu li {
+  margin: 18px 0;
+  opacity: 0;
+  animation: fadeInUp 0.6s forwards;
+}
+
+.menu li:nth-child(1) { animation-delay: 0.2s; }
+.menu li:nth-child(2) { animation-delay: 0.4s; }
+.menu li:nth-child(3) { animation-delay: 0.6s; }
+.menu li:nth-child(4) { animation-delay: 0.8s; }
+
+.menu li a {
+  text-decoration: none;
+  color: #f5e8df; /* lebih terang, nyaman dibaca */
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #6b4f3b; /* coklat gelap */
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.menu li a i {
+  font-size: 18px;
+  color: #f5e8df;
+}
+
+.menu li a:hover {
+  background: linear-gradient(135deg, #7b4a33, #a67b5b);
+  color: #fff; /* terang saat hover */
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(124, 74, 51, 0.4);
+}
+
+/* =======================
+   Konten Utama
+======================= */
+.content {
+  flex: 1;
+  padding: 40px;
+  background: transparent;
+  animation: fadeIn 1s ease-in-out;
+  color: #000;
+}
+
+.content-section {
+  display: none;
+}
+
+.content-section.active {
+  display: block;
+}
+
+.content h1 {
+  font-size: 30px;
+  color: #5C4033; /* lebih kontras */
+  margin-bottom: 20px;
+}
+
+.content p {
+  font-size: 16px;
+  color: #333;
+}
+
+/* =======================
+   Tombol Menu Aksi (Tambah/Edit) 
+======================= */
+.menu-actions {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.menu-actions button {
+  margin-right: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  background: #a67b5b; /* coklat terang agar nyaman */
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.menu-actions button:hover {
+  background: linear-gradient(135deg, #b38b66, #8f6a4d);
+  transform: scale(1.05);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+}
+
+/* =======================
+   Tabel
+======================= */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  background: #fffaf5;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+table th, table td {
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 12px;
+  text-align: center;
+  color: #000;
+}
+
+table th {
+  background: linear-gradient(135deg, #5C4033, #7b4a33);
+  color: #fff;
+}
+
+table td img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+table tr:hover td {
+  background: #f3e5dc;
+  transform: scale(1.001);
+}
+
+/* =======================
+   Animasi
+======================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =======================
+   Responsif
+======================= */
+@media screen and (max-width: 768px) {
+  .menu-actions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  table th, table td {
+    font-size: 13px;
+    padding: 8px 6px;
+  }
+
+  table td img {
+    width: 40px;
+    height: 40px;
+  }
+}

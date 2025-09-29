@@ -1,0 +1,54 @@
+/* =====================
+   About / Tentang Section
+===================== */
+.about-section {
+  padding: 60px 20px;
+  background: none; /* tanpa kotak atau background */
+  width: 100%; /* pastikan penuh lebar */
+  box-sizing: border-box; /* reset box sizing */
+}
+
+.about-wrapper {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  display: block; /* ubah dari flex ke block supaya tidak mengganggu layout lain */
+  gap: normal; /* hapus gap karena block tidak mendukung gap */
+}
+
+.about-wrapper h2 {
+  font-size: 36px;
+  color: #ffffff;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+}
+
+.about-wrapper p {
+  font-size: 16px;
+  color: #ffffff;
+  line-height: 1.8;
+  text-align: center;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+  margin-bottom: 15px;
+}
+
+/* Responsif */
+@media screen and (max-width: 768px) {
+  .about-wrapper h2 {
+    font-size: 30px;
+  }
+  .about-wrapper p {
+    font-size: 15px;
+    padding: 0 15px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .about-wrapper h2 {
+    font-size: 26px;
+  }
+  .about-wrapper p {
+    font-size: 14px;
+  }
+}

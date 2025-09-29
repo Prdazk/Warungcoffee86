@@ -1,0 +1,72 @@
+/* =========================
+   Tentang Section - Warung 86 (Tanpa Kotak Background)
+========================= */
+#tentang {
+  padding: 60px 20px;
+  background: none; /* hapus kotak background */
+  color: #f8f8f8;
+  position: relative;
+}
+
+#tentang::before {
+  content: '';
+  display: none; /* hapus efek lingkaran */
+}
+
+#tentang .container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+}
+
+#tentang .container img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#tentang .container img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+}
+
+#tentang .container .text {
+  flex: 1;
+  min-width: 300px;
+}
+
+#tentang .container h3 {
+  font-size: 26px;
+  margin-bottom: 15px;
+  color: #e6c58a;
+  position: relative;
+}
+
+#tentang .container h3::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 3px;
+  background: #e6c58a;
+  margin-top: 6px;
+  border-radius: 2px;
+}
+
+#tentang .container p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+#tentang .container p:last-child {
+  font-weight: bold;
+  color: #f8f8f8;
+}

@@ -1,0 +1,82 @@
+/* ======= WRAPPER RESERVASI ======= */
+#reservasi {
+  padding: 15px 25px; /* dikurangi dari 25px jadi 15px vertikal */
+  max-width: 850px;
+  margin: 30px auto;  /* dikurangi dari 40px */
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  background-color: #4b3621;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+}
+
+/* ======= HEADER ======= */
+#reservasi h2 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 15px; /* dikurangi dari 20px */
+  color: #c49a6c;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+/* ======= TABEL ======= */
+#reservasi table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #3e2f25;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px;
+  color: #1b1a1a;
+  table-layout: auto;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+#reservasi th, 
+#reservasi td {
+  padding: 6px 8px; /* dikurangi dari 8px 10px */
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap;
+}
+
+#reservasi th {
+  background-color: #2c1f15;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  color: #c49a6c;
+}
+
+/* zebra & hover */
+#reservasi tr:nth-child(even) { background-color: #453225; }
+#reservasi tr:nth-child(odd)  { background-color: #3e2f25; }
+#reservasi tr:hover { background-color: #5a4030; transition: all 0.3s ease; }
+
+/* ======= TOMBOL ======= */
+.btn {
+  padding: 5px 10px; /* dikurangi dari 6px 12px */
+  border-radius: 6px;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  margin-right: 5px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+}
+
+.btn-edit {
+  background-color: #c49a6c;
+  color: #2c1f15;
+}
+.btn-edit:hover { background-color: #b3875a; }
+
+.btn-delete {
+  background-color: #e63946;
+  color: #fff;
+}
+.btn-delete:hover { background-color: #b71c1c; }

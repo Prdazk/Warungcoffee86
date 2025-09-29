@@ -1,0 +1,83 @@
+/* =======================
+   Menu Section CSS - Coklat Keren + Tombol Warna + Kotak Lebih Keren
+======================= */
+.menu-section {
+  padding: 50px 20px;
+  background-color: rgba(107, 79, 59, 0.1); /* sangat tipis, hampir transparan */
+}
+
+.menu-title {
+  text-align: center;
+  font-size: 32px;
+  color: #f5e0d3; /* putih krem cantik */
+  margin-bottom: 40px;
+}
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* lebih kecil */
+  gap: 20px;
+}
+.menu-item {
+  background-color: rgba(124, 90, 69, 0.8); /* semi-transparan */
+  backdrop-filter: blur(5px); /* blur lembut di belakang */
+  border-radius: 20px; /* lebih bulat */
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+.menu-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.35);
+  background-color: rgba(139, 94, 74, 0.9); /* lebih jelas saat hover */
+}
+
+.menu-item img {
+  width: 100%;
+  height: 150px; /* lebih kecil agar kotak tidak terlalu tinggi */
+  object-fit: cover;
+  border-radius: 15px; /* lebih membulat */
+  margin-bottom: 10px;
+  border: 2px solid #d6b89f; /* garis tipis keemasan */
+}
+.menu-name {
+  font-size: 18px;
+  color: #f5e0d3; /* putih krem */
+  margin: 5px 0;
+  font-weight: bold;
+}
+.menu-price {
+  font-weight: bold;
+  color: #ffd699; /* aksen emas */
+  margin-bottom: 5px;
+}
+.menu-desc {
+  font-size: 13px;
+  color: #ffe8d1; /* krem lembut */
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+.menu-buttons button {
+  padding: 7px 14px; /* sedikit lebih kecil */
+  margin: 5px;
+  border: none;
+  border-radius: 8px; /* lebih bulat */
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+.btn-view {
+  background-color: #28a745; /* hijau cerah */
+  color: #fff;
+}
+.btn-view:hover {
+  background-color: #218838;
+}
+.btn-checkout {
+  background-color: #ff8c00; /* oranye */
+  color: #fff;
+}
+.btn-checkout:hover {
+  background-color: #e67e00;
+}

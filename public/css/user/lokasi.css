@@ -1,0 +1,124 @@
+/* =====================
+   Kontak & Lokasi
+===================== */
+.kontak-lokasi {
+  padding: 40px 20px;
+  background: rgba(255, 140, 0, 0.03);
+  border-radius: 15px; 
+}
+
+.kontak-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.kontak-info {
+  flex: 1 1 45%;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* judul dan grid rata kiri */
+}
+
+.kontak-info h2 {
+  font-size: 24px;
+  color: #ffffff;
+  margin-bottom: 25px;
+  font-weight: 700;
+  text-align: left; /* rata kiri */
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 item di baris pertama */
+  gap: 20px;
+  width: 100%;
+}
+
+/* Item ke-4 tetap di grid, tapi tidak di-center */
+.info-item:nth-child(4) {
+  grid-column: 1 / 2; /* kiri */
+}
+
+/* =====================
+   Item Kontak (tanpa kotak)
+===================== */
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* logo dan teks tetap center */
+  gap: 6px;
+  background: none; /* hilangkan kotak */
+  padding: 0;
+  border-radius: 0;
+}
+
+.info-item img {
+  width: 50px;
+  height: 50px;
+}
+
+.info-item h3 {
+  font-weight: 600;
+  font-size: 14px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.info-item p {
+  font-size: 14px;
+  color: #f0f0f0;
+  text-align: center;
+}
+
+/* =====================
+   Google Maps
+===================== */
+.kontak-image {
+  flex: 1 1 50%;
+  min-width: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.kontak-image iframe {
+  width: 100%;
+  height: 350px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* =====================
+   Responsif
+===================== */
+@media screen and (max-width: 1024px) {
+  .kontak-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  .kontak-info {
+    align-items: center; /* supaya grid di mobile tetap rapih */
+  }
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  .info-item:nth-child(4) {
+    grid-column: auto; /* otomatis di mobile */
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  .kontak-image iframe {
+    height: 300px;
+  }
+}
