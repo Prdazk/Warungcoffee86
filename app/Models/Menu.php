@@ -9,9 +9,11 @@ class Menu extends Model
 {
     use HasFactory;
 
-    // Daftar kolom yang bisa diisi massal
-    protected $fillable = ['name', 'description', 'price', 'image'];
-
-    // Kalau mau pakai tabel singular "menu", uncomment baris ini:
-    // protected $table = 'menu';
+    protected $fillable = [
+        'name',
+        'harga',
+        'kategori',
+        'status',
+        'gambar',
+    ];
 }

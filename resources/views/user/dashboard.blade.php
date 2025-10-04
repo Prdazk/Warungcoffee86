@@ -17,7 +17,7 @@
     <!-- Header -->
     <header class="site-header">
       <div class="nav-container">
-        <a href="#hero" class="logo">COFFEE 86</a>
+        <a href="#hero" class="logo">COFFEE </a>
         <div class="nav-right">
           <nav class="main-nav">
             <a href="#hero" class="nav-link">Beranda</a>
@@ -59,7 +59,7 @@
             <p class="menu-desc">Kopi hitam pekat dengan cita rasa klasik.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Checkout</button>
+              <button class="btn-checkout">Rating</button>
             </div>
           </div>
 
