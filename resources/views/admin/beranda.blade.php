@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{{ asset('css/admin/menu.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin/reservasi.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin/statistik.css') }}">
+   <link rel="stylesheet" href="{{ asset('css/admin/tambahmenu.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -28,7 +29,6 @@
   <!-- Halaman Beranda -->
   <div id="beranda" class="content-section active">
     <h1>Selamat Datang di Dashboard</h1>
-    <p>Ini adalah halaman beranda admin Warung Coffee 86.</p>
 
     <!-- Statistik hanya muncul di Beranda -->
     <div class="stats-container">
@@ -52,9 +52,9 @@
   <h1>Kelola Menu</h1>
 
   <div class="menu-actions">
-    <a href="{{ route('admin.menu.tambah') }}" class="btn btn-tambah">
-        <i class="fas fa-plus"></i> Tambah Menu
-    </a>
+    <button class="btn btn-tambah" id="openModalBtn">
+    <i class="fas fa-plus"></i> Tambah Menu
+</button>
   </div>
 
   <!-- Pesan sukses -->
@@ -123,6 +123,50 @@
   </table>
 </div>
 
+<!-- Modal Tambah Menu -->
+<div class="modal" id="menuModal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModalBtn">&times;</span>
+    <h2>Tambah Menu Baru 🍽️</h2>
+
+    <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data">
+      @csrf
+
+      <label>Nama Menu</label>
+      <input type="text" name="nama" placeholder="Masukkan nama menu" required>
+
+      <label>Harga</label>
+      <input type="number" name="harga" placeholder="Masukkan harga" required>
+
+      <label>Kategori</label>
+      <select name="kategori" required>
+        <option value="">-- Pilih Kategori --</option>
+        <option value="Minuman">Minuman</option>
+        <option value="Makanan">Makanan</option>
+      </select>
+
+      <label>Status</label>
+      <select name="status" required>
+        <option value="">-- Pilih Status --</option>
+        <option value="Tersedia">Tersedia</option>
+        <option value="Habis">Habis</option>
+      </select>
+
+      <label>Gambar</label>
+      <div class="file-upload">
+        <input type="file" name="gambar" id="image" accept="image/*">
+        <label for="image" class="file-label"><i class="fas fa-upload"></i> Pilih Gambar</label>
+      </div>
+
+      <div class="form-buttons">
+        <button type="button" class="btn-batal" id="closeModalBtn2">Batal</button>
+        <button type="submit" class="btn-tambah">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 <div id="modal-lihat">
   <div class="modal-content">
     
@@ -172,7 +216,7 @@
 <div id="toast-success" style="display:none;">Menu berhasil dihapus!</div>
 
 
-
+<script src="{{ asset('js/admin/menutambah.js') }}"></script>
 <script src="{{ asset('js/admin/menu.js') }}"></script>
 
 
@@ -180,7 +224,6 @@
  <!-- Halaman Reservasi -->
 <div id="reservasi" class="content-section">
   <h1>Kelola Reservasi</h1>
-  <p>Halaman reservasi akan menampilkan daftar reservasi yang masuk.</p>
 
   <!-- Tabel Reservasi -->
   <table>

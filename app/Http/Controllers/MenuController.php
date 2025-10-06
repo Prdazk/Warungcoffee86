@@ -8,27 +8,30 @@ use Illuminate\Http\Request;
 class MenuController extends Controller
 {
     /**
-     * Tampilkan semua menu di beranda
+     * 🧾 Tampilkan semua menu di beranda admin
      */
     public function index()
     {
-        $menus = Menu::all();
+        // Ambil semua data menu untuk ditampilkan di tabel
+        $menus = Menu::orderBy('created_at', 'desc')->get();
         return view('admin.beranda', compact('menus'));
     }
 
     /**
-     * Simpan menu baru
+     * ➕ Simpan menu baru (dari modal tambah)
      */
     public function store(Request $request)
     {
+        // Validasi input form
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:255',
             'status' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
+        // Upload gambar jika ada
         $imageName = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -36,6 +39,7 @@ class MenuController extends Controller
             $image->move(public_path('images'), $imageName);
         }
 
+        // Simpan ke database
         Menu::create([
             'name' => $validated['name'],
             'harga' => $validated['price'],
@@ -44,27 +48,31 @@ class MenuController extends Controller
             'gambar' => $imageName,
         ]);
 
-        return redirect()->route('admin.beranda')->with('success', 'Menu berhasil ditambahkan.');
+        // Setelah berhasil tambah, redirect kembali ke halaman beranda (menu)
+        return redirect()->route('admin.beranda', ['section' => 'menu'])
+                         ->with('success', '✅ Menu baru berhasil ditambahkan!');
     }
 
     /**
-     * Hapus menu
+     * 🗑️ Hapus menu
      */
     public function destroy($id)
     {
         $menu = Menu::findOrFail($id);
 
+        // Hapus file gambar jika ada
         if ($menu->gambar && file_exists(public_path('images/' . $menu->gambar))) {
             unlink(public_path('images/' . $menu->gambar));
         }
 
         $menu->delete();
 
-        return redirect()->route('admin.beranda')->with('success', 'Menu berhasil dihapus.');
+        return redirect()->route('admin.beranda', ['section' => 'menu'])
+                         ->with('success', '🗑️ Menu berhasil dihapus.');
     }
 
     /**
-     * Update menu (untuk form edit inline di admin.beranda)
+     * ✏️ Update menu (form edit)
      */
     public function update(Request $request, $id)
     {
@@ -73,7 +81,7 @@ class MenuController extends Controller
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:255',
             'status' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $menu = Menu::findOrFail($id);
@@ -83,6 +91,7 @@ class MenuController extends Controller
         $menu->kategori = $request->category;
         $menu->status = $request->status;
 
+        // Ganti gambar jika upload baru
         if ($request->hasFile('image')) {
             if ($menu->gambar && file_exists(public_path('images/' . $menu->gambar))) {
                 unlink(public_path('images/' . $menu->gambar));
@@ -95,6 +104,7 @@ class MenuController extends Controller
 
         $menu->save();
 
-        return redirect()->route('admin.beranda')->with('success', 'Menu berhasil diperbarui.');
+        return redirect()->route('admin.beranda', ['section' => 'menu'])
+                         ->with('success', '✏️ Menu berhasil diperbarui.');
     }
 }

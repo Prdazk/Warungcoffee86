@@ -9,6 +9,9 @@ class Admin extends Authenticatable
 {
     use HasFactory;
 
-    protected $fillable = ['username', 'password']; // kolom yang bisa diisi massal
-    protected $hidden = ['password']; // agar password tidak muncul saat query
+    // kolom yang boleh diisi
+    protected $fillable = ['email', 'password'];
+
+    // sembunyikan password saat di-query
+    protected $hidden = ['password'];
 }
