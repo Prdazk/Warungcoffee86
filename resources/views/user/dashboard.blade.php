@@ -144,78 +144,101 @@
       </div>
     </section>
 
-    <!-- Reservasi Section -->
-    <section id="reservasi" class="reservasi-section">
-      <div style="background: #927950; padding: 30px; border-radius: 20px; box-shadow: 0 8px 20px rgba(90,62,43,0.3); max-width: 950px; margin: auto;">
+   <!-- Reservasi Section -->
+<section id="reservasi" class="reservasi-section">
+  <div style="background: #927950; padding: 30px; border-radius: 20px; box-shadow: 0 8px 20px rgba(90,62,43,0.3); max-width: 950px; margin: auto;">
 
-        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-between;">
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-between;">
 
-          <!-- Form Reservasi -->
-          <div style="flex: 1 1 45%; background: #4a3f35; padding: 25px; border-radius: 15px; color: #c49a6c; min-height: 520px;">
-            <h2 style="color: #beb5af; margin-bottom: 20px;">Silakan Pilih Meja</h2>
-            {{-- <form method="POST" action="{{ route('user.reservasi.store') }}"> --}}
-            @csrf
-              <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                <div style="flex: 1;">
-                  <label>Nama</label>
-                  <input type="text" name="nama" placeholder="Masukkan nama" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c; background-color: #6b5239; color: #fff;">
-                </div>
-                <div style="flex: 1;">
-                  <label>Jumlah Orang</label>
-                  <input type="number" name="jumlah_orang" placeholder="Jumlah orang" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c; background-color: #6b5239; color: #fff;">
-                </div>
-              </div>
+      <!-- Form Reservasi -->
+      <div style="flex: 1 1 45%; background: #4a3f35; padding: 25px; border-radius: 15px; color: #c49a6c; min-height: 520px;">
+        <h2 style="color: #beb5af; margin-bottom: 20px;">Silakan Pilih Meja</h2>
 
-              <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                <div style="flex: 1;">
-                  <label>Pilih Meja</label>
-                  <select name="pilihan_meja" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c; background-color: #6b5239; color: #fff;">
-                    <option value="">-- Pilih Meja --</option>
-                    <option value="Meja 1">Meja 1</option>
-                    <option value="Meja 2">Meja 2</option>
-                    <option value="Meja 3">Meja 3</option>
-                    <option value="Meja 4">Meja 4</option>
-                    <option value="Meja 5">Meja 5</option>
-                    <option value="VIP">VIP</option>
-                  </select>
-                </div>
-                <div style="flex: 1;">
-                  <label>Tanggal</label>
-                  <input type="date" name="tanggal" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c; background-color: #6b5239; color: #fff;">
-                </div>
-              </div>
+        <!-- ✅ Pesan sukses -->
+        @if(session('success'))
+          <div style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+            {{ session('success') }}
+          </div>
+        @endif
 
-              <div style="margin-bottom: 15px; text-align: center;">
-                <label style="display: block; margin-bottom: 5px;">Jam</label>
-                <input type="time" name="jam" style="width: 50%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c; background-color: #a68154; color: #fff; text-align: center;">
-              </div>
-
-              <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px;">Catatan</label>
-                <textarea name="catatan" placeholder="Tulis catatan di sini..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c; background-color: #a68154; color: #fff; min-height: 100px; resize: vertical;"></textarea>
-              </div>
-
-              <button type="submit" style="width: 100%; background: #160b0b; color: #9b992f; padding: 12px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s;">
-                Pesan Sekarang
-              </button>
-            </form>
+        <form method="POST" action="{{ route('user.reservasi.store') }}">
+          @csrf
+          <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+            <div style="flex: 1;">
+              <label>Nama</label>
+              <input type="text" name="nama" placeholder="Masukkan nama"
+                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c;
+                background-color: #6b5239; color: #fff;" required>
+            </div>
+            <div style="flex: 1;">
+              <label>Jumlah Orang</label>
+              <input type="number" name="jumlah_orang" placeholder="Jumlah orang"
+                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c;
+                background-color: #6b5239; color: #fff;" required>
+            </div>
           </div>
 
-          <!-- Syarat & Ketentuan -->
-          <div style="flex: 1 1 45%; background: #5a3e2b; padding: 25px; border-radius: 15px; min-height: 520px;">
-            <h3 style="color: #fff8f0; margin-bottom: 20px;">Syarat & Ketentuan</h3>
-            <ul style="text-align: left; color: #fff8f0; line-height: 1.6; padding-left: 20px;">
-              <li>Reservasi minimal 45 menit sebelum kedatangan.</li>
-              <li>Mohon datang tepat waktu untuk memudahkan persiapan.</li>
-              <li>Setiap reservasi maksimal untuk 10 orang.</li>
-              <li>Harap informasikan alergi atau permintaan khusus di kolom tambahan.</li>
-              <li>Pembatalan reservasi dapat dilakukan 2 jam sebelum waktu reservasi.</li>
-            </ul>
+          <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+            <div style="flex: 1;">
+              <label>Pilih Meja</label>
+              <select name="pilihan_meja"
+                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c;
+                background-color: #6b5239; color: #fff;" required>
+                <option value="">-- Pilih Meja --</option>
+                <option value="Meja 1">Meja 1</option>
+                <option value="Meja 2">Meja 2</option>
+                <option value="Meja 3">Meja 3</option>
+                <option value="Meja 4">Meja 4</option>
+                <option value="Meja 5">Meja 5</option>
+                <option value="VIP">VIP</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label>Tanggal</label>
+              <input type="date" name="tanggal"
+                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c;
+                background-color: #6b5239; color: #fff;" required>
+            </div>
           </div>
 
-        </div>
+          <div style="margin-bottom: 15px; text-align: center;">
+            <label style="display: block; margin-bottom: 5px;">Jam</label>
+            <input type="time" name="jam"
+              style="width: 50%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c;
+              background-color: #a68154; color: #fff; text-align: center;" required>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px;">Catatan</label>
+            <textarea name="catatan" placeholder="Tulis catatan di sini..."
+              style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #c49a6c;
+              background-color: #a68154; color: #fff; min-height: 100px; resize: vertical;"></textarea>
+          </div>
+
+          <button type="submit"
+            style="width: 100%; background: #160b0b; color: #9b992f; padding: 12px; border: none;
+            border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s;">
+            Pesan Sekarang
+          </button>
+        </form>
       </div>
-    </section>
+
+      <!-- Syarat & Ketentuan -->
+      <div style="flex: 1 1 45%; background: #5a3e2b; padding: 25px; border-radius: 15px; min-height: 520px;">
+        <h3 style="color: #fff8f0; margin-bottom: 20px;">Syarat & Ketentuan</h3>
+        <ul style="text-align: left; color: #fff8f0; line-height: 1.6; padding-left: 20px;">
+          <li>Reservasi minimal 45 menit sebelum kedatangan.</li>
+          <li>Mohon datang tepat waktu untuk memudahkan persiapan.</li>
+          <li>Setiap reservasi maksimal untuk 10 orang.</li>
+          <li>Harap informasikan alergi atau permintaan khusus di kolom tambahan.</li>
+          <li>Pembatalan reservasi dapat dilakukan 2 jam sebelum waktu reservasi.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
     <!-- Kontak & Lokasi Section -->
 <section id="lokasi" class="lokasi">

@@ -220,14 +220,20 @@
 <script src="{{ asset('js/admin/menu.js') }}"></script>
 
 
-
- <!-- Halaman Reservasi -->
-<div id="reservasi" class="content-section">
+<!-- Halaman Reservasi -->
+<div id="reservasi" class="content-section" style="margin-top: 40px;">
   <h1>Kelola Reservasi</h1>
 
+  <!-- Pesan sukses -->
+  @if(session('success'))
+    <div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+      {{ session('success') }}
+    </div>
+  @endif
+
   <!-- Tabel Reservasi -->
-  <table>
-    <thead>
+  <table style="width: 100%; border-collapse: collapse; text-align: center;">
+    <thead style="background-color: #5a3e2b; color: white;">
       <tr>
         <th>No</th>
         <th>Nama</th>
@@ -240,36 +246,40 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>1</td>
-        <td>Andi</td>
-        <td>2</td>
-        <td>Meja 3</td>
-        <td>28-09-2025</td>
-        <td>19:00</td>
-        <td>Birthday celebration</td>
-        <td>
-          <button class="btn-aksi btn-lihat"><i class="fas fa-eye"></i> Lihat</button>
-          <button class="btn-aksi btn-hapus"><i class="fas fa-trash"></i> Hapus</button>
-        </td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Sari</td>
-        <td>4</td>
-        <td>Meja 5</td>
-        <td>28-09-2025</td>
-        <td>20:00</td>
-        <td>Meeting bisnis</td>
-        <td>
-          <button class="btn-aksi btn-lihat"><i class="fas fa-eye"></i> Lihat</button>
-          <button class="btn-aksi btn-hapus"><i class="fas fa-trash"></i> Hapus</button>
-        </td>
-      </tr>
-      <!-- Tambahkan baris reservasi lain sesuai kebutuhan -->
+      @forelse ($reservasis as $index => $r)
+        <tr style="background: #fff8f0; border-bottom: 1px solid #ccc;">
+          <td>{{ $index + 1 }}</td>
+          <td>{{ $r->nama }}</td>
+          <td>{{ $r->jumlah_orang }}</td>
+          <td>{{ $r->pilihan_meja }}</td>
+          <td>{{ \Carbon\Carbon::parse($r->tanggal)->format('d-m-Y') }}</td>
+          <td>{{ $r->jam }}</td>
+          <td>{{ $r->catatan ?? '-' }}</td>
+          <td>
+            <button class="btn-aksi btn-lihat" style="background: #007bff; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+              <i class="fas fa-eye"></i> Lihat
+            </button>
+
+            <form action="{{ route('admin.reservasi.hapus', $r->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus reservasi ini?');">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="btn-aksi btn-hapus" style="background: red; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </form>
+          </td>
+        </tr>
+      @empty
+        <tr>
+          <td colspan="8" style="padding: 10px;">Belum ada reservasi masuk</td>
+        </tr>
+      @endforelse
     </tbody>
   </table>
 </div>
+
+
+
 
 <script src="{{ asset('js/script.js') }}"></script>
 
