@@ -3,29 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Coffee86</title>
+  <title>Login Admin - Coffee86</title>
   <link rel="stylesheet" href="{{ asset('css/admin/login.css') }}">
 </head>
 <body>
 
   <div class="login-box">
-    <h2>☕ Selamat datang</h2>
+    <h2>☕ Selamat Datang, Admin Coffee86</h2>
 
     <!-- Notifikasi error -->
     @if(session('error'))
       <div class="login-error">{{ session('error') }}</div>
     @endif
 
-    <form action="{{ route('admin.login') }}" method="POST">
+    <form action="{{ route('admin.login.submit') }}" method="POST">
       @csrf
       <div class="input-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="Masukkan username anda" required>
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          placeholder="Masukkan email admin" 
+          required>
       </div>
+
       <div class="input-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Masukkan password anda" required>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          placeholder="Masukkan password anda" 
+          required>
       </div>
+
       <button type="submit" class="btn-login">Login</button>
     </form>
 

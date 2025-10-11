@@ -2,16 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Admin extends Authenticatable
 {
-    use HasFactory;
+    use Notifiable;
 
-    // kolom yang boleh diisi
-    protected $fillable = ['email', 'password'];
+    // Guard yang digunakan
+    protected $guard = 'admin';
 
-    // sembunyikan password saat di-query
-    protected $hidden = ['password'];
+    // Kolom yang bisa diisi
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+    ];
+
+    // Kolom yang disembunyikan (biasanya password dan remember_token)
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }

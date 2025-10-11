@@ -1,0 +1,18 @@
+/* Kolom Catatan - Fixed Size, Wrap & Scroll */
+#reservasi table td.catatan {
+  width: 200px;            /* Lebar tetap */
+  min-width: 200px;
+  max-width: 200px;
+  height: 80px;            /* Tinggi tetap */
+  min-height: 80px;
+  max-height: 80px;
+  padding: 4px 6px;        /* Padding dikurangi agar tidak “melebar” */
+  background-color: #fafafa;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.3;        /* Agar teks lebih rapat */
+  white-space: normal;     
+  word-break: break-word;  /* Lebih konsisten daripada word-wrap */
+  overflow: auto;          /* Scroll jika teks terlalu banyak */
+  box-sizing: border-box;  /* Pastikan padding tidak tambah lebar */
+}

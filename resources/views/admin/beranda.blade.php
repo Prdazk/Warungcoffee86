@@ -7,9 +7,10 @@
   <link rel="stylesheet" href="{{ asset('css/admin/beranda.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin/halaman_menu.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin/menu.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/admin/reservasi.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin/ser.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin/statistik.css') }}">
-   <link rel="stylesheet" href="{{ asset('css/admin/tambahmenu.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin/tambahmenu.css') }}">
+  <link rel="stylesheet" href="{{ asset('js/admin/efe.js') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -17,12 +18,35 @@
 <div class="sidebar">
   <h2>Warung Coffee 86</h2>
   <ul class="menu">
-    <li><a href="#" onclick="showSection('beranda')"><i class="fas fa-home"></i> Beranda</a></li>
-    <li><a href="#" onclick="showSection('menu')"><i class="fas fa-utensils"></i> Menu</a></li>
-    <li><a href="#" onclick="showSection('reservasi')"><i class="fas fa-calendar-check"></i> Reservasi</a></li>
-    <li><a href="{{ url('/admin/logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    <li>
+      <a href="#" onclick="showSection('beranda')">
+        <i class="fas fa-home"></i> Beranda
+      </a>
+    </li>
+    <li>
+      <a href="#" onclick="showSection('menu')">
+        <i class="fas fa-utensils"></i> Menu
+      </a>
+    </li>
+    <li>
+      <a href="#" onclick="showSection('reservasi')">
+        <i class="fas fa-calendar-check"></i> Reservasi
+      </a>
+    </li>
+    <li>
+        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+
+        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+    </li>
+
   </ul>
 </div>
+
+
 
 <!-- Konten utama -->
 <div class="content">
