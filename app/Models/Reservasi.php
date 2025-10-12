@@ -9,6 +9,8 @@ class Reservasi extends Model
 {
     use HasFactory;
 
+    protected $table = 'reservasis'; // pastikan nama tabel sesuai di database
+
     protected $fillable = [
         'nama',
         'jumlah_orang',

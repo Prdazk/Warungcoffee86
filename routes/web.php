@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Menu;
-use App\Http\Controllers\MenuController;
-use App\Http\Controllers\ReservasiController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\ReservasiController as UserReservasiController;
+use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\AdminAuthController;
 
 // ===========================
@@ -16,7 +17,7 @@ Route::get('/', function () {
 })->name('user.dashboard');
 
 // Simpan data reservasi dari user
-Route::post('/user/reservasi/store', [ReservasiController::class, 'store'])
+Route::post('/user/reservasi/store', [UserReservasiController::class, 'store'])
     ->name('user.reservasi.store');
 
 // ===========================
@@ -24,27 +25,19 @@ Route::post('/user/reservasi/store', [ReservasiController::class, 'store'])
 // ===========================
 Route::prefix('admin')->group(function () {
 
-    // FORM LOGIN
-    Route::get('/', [AdminAuthController::class, 'showLoginForm'])
-        ->name('admin.login.form');
+    // Form login admin
+    Route::get('/', [AdminAuthController::class, 'showLoginForm'])->name('admin.login.form');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-    // PROSES LOGIN
-    Route::post('/login', [AdminAuthController::class, 'login'])
-        ->name('admin.login.submit');
-
-    // LOGOUT (POST)
-    Route::post('/logout', [AdminAuthController::class, 'logout'])
-        ->name('admin.logout');
-
-    // HALAMAN ADMIN PROTECTED
+    // Admin dashboard & protected routes
     Route::middleware('admin.auth')->group(function () {
 
         // Dashboard / Beranda admin
-        Route::get('/beranda', [MenuController::class, 'index'])
-            ->name('admin.beranda');
+        Route::get('/beranda', [MenuController::class, 'index'])->name('admin.beranda');
 
         // =======================
-        // CRUD MENU
+        // CRUD MENU ADMIN
         // =======================
         Route::prefix('menu')->group(function () {
             Route::post('/store', [MenuController::class, 'store'])->name('admin.menu.store');
@@ -54,10 +47,12 @@ Route::prefix('admin')->group(function () {
         });
 
         // =======================
-        // CRUD RESERVASI
+        // CRUD RESERVASI ADMIN
         // =======================
         Route::prefix('reservasi')->group(function () {
-            Route::delete('/{id}', [ReservasiController::class, 'destroy'])->name('admin.reservasi.hapus');
+            Route::get('/', [AdminReservasiController::class, 'index'])->name('admin.reservasi.index');
+            Route::delete('/{id}', [AdminReservasiController::class, 'destroy'])->name('admin.reservasi.hapus');
         });
+
     });
 });

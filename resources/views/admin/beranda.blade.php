@@ -246,17 +246,17 @@
 
 <!-- Halaman Reservasi -->
 <div id="reservasi" class="content-section" style="margin-top: 40px;">
-  <h1>Kelola Reservasi</h1>
+  <h1 style="margin-bottom: 20px;">Kelola Reservasi</h1>
 
   <!-- Pesan sukses -->
   @if(session('success'))
-    <div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+    <div id="pesanSukses" style="background: #d4edda; color: #155724; padding: 10px; border-radius: 8px; margin-bottom: 15px; opacity: 1; transition: opacity 1s;">
       {{ session('success') }}
     </div>
   @endif
 
   <!-- Tabel Reservasi -->
-  <table style="width: 100%; border-collapse: collapse; text-align: center;">
+  <table style="width: 100%; border-collapse: collapse; text-align: center; font-family: sans-serif;">
     <thead style="background-color: #5a3e2b; color: white;">
       <tr>
         <th>No</th>
@@ -271,7 +271,7 @@
     </thead>
     <tbody>
       @forelse ($reservasis as $index => $r)
-        <tr style="background: #fff8f0; border-bottom: 1px solid #ccc;">
+        <tr style="background: #fff8f0; border-bottom: 1px solid #ccc; transition: background 0.3s;">
           <td>{{ $index + 1 }}</td>
           <td>{{ $r->nama }}</td>
           <td>{{ $r->jumlah_orang }}</td>
@@ -279,18 +279,29 @@
           <td>{{ \Carbon\Carbon::parse($r->tanggal)->format('d-m-Y') }}</td>
           <td>{{ $r->jam }}</td>
           <td>{{ $r->catatan ?? '-' }}</td>
-          <td>
-            <button class="btn-aksi btn-lihat" style="background: #007bff; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+          <td style="display: flex; justify-content: center; gap: 5px;">
+
+            <!-- Tombol Lihat -->
+            <button class="btn-lihat" 
+              data-nama="{{ $r->nama }}"
+              data-jumlah="{{ $r->jumlah_orang }}"
+              data-meja="{{ $r->pilihan_meja }}"
+              data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('d-m-Y') }}"
+              data-jam="{{ $r->jam }}"
+              data-catatan="{{ $r->catatan ?? '-' }}"
+              style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: transform 0.2s;">
               <i class="fas fa-eye"></i> Lihat
             </button>
 
-            <form action="{{ route('admin.reservasi.hapus', $r->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus reservasi ini?');">
+            <!-- Form Hapus -->
+            <form action="{{ route('admin.reservasi.hapus', $r->id) }}" method="POST" class="form-hapus">
               @csrf
               @method('DELETE')
-              <button type="submit" class="btn-aksi btn-hapus" style="background: red; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+              <button type="submit" class="btn-hapus" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: transform 0.2s;">
                 <i class="fas fa-trash"></i> Hapus
               </button>
             </form>
+
           </td>
         </tr>
       @empty
@@ -302,7 +313,77 @@
   </table>
 </div>
 
+<!-- Modal Lihat Reservasi -->
+<div id="modalLihat" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999; backdrop-filter: blur(4px);">
+  <div style="background:white; padding:25px; border-radius:12px; width:400px; max-width:90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: scale(0.8); opacity: 0; transition: all 0.3s ease;">
+    <h3 style="margin-bottom:15px; text-align:center; font-family:sans-serif;">Detail Reservasi</h3>
+    <p><strong>Nama:</strong> <span id="lihatNama"></span></p>
+    <p><strong>Jumlah Orang:</strong> <span id="lihatJumlah"></span></p>
+    <p><strong>Meja:</strong> <span id="lihatMeja"></span></p>
+    <p><strong>Tanggal:</strong> <span id="lihatTanggal"></span></p>
+    <p><strong>Jam:</strong> <span id="lihatJam"></span></p>
+    <p><strong>Catatan:</strong> <span id="lihatCatatan"></span></p>
+    <button id="tutupModal" style="background:#5a3e2b; color:white; padding:8px 12px; border:none; border-radius:6px; width:100%; margin-top:10px; cursor:pointer;">Tutup</button>
+  </div>
+</div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Pesan sukses fade out
+  const pesan = document.getElementById('pesanSukses');
+  if(pesan){
+    setTimeout(()=>{ pesan.style.opacity = '0'; }, 2500);
+  }
+
+  // Tombol Lihat
+  document.querySelectorAll('.btn-lihat').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const modal = document.getElementById('modalLihat');
+      modal.querySelector('#lihatNama').textContent = this.dataset.nama;
+      modal.querySelector('#lihatJumlah').textContent = this.dataset.jumlah;
+      modal.querySelector('#lihatMeja').textContent = this.dataset.meja;
+      modal.querySelector('#lihatTanggal').textContent = this.dataset.tanggal;
+      modal.querySelector('#lihatJam').textContent = this.dataset.jam;
+      modal.querySelector('#lihatCatatan').textContent = this.dataset.catatan;
+
+      modal.style.display = 'flex';
+      const content = modal.children[0];
+      requestAnimationFrame(()=> {
+        content.style.transform = 'scale(1)';
+        content.style.opacity = '1';
+      });
+    });
+  });
+
+  // Tutup Modal
+  document.getElementById('tutupModal').addEventListener('click', function() {
+    const modal = document.getElementById('modalLihat');
+    const content = modal.children[0];
+    content.style.transform = 'scale(0.8)';
+    content.style.opacity = '0';
+    setTimeout(()=>{ modal.style.display = 'none'; }, 300);
+  });
+
+  // Tombol Hapus dengan efek scale
+  document.querySelectorAll('.form-hapus').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if(confirm('Yakin ingin menghapus reservasi ini?')){
+        const btn = this.querySelector('button');
+        btn.style.transform = 'scale(0.95)';
+        setTimeout(()=>{ this.submit(); }, 150);
+      }
+    });
+  });
+
+  // Tombol hover effect
+  document.querySelectorAll('.btn-lihat, .btn-hapus').forEach(b => {
+    b.addEventListener('mouseover', ()=> b.style.transform='scale(1.05)');
+    b.addEventListener('mouseout', ()=> b.style.transform='scale(1)');
+  });
+});
+</script>
 
 
 <script src="{{ asset('js/script.js') }}"></script>

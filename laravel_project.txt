@@ -1,0 +1,25 @@
+laravel_project/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── UserController.php
+│   │   │   ├── AdminController.php
+│   │   │   └── MenuController.php
+│   │   └── Middleware/
+│   │       └── IsAdmin.php
+│   └── Models/
+│       └── Menu.php
+│
+├── resources/
+│   └── views/
+│       ├── user/
+│       │   ├── home.blade.php
+│       │   ├── reservasi.blade.php
+│       │   └── menu.blade.php
+│       └── admin/
+│           ├── dashboard.blade.php
+│           ├── login.blade.php
+│           └── menu.blade.php
+│
+└── routes/
+    └── web.php
