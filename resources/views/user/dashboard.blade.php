@@ -59,7 +59,7 @@
             <p class="menu-desc">Kopi hitam pekat dengan cita rasa klasik.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Rating</button>
+              
             </div>
           </div>
 
@@ -70,7 +70,7 @@
             <p class="menu-desc">Espresso dengan susu panas dan foam lembut.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Checkout</button>
+              
             </div>
           </div>
 
@@ -81,7 +81,7 @@
             <p class="menu-desc">Kopi susu dengan rasa creamy dan lembut.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Checkout</button>
+              
             </div>
           </div>
 
@@ -92,7 +92,7 @@
             <p class="menu-desc">Espresso dicampur air panas, rasa ringan dan segar.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Checkout</button>
+             
             </div>
           </div>
 
@@ -103,7 +103,7 @@
             <p class="menu-desc">Kopi, cokelat, dan susu, kombinasi manis dan nikmat.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Checkout</button>
+              
             </div>
           </div>
 
@@ -114,7 +114,7 @@
             <p class="menu-desc">Espresso dengan sedikit foam susu di atasnya.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Checkout</button>
+              
             </div>
           </div>
 
@@ -125,7 +125,7 @@
             <p class="menu-desc">Kopi dingin segar dengan es batu dan sirup.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Checkout</button>
+              
             </div>
           </div>
 
@@ -136,7 +136,7 @@
             <p class="menu-desc">Espresso dituangkan di atas es krim vanilla.</p>
             <div class="menu-buttons">
               <button class="btn-view">Lihat</button>
-              <button class="btn-checkout">Checkout</button>
+              
             </div>
           </div>
 
