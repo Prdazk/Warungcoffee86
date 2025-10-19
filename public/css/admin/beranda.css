@@ -6,13 +6,13 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Segoe UI", Arial, sans-serif;
-  color: #000; /* semua teks hitam */
+  color: #000;
 }
 
 body {
   display: flex;
   min-height: 100vh;
-  background: #dbd3cd; /* coklat hangat */
+  background: #dbd3cd;
   color: #000;
   transition: background 0.3s ease;
   font-family: Arial, sans-serif;
@@ -37,12 +37,11 @@ body {
 .sidebar h2 {
   font-size: 22px;
   margin-bottom: 50px;
-  color: #fff5e6; /* lebih terang agar terbaca */
+  color: #fff5e6;
   text-align: center;
   letter-spacing: 1px;
   text-transform: uppercase;
   animation: fadeInDown 1s ease-in-out;
-  text-shadow: none;
 }
 
 /* Sidebar Menu */
@@ -65,7 +64,7 @@ body {
 
 .menu li a {
   text-decoration: none;
-  color: #f5e8df; /* lebih terang, nyaman dibaca */
+  color: #f5e8df;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -73,7 +72,7 @@ body {
   transition: all 0.3s ease;
   padding: 12px 16px;
   border-radius: 8px;
-  background: #6b4f3b; /* coklat gelap */
+  background: #6b4f3b;
   width: 100%;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -85,9 +84,84 @@ body {
 
 .menu li a:hover {
   background: linear-gradient(135deg, #7b4a33, #a67b5b);
-  color: #fff; /* terang saat hover */
+  color: #fff;
   transform: scale(1.05);
   box-shadow: 0 6px 12px rgba(124, 74, 51, 0.4);
+}
+
+/* =======================
+   Navbar User Profile
+======================= */
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #f5f5f5;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* User Menu */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 15px;
+  background-color: #8B5E3C;
+  color: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.user-menu:hover {
+  background-color: #A36B4D;
+}
+
+.user-menu .user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Dropdown menu */
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  margin-top: 5px;
+  min-width: 120px;
+  z-index: 1001;
+}
+
+.user-dropdown a {
+  display: block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.user-dropdown a:hover {
+  background-color: #f0f0f0;
+}
+
+.user-menu:hover .user-dropdown {
+  display: block;
 }
 
 /* =======================
@@ -96,6 +170,7 @@ body {
 .content {
   flex: 1;
   padding: 40px;
+  margin-top: 90px; /* jarak untuk navbar fixed */
   background: transparent;
   animation: fadeIn 1s ease-in-out;
   color: #000;
@@ -111,7 +186,7 @@ body {
 
 .content h1 {
   font-size: 30px;
-  color: #5C4033; /* lebih kontras */
+  color: #5C4033;
   margin-bottom: 20px;
 }
 
@@ -121,7 +196,7 @@ body {
 }
 
 /* =======================
-   Tombol Menu Aksi (Tambah/Edit) 
+   Tombol Menu Aksi (Tambah/Edit)
 ======================= */
 .menu-actions {
   margin-bottom: 20px;
@@ -135,7 +210,7 @@ body {
   padding: 8px 16px;
   cursor: pointer;
   border-radius: 6px;
-  background: #a67b5b; /* coklat terang agar nyaman */
+  background: #a67b5b;
   color: #fff;
   font-weight: 500;
   transition: all 0.3s ease;

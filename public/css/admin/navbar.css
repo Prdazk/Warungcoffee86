@@ -1,0 +1,92 @@
+/* =========================
+   User Menu (Profile)
+========================= */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    position: relative; /* untuk dropdown */
+    border-radius: 50px;
+    background-color: #8B5E3C;
+    color: #fff;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s;
+}
+
+.user-menu:hover {
+    background-color: #A36B4D;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Avatar user */
+.user-menu .user-avatar {
+    width: 30px;      /* dikurangi dari 40px */
+    height: 30px;     /* dikurangi dari 40px */
+    border-radius: 50%; 
+    object-fit: cover;
+    border: 2px solid #fff;
+    transition: transform 0.3s ease;
+}
+
+.user-menu:hover .user-avatar {
+    transform: rotate(10deg) scale(1.1); /* animasi ringan tetap */
+}
+
+/* Nama user */
+.user-menu .user-name {
+    transition: color 0.3s ease;
+}
+
+.user-menu:hover .user-name {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* =========================
+   Dropdown menu
+========================= */
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background-color: #fff;
+    color: #333;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    min-width: auto; /* lebar menyesuaikan konten */
+    z-index: 1001;
+    overflow: hidden;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    padding: 4px 0; /* beri sedikit jarak vertikal */
+}
+
+.user-menu.active .user-dropdown {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 6px 14px; /* ringkas */
+    text-decoration: none;
+    color: #8B5E3C; /* coklat lembut */
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+    border-radius: 6px;
+    margin: 2px 8px; /* jarak antar tombol */
+    white-space: nowrap; /* jangan pecah baris */
+    text-align: center;
+}
+
+.user-dropdown a:hover {
+    background-color: #A36B4D; /* coklat lebih gelap saat hover */
+    color: #fff;
+}
