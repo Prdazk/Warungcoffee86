@@ -1,6 +1,8 @@
 /* =========================
    CSS Khusus Halaman Reservasi
-   ========================= */
+========================= */
+
+/* ===== Tabel ===== */
 #reservasi table {
   border-collapse: separate;
   border-spacing: 0;
@@ -11,7 +13,7 @@
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   font-family: "Segoe UI", Arial, sans-serif;
-  table-layout: fixed; /* Lebar kolom konsisten */
+  table-layout: fixed;
 }
 
 #reservasi table th, 
@@ -20,7 +22,7 @@
   text-align: left;
   font-size: 14px;
   color: #333;
-  vertical-align: middle; /* Agar tombol tetap di tengah */
+  vertical-align: middle;
 }
 
 #reservasi table th {
@@ -48,9 +50,39 @@
   transform: translateY(-2px);
 }
 
-/* =========================
-   Tombol Aksi
-   ========================= */
+/* ===== Kolom Catatan ===== */
+#reservasi table td.catatan {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  height: 80px;
+  padding: 6px 8px;
+  background-color: #fafafa;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.3;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+}
+
+#reservasi table td.catatan::-webkit-scrollbar {
+  width: 6px;
+}
+#reservasi table td.catatan::-webkit-scrollbar-thumb {
+  background-color: rgba(107, 79, 59, 0.6);
+  border-radius: 3px;
+}
+#reservasi table td.catatan::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+
+/* ===== Tombol Aksi ===== */
 #reservasi .btn-aksi {
   padding: 6px 12px;
   margin-right: 5px;
@@ -67,15 +99,15 @@
   box-shadow: 2px 2px 6px rgba(0,0,0,0.12), -2px -2px 6px rgba(255,255,255,0.3);
 }
 
-#reservasi .btn-edit {
-  background-color: #7b4a33;
+#reservasi .btn-lihat {
+  background-color: #007bff;
   color: #fff;
 }
 
-#reservasi .btn-edit:hover {
-  background: linear-gradient(135deg, #a67b5b, #7b4a33);
+#reservasi .btn-lihat:hover {
+  background-color: #0056b3;
   transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(124, 74, 51, 0.4);
+  box-shadow: 0 4px 10px rgba(0, 86, 179, 0.4);
 }
 
 #reservasi .btn-hapus {
@@ -89,63 +121,54 @@
   box-shadow: 0 4px 10px rgba(192, 57, 43, 0.4);
 }
 
-/* =========================
-   Kolom Catatan - Fixed Size, Wrap & Scroll
-   ========================= */
-#reservasi table td.catatan {
-  width: 200px;
-  min-width: 200px;
-  max-width: 200px;
-  height: 80px;           /* Tinggi tetap */
-  min-height: 80px;
-  max-height: 80px;
-  padding: 6px 8px;
-  background-color: #fafafa;
-  border-radius: 4px;
-  font-size: 13px;
-  line-height: 1.3;
-  white-space: pre-wrap;  /* Tetap wrap teks */
-  word-break: break-word;
-  overflow-y: auto;       /* Scroll vertikal jika teks panjang */
-  overflow-x: hidden;
-  box-sizing: border-box; /* Padding tidak tambah lebar */
+/* ===== Header Pencarian & Next Button ===== */
+.reservasi-header {
   display: flex;
-  align-items: flex-start; /* Agar tombol tetap di tengah */
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* Scrollbar mini & stylish */
-#reservasi table td.catatan::-webkit-scrollbar {
-  width: 6px;
+.reservasi-search {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 200px;
+  transition: 0.3s;
 }
 
-#reservasi table td.catatan::-webkit-scrollbar-thumb {
-  background-color: rgba(107, 79, 59, 0.6);
-  border-radius: 3px;
+.reservasi-search:focus {
+  outline: none;
+  border-color: #6b4f3b;
 }
 
-#reservasi table td.catatan::-webkit-scrollbar-track {
-  background-color: #f0f0f0;
-  border-radius: 3px;
+.reservasi-next {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #6b4f3b;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.reservasi-next:hover {
+  background: #7a523d;
 }
 
-/* =========================
-   Responsive
-   ========================= */
-@media screen and (max-width: 768px) {
-  #reservasi table td.catatan {
-    width: 140px;
-    min-width: 140px;
-    max-width: 140px;
-    height: 60px;
-    min-height: 60px;
-    max-height: 60px;
-    font-size: 12px;
-  }
+/* ===== Pesan Sukses ===== */
+#pesanSukses {
+  background: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  opacity: 1;
+  transition: opacity 1s;
 }
 
-/* =========================
-   Modal Lihat - Disesuaikan dengan style reservasi
-   ========================= */
+/* ===== Modal Lihat ===== */
 #modalLihat {
   position: fixed;
   top: 0;
@@ -232,8 +255,14 @@
   border-radius: 3px;
 }
 
-/* Responsive modal */
+/* ===== Responsive ===== */
 @media screen and (max-width: 768px) {
+  #reservasi table td.catatan {
+    width: 140px;
+    height: 60px;
+    font-size: 12px;
+  }
+
   #modalLihat .modal-content {
     width: 90%;
     padding: 15px 20px;
