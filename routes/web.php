@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
+use App\Http\Controllers\Admin\AdminController; // <- tambahkan ini
 use App\Http\Controllers\ReservasiController as UserReservasiController;
 
 /*
@@ -32,7 +33,7 @@ Route::post('/user/reservasi/store', [UserReservasiController::class, 'store'])
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->group(function () {
-    
+
     // --- Autentikasi Admin ---
     Route::get('/', [AdminAuthController::class, 'showLoginForm'])->name('admin.login.form');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
@@ -44,21 +45,31 @@ Route::prefix('admin')->group(function () {
         // Dashboard Admin
         Route::get('/beranda', [DashboardController::class, 'index'])->name('admin.beranda');
 
-      // --- Menu ---
+        // --- Menu ---
         Route::prefix('menu')->name('admin.menu.')->group(function () {
-            Route::get('/', [MenuController::class, 'index'])->name('index');          // Menampilkan daftar menu
-            Route::get('/create', [MenuController::class, 'create'])->name('create');   // Form tambah menu
-            Route::post('/store', [MenuController::class, 'store'])->name('store');     // Simpan menu baru
-            Route::get('/{id}/edit', [MenuController::class, 'edit'])->name('edit');    // Form edit menu
-            Route::put('/{id}', [MenuController::class, 'update'])->name('update');     // Update menu
-            Route::delete('/{id}', [MenuController::class, 'destroy'])->name('hapus');  // Hapus menu
+            Route::get('/', [MenuController::class, 'index'])->name('index');          
+            Route::get('/create', [MenuController::class, 'create'])->name('create');   
+            Route::post('/store', [MenuController::class, 'store'])->name('store');     
+            Route::get('/{id}/edit', [MenuController::class, 'edit'])->name('edit');    
+            Route::put('/{id}', [MenuController::class, 'update'])->name('update');     
+            Route::delete('/{id}', [MenuController::class, 'destroy'])->name('hapus');  
         });
-
 
         // --- Reservasi ---
-       Route::prefix('reservasi')->group(function () {
-        Route::get('/', [AdminReservasiController::class, 'index'])->name('admin.reservasi.index');
-        Route::delete('/{id}', [AdminReservasiController::class, 'destroy'])->name('admin.reservasi.destroy');
+        Route::prefix('reservasi')->group(function () {
+            Route::get('/', [AdminReservasiController::class, 'index'])->name('admin.reservasi.index');
+            Route::delete('/{id}', [AdminReservasiController::class, 'destroy'])->name('admin.reservasi.destroy');
         });
+
+        // --- Data Admin (superadmin only) ---
+        Route::prefix('data-admin')->name('admin.dataAdmin.')->group(function () {
+            Route::get('/', [AdminController::class, 'index'])->name('index');               // Daftar admin
+            Route::get('/create', [AdminController::class, 'create'])->name('create');       // Form tambah admin
+            Route::post('/store', [AdminController::class, 'store'])->name('store');         // Simpan admin baru
+            Route::get('/{id}/edit', [AdminController::class, 'edit'])->name('edit');        // Form edit admin
+            Route::put('/{id}', [AdminController::class, 'update'])->name('update');         // Update admin
+            Route::delete('/{id}', [AdminController::class, 'destroy'])->name('destroy');    // Hapus admin
+        });
+
     });
 });
