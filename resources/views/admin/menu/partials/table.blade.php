@@ -2,11 +2,9 @@
 @section('title','Kelola Menu')
 @section('content')
 
-<h1>Kelola Menu</h1>
-
 <!-- Tombol Tambah Menu -->
 <a href="{{ route('admin.menu.create') }}" class="btn-box btn-tambah mb-3">
-    <i class="fas fa-plus"></i> Tambah
+    <i class="fas fa-plus"></i> Tambah menu
 </a>
 
 <table class="table table-bordered">
@@ -25,13 +23,13 @@
         @forelse($menus as $menu)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $menu->name }}</td>
+                <td>{{ $menu->nama }}</td>
                 <td>Rp {{ number_format($menu->harga,0,',','.') }}</td>
                 <td>{{ $menu->kategori }}</td>
                 <td>{{ $menu->status }}</td>
                 <td>
                     @if($menu->gambar)
-                        <img src="{{ asset('images/'.$menu->gambar) }}" width="60" alt="{{ $menu->name }}">
+                        <img src="{{ asset('images/'.$menu->gambar) }}" width="60" alt="{{ $menu->nama }}">
                     @else
                         <span>Tidak ada</span>
                     @endif
@@ -43,7 +41,7 @@
                     </a>
 
                     <!-- Tombol Hapus -->
-                    <form action="{{ route('admin.menu.hapus',$menu->id) }}" method="POST" style="display:inline;">
+                   <form action="{{ route('admin.menu.destroy', $menu->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn-box btn-hapus" onclick="return confirm('Yakin hapus menu ini?')">
@@ -54,7 +52,7 @@
                     <!-- Tombol Lihat -->
                     <button type="button" class="btn-box btn-lihat" 
                         onclick="showMenu(
-                            @json($menu->name),
+                            @json($menu->nama),
                             @json($menu->harga),
                             @json($menu->kategori),
                             @json($menu->status),

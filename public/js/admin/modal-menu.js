@@ -1,4 +1,3 @@
-// Modal lihat menu admin
 document.addEventListener("DOMContentLoaded", function() {
     const modal = document.getElementById("modalLihat");
     const modalGambar = document.getElementById("modalGambar");
@@ -10,11 +9,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.showMenu = function(nama, harga, kategori, status, gambar) {
         modalGambar.src = gambar || "";
+        modalGambar.style.display = gambar ? "block" : "none";
         modalNama.textContent = nama;
-        modalHarga.textContent = harga.toLocaleString();
+        modalHarga.textContent = Number(harga).toLocaleString('id-ID');
         modalKategori.textContent = kategori;
         modalStatus.textContent = status;
-        modal.style.display = "block";
+        modal.style.display = "flex"; // gunakan flex biar modal center
     };
 
     spanClose.onclick = function() {

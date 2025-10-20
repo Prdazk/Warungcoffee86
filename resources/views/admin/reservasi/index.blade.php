@@ -1,7 +1,6 @@
 @extends('admin.layout.app')
 
 @section('content')
-<h1 class="reservasi-title">Kelola Reservasi</h1>
 
 @if(session('success'))
   <div id="pesanSukses">{{ session('success') }}</div>

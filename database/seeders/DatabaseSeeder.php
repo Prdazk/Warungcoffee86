@@ -4,30 +4,28 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Admin;
+use App\Models\AdminData;
 
-class DatabaseSeeder extends Seeder
+class AdminSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // Hapus semua data lama dulu (optional)
-        Admin::truncate();
+        AdminData::truncate();
 
-        // Tambahkan akun admin utama
-        Admin::create([
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('123'),
-            'role' => 'admin',
+        AdminData::create([
+            'nama' => 'Superadmin Utama',
+            'email' => 'superadmin@gmail.com',
+            'jabatan' => 'Superadmin',
+            'role' => 'superadmin',
+            'password' => Hash::make('superadmin123'),
         ]);
 
-        // (Optional) Tambahkan akun developer juga, kalau mau
-        Admin::create([
-            'email' => 'developer@gmail.com',
-            'password' => Hash::make('dev123'),
-            'role' => 'developer',
+        AdminData::create([
+            'nama' => 'Admin Standar',
+            'email' => 'admin@gmail.com',
+            'jabatan' => 'Admin',
+            'role' => 'admin',
+            'password' => Hash::make('admin123'),
         ]);
     }
 }

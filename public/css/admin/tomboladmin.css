@@ -1,0 +1,41 @@
+/* Tombol Edit & Hapus Sebaris Simple */
+.btn-edit, .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;               /* jarak antara ikon dan teks */
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+/* Tombol Edit */
+.btn-edit {
+    background-color: #f0b766; /* coklat keemasan */
+    color: #fff;
+}
+.btn-edit:hover {
+    background-color: #e0a832;
+    transform: scale(1.05);
+}
+
+/* Tombol Hapus */
+.btn-delete {
+    background-color: #d9534f; /* merah sampah */
+    color: #fff;
+}
+.btn-delete:hover {
+    background-color: #c9302c;
+    transform: scale(1.05);
+}
+
+/* Pastikan form inline agar sejajar dengan Edit */
+form {
+    display: inline-block;
+    margin: 0;
+}

@@ -2,7 +2,6 @@
 @section('title', 'Kelola Menu') 
 
 @section('content') 
-<h1>Kelola Menu</h1> 
 
 @if(session('success')) 
   <div class="alert alert-success">{{ session('success') }}</div>

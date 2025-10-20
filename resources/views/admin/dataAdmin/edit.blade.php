@@ -21,36 +21,51 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-3">
-            <label for="name" class="form-label">Nama</label>
-            <input type="text" name="name" class="form-control" value="{{ old('name', $admin->name) }}" required>
+        <!-- Baris 1: Nama & Email -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="nama" class="form-label">Nama</label>
+                <input type="text" name="nama" class="form-control" value="{{ old('nama', $admin->name) }}" placeholder="Prada" required>
+            </div>
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ old('email', $admin->email) }}" placeholder="dnasj@gmail.com" required>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" name="email" class="form-control" value="{{ old('email', $admin->email) }}" required>
+        <!-- Baris 2: Jabatan & Role -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="jabatan" class="form-label">Jabatan</label>
+                <input type="text" name="jabatan" class="form-control" value="{{ old('jabatan', $admin->jabatan) }}" placeholder="Admin" required>
+            </div>
+            <div class="form-group">
+                <label for="role" class="form-label">Role</label>
+                <select name="role" class="form-select" required>
+                    <option value="">-- Pilih Role --</option>
+                    <option value="admin" {{ old('role', $admin->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="superadmin" {{ old('role', $admin->role) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
+                </select>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="password" class="form-label">Password <small>(kosongkan jika tidak ingin diubah)</small></label>
-            <input type="password" name="password" class="form-control">
+        <!-- Baris 3: Password & Konfirmasi Password -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="password" class="form-label">Password <small>(kosongkan jika tidak ingin diubah)</small></label>
+                <input type="password" name="password" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                <input type="password" name="password_confirmation" class="form-control">
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-            <input type="password" name="password_confirmation" class="form-control">
+        <!-- Tombol -->
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-success">Update Admin</button>
+            <a href="{{ route('admin.dataAdmin.index') }}" class="btn btn-secondary">Kembali</a>
         </div>
-
-        <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" class="form-select" required>
-                <option value="admin" {{ old('role', $admin->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="superadmin" {{ old('role', $admin->role) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-success">Update Admin</button>
-        <a href="{{ route('admin.dataAdmin.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection

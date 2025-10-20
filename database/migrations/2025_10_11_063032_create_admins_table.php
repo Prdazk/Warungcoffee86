@@ -13,10 +13,25 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable(); // nama opsional, bisa diisi nanti
+
+            // Nama lengkap admin
+            $table->string('nama')->nullable();
+
+            // Email unik untuk login
             $table->string('email')->unique();
+
+            // Password terenkripsi
             $table->string('password');
-            $table->enum('role', ['developer', 'pengelola', 'admin'])->default('pengelola');
+
+            // Jabatan opsional
+            $table->string('jabatan')->nullable();
+
+            // Role sesuai kebutuhan sistem
+            $table->enum('role', ['superadmin', 'admin'])->default('admin');
+
+            // Token remember (untuk session Laravel)
+            $table->rememberToken();
+
             $table->timestamps();
         });
     }

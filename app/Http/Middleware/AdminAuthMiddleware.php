@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminAuthMiddleware
 {
+    /**
+     * Handle an incoming request.
+     */
     public function handle(Request $request, Closure $next)
     {
-        // Cek guard admin
+        // Cek apakah admin sudah login
         if (!Auth::guard('admin')->check()) {
-            // tampilkan pesan jika belum login
-            return response('<h2>Anda harus login terlebih dahulu!</h2>', 403);
+            // Redirect ke halaman login admin
+            return redirect()->route('admin.login.form');
         }
 
         return $next($request);

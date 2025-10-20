@@ -1,54 +1,61 @@
 @extends('admin.layout.app')
 
-@section('title', 'Kelola Admin')
+@section('title', 'Data Admin')
 
 @section('content')
-<div class="container">
-    <h1 class="mb-4">Daftar Admin</h1>
+<div class="content-section">
+    <h2>Data Admin</h2>
+
+    <!-- Tombol Tambah Admin -->
+    <a href="{{ route('admin.dataAdmin.create') }}" class="btn btn-primary">Tambah Admin</a>
 
     <!-- Pesan sukses -->
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <!-- Tombol tambah admin baru -->
-    <a href="{{ route('admin.dataAdmin.create') }}" class="btn btn-primary mb-3">Tambah Admin Baru</a>
-
-    <!-- Tabel daftar admin -->
-    <table class="table table-striped table-bordered">
+    <!-- Tabel Data Admin -->
+    <table class="admin-table" border="1" cellpadding="10" cellspacing="0" style="width:100%; margin-top:15px;">
         <thead>
             <tr>
                 <th>No</th>
                 <th>Nama</th>
                 <th>Email</th>
-                <th>Role</th>
+                <th>Jabatan</th>
                 <th>Aksi</th>
+                <th>Kelola Password</th> <!-- Tambahan kolom -->
             </tr>
         </thead>
         <tbody>
             @foreach($admins as $index => $admin)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $admin->name }}</td>
-                    <td>{{ $admin->email }}</td>
-                    <td>{{ ucfirst($admin->role) }}</td>
-                    <td>
-                        <a href="{{ route('admin.dataAdmin.edit', $admin->id) }}" class="btn btn-sm btn-warning">Edit</a>
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $admin->nama }}</td>
+                <td>{{ $admin->email }}</td>
+                <td>{{ $admin->jabatan }}</td>
+                <td>
+                    <!-- Tombol Edit -->
+                    <a href="{{ route('admin.dataAdmin.edit', $admin) }}" class="btn btn-edit" title="Edit Admin">
+                        ✏️ Edit
+                    </a>
 
-                        <form action="{{ route('admin.dataAdmin.destroy', $admin->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin menghapus admin ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
+                    <!-- Tombol Hapus -->
+                    <form action="{{ route('admin.dataAdmin.destroy', $admin) }}" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-delete" onclick="return confirm('Yakin ingin hapus?')" title="Hapus Admin">
+                            🗑️ Hapus
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <!-- Tombol Kelola Password -->
+                  <a href="{{ route('admin.dataAdmin.password', $admin) }}" class="btn btn-password">🔒 Ubah Password</a>
+                </td>
+            </tr>
             @endforeach
-            @if($admins->isEmpty())
-                <tr>
-                    <td colspan="5" class="text-center">Belum ada admin terdaftar.</td>
-                </tr>
-            @endif
         </tbody>
     </table>
 </div>
+
 @endsection

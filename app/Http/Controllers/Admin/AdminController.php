@@ -3,15 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminData;
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    // Halaman daftar admin
+    // ======================================================================
+    // DATA ADMIN CRUD
+    // ======================================================================
+
+    // Tampilkan daftar admin
     public function index()
     {
-        $admins = User::whereIn('role', ['admin', 'superadmin'])->get();
+        $admins = AdminData::all();
         return view('admin.dataAdmin.index', compact('admins'));
     }
 
@@ -25,58 +30,77 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'nama' => 'required|string',
+            'email' => 'required|email|unique:admins_data,email',
+            'jabatan' => 'required|string',
             'role' => 'required|in:admin,superadmin',
         ]);
 
-        User::create([
-            'name' => $request->name,
+        // Simpan admin baru dengan password default
+        AdminData::create([
+            'nama' => $request->nama,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'jabatan' => $request->jabatan,
             'role' => $request->role,
+            'password' => Hash::make('123456'), // password default
         ]);
 
-        return redirect()->route('admin.dataAdmin.index')->with('success', 'Admin baru berhasil ditambahkan!');
+        return redirect()->route('admin.dataAdmin.index')
+                         ->with('success', 'Admin berhasil ditambahkan. Password default: 123456');
     }
 
     // Form edit admin
-    public function edit($id)
+    public function edit(AdminData $admin)
     {
-        $admin = User::findOrFail($id);
         return view('admin.dataAdmin.edit', compact('admin'));
     }
 
     // Update admin
-    public function update(Request $request, $id)
+    public function update(Request $request, AdminData $admin)
     {
-        $admin = User::findOrFail($id);
-
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$admin->id,
-            'password' => 'nullable|string|min:6|confirmed',
+            'nama' => 'required|string',
+            'email' => 'required|email|unique:admins_data,email,'.$admin->id,
+            'jabatan' => 'required|string',
             'role' => 'required|in:admin,superadmin',
         ]);
 
-        $admin->name = $request->name;
-        $admin->email = $request->email;
-        if ($request->password) {
-            $admin->password = bcrypt($request->password);
-        }
-        $admin->role = $request->role;
-        $admin->save();
+        $admin->update($request->only(['nama','email','jabatan','role']));
 
-        return redirect()->route('admin.dataAdmin.index')->with('success', 'Admin berhasil diperbarui!');
+        return redirect()->route('admin.dataAdmin.index')
+                         ->with('success', 'Admin berhasil diupdate');
     }
 
     // Hapus admin
-    public function destroy($id)
+    public function destroy(AdminData $admin)
     {
-        $admin = User::findOrFail($id);
         $admin->delete();
 
-        return redirect()->route('admin.dataAdmin.index')->with('success', 'Admin berhasil dihapus!');
+        return redirect()->route('admin.dataAdmin.index')
+                         ->with('success', 'Admin berhasil dihapus');
+    }
+
+    // ======================================================================
+    // KELOLA PASSWORD
+    // ======================================================================
+
+    // Form kelola password
+    public function editPassword(AdminData $admin)
+    {
+        return view('admin.dataAdmin.password', compact('admin'));
+    }
+
+    // Update password
+    public function updatePassword(Request $request, AdminData $admin)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed', // harus ada password_confirmation
+        ]);
+
+        $admin->password = Hash::make($request->password);
+        $admin->save();
+
+        return redirect()->route('admin.dataAdmin.index')
+                         ->with('success', 'Password admin berhasil diperbarui!');
     }
 }
