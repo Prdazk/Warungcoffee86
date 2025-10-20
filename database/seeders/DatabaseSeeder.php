@@ -3,29 +3,14 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use App\Models\AdminData;
 
-class AdminSeeder extends Seeder
+class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        AdminData::truncate();
-
-        AdminData::create([
-            'nama' => 'Superadmin Utama',
-            'email' => 'superadmin@gmail.com',
-            'jabatan' => 'Superadmin',
-            'role' => 'superadmin',
-            'password' => Hash::make('superadmin123'),
-        ]);
-
-        AdminData::create([
-            'nama' => 'Admin Standar',
-            'email' => 'admin@gmail.com',
-            'jabatan' => 'Admin',
-            'role' => 'admin',
-            'password' => Hash::make('admin123'),
+        // Panggil semua seeder yang dibutuhkan
+        $this->call([
+            AdminSeeder::class,
         ]);
     }
 }

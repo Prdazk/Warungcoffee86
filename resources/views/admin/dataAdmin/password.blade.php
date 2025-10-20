@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Ubah Password: {{ $admin->nama }}</h1>
+    <h1 class="mb-4">Password: {{ $admin->nama }}</h1>
 
     @if($errors->any())
         <div class="alert alert-danger">

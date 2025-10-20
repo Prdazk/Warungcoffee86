@@ -50,7 +50,7 @@
                 </td>
                 <td>
                     <!-- Tombol Kelola Password -->
-                  <a href="{{ route('admin.dataAdmin.password', $admin) }}" class="btn btn-password">🔒 Ubah Password</a>
+                  <a href="{{ route('admin.dataAdmin.password', $admin) }}" class="btn btn-password">🔒Password</a>
                 </td>
             </tr>
             @endforeach
