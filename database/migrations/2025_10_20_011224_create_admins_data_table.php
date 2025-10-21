@@ -4,24 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    public function up()
+return new class extends Migration {
+    public function up(): void
     {
-        Schema::create('admins_data', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama');
-            $table->string('email')->unique();
-            $table->string('jabatan');
-            $table->enum('role', ['admin', 'superadmin'])->default('admin');
-            $table->string('password')->nullable();
-            $table->rememberToken();
-            $table->timestamps();
-        });
+        Schema::create('admin_data', function (Blueprint $table) {
+        $table->id();
+        $table->string('nama');
+        $table->string('email')->unique();
+        $table->string('jabatan')->nullable();
+        $table->string('role')->default('admin'); // 👈 tambahkan baris ini
+        $table->string('password');
+        $table->timestamps();
+    });
+
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('admins_data');
+        Schema::dropIfExists('admin_data');
     }
 };

@@ -35,10 +35,10 @@ return [
     |
     */
 
-        'guards' => [
-    'web' => [
+    'guards' => [
+    'admin' => [
         'driver' => 'session',
-        'provider' => 'users',
+        'provider' => 'admins',
     ],
 
     'admin' => [
@@ -68,9 +68,9 @@ return [
     */
 
    'providers' => [
-    'users' => [
+    'admins' => [
         'driver' => 'eloquent',
-        'model' => App\Models\User::class,
+        'model' => App\Models\AdminData::class,
     ],
 
     'admins' => [

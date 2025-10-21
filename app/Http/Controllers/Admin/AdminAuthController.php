@@ -10,15 +10,16 @@ use App\Models\AdminData;
 
 class AdminAuthController extends Controller
 {
+    // Tampilkan form login
     public function showLoginForm()
     {
         if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.beranda');
         }
-
         return view('admin.login');
     }
 
+    // Proses login
     public function login(Request $request)
     {
         $request->validate([
@@ -28,21 +29,32 @@ class AdminAuthController extends Controller
 
         $admin = AdminData::where('email', $request->email)->first();
 
-        if ($admin && Hash::check($request->password, $admin->password)) {
-            Auth::guard('admin')->login($admin, $request->boolean('remember'));
-            $request->session()->regenerate();
-            return redirect()->route('admin.beranda')
-                             ->with('success', 'Selamat datang, ' . $admin->nama);
+        if (!$admin || !Hash::check($request->password, $admin->password)) {
+            return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
+        Auth::guard('admin')->login($admin, $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        // Cek apakah harus ganti password
+        if ($admin->must_change_password) {
+            return redirect()->route('admin.change-password.form')
+                             ->with('success', 'Silakan ganti password pertama kali!');
+        }
+
+        return redirect()->route('admin.beranda')
+                         ->with('success', 'Selamat datang, ' . $admin->nama);
     }
 
+    // Logout
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('admin.login.form')->with('success', 'Anda telah logout.');
+
+        return redirect()->route('admin.login.form')
+                         ->with('success', 'Anda telah logout.');
     }
 }
+

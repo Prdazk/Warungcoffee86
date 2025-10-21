@@ -15,76 +15,73 @@ use App\Http\Controllers\ReservasiController as UserReservasiController;
 |--------------------------------------------------------------------------
 */
 
-// Halaman utama user (dashboard)
+// Halaman utama user
 Route::get('/', function () {
     return view('user.dashboard', [
         'menus' => Menu::all(),
     ]);
 })->name('user.dashboard');
 
-// Simpan reservasi dari form user
+// Simpan reservasi
 Route::post('/user/reservasi/store', [UserReservasiController::class, 'store'])
     ->name('user.reservasi.store');
 
+
 /*
 |--------------------------------------------------------------------------
-| ROUTE ADMIN
+| ROUTE ADMIN & SUPERADMIN
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
 
-    // --- Autentikasi Admin ---
-    Route::get('/', [AdminAuthController::class, 'showLoginForm'])->name('admin.login.form');
-    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    // ===============================
+    // 🔐 LOGIN TANPA MIDDLEWARE
+    // ===============================
+    Route::get('/', [AdminAuthController::class, 'showLoginForm'])->name('login.form');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
 
-    // --- Semua route berikut butuh login ---
+    // ===============================
+    // 🔒 HANYA ADMIN YANG SUDAH LOGIN
+    // ===============================
     Route::middleware('admin.auth')->group(function () {
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
         // Dashboard
-        Route::get('/beranda', [DashboardController::class, 'index'])->name('admin.beranda');
+        Route::get('/beranda', [DashboardController::class, 'index'])->name('beranda');
 
-        /*
-        |--------------------------------------------------------------------------
-        | MENU
-        |--------------------------------------------------------------------------
-        */
-        Route::prefix('menu')->name('admin.menu.')->group(function () {
-            Route::get('/', [MenuController::class, 'index'])->name('index');           // daftar menu
-            Route::get('/create', [MenuController::class, 'create'])->name('create');   // form tambah menu
-            Route::post('/store', [MenuController::class, 'store'])->name('store');     // simpan menu
-            Route::get('/{id}/edit', [MenuController::class, 'edit'])->name('edit');    // edit menu
-            Route::put('/{id}', [MenuController::class, 'update'])->name('update');     // update menu
-            Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy'); // hapus menu
+        // ===============================
+        // MENU
+        // ===============================
+        Route::prefix('menu')->name('menu.')->group(function () {
+            Route::get('/', [MenuController::class, 'index'])->name('index');
+            Route::get('/create', [MenuController::class, 'create'])->name('create');
+            Route::post('/store', [MenuController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [MenuController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [MenuController::class, 'update'])->name('update');
+            Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy');
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | RESERVASI
-        |--------------------------------------------------------------------------
-        */
-        Route::prefix('reservasi')->name('admin.reservasi.')->group(function () {
+        // ===============================
+        // RESERVASI
+        // ===============================
+        Route::prefix('reservasi')->name('reservasi.')->group(function () {
             Route::get('/', [AdminReservasiController::class, 'index'])->name('index');
             Route::delete('/{id}', [AdminReservasiController::class, 'destroy'])->name('destroy');
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA ADMIN (SUPERADMIN)
-        |--------------------------------------------------------------------------
-        */
-      Route::prefix('data-admin')->name('admin.dataAdmin.')->group(function () {
-            Route::get('/', [AdminController::class, 'index'])->name('index');             // daftar admin
-            Route::get('/create', [AdminController::class, 'create'])->name('create');     // form tambah admin
-            Route::post('/store', [AdminController::class, 'store'])->name('store');       // simpan admin
-            Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('edit');   // edit admin
-            Route::put('/{admin}', [AdminController::class, 'update'])->name('update');    // update admin
-            Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('destroy');// hapus admin
+        // ===============================
+        // DATA ADMIN (KHUSUS SUPERADMIN)
+        // ===============================
+        Route::middleware('checkRole:superadmin')->prefix('data-admin')->name('dataAdmin.')->group(function () {
+            Route::get('/', [AdminController::class, 'index'])->name('index');
+            Route::get('/create', [AdminController::class, 'create'])->name('create');
+            Route::post('/store', [AdminController::class, 'store'])->name('store');
+            Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('edit');
+            Route::put('/{admin}', [AdminController::class, 'update'])->name('update');
+            Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('destroy');
 
-            // Kelola Password (tidak perlu ulang prefix 'data-admin')
-          Route::get('/{admin}/password', [AdminController::class, 'editPassword'])->name('password');
+            Route::get('/{admin}/password', [AdminController::class, 'editPassword'])->name('password');
             Route::put('/{admin}/password', [AdminController::class, 'updatePassword'])->name('updatePassword');
-
         });
     });
 });

@@ -2,50 +2,58 @@
   <div class="reservasi-container">
     <div class="form-side">
       <h2>Silakan Pilih Meja</h2>
+      
+      <!-- Form untuk reservasi -->
       <form action="{{ route('user.reservasi.store') }}" method="POST">
-        @csrf
+        @csrf <!-- CSRF token wajib -->
 
+        <!-- Nama & Jumlah Orang -->
         <div class="row">
           <div class="col">
-            <label>Nama</label>
-            <input type="text" name="nama" placeholder="Masukkan nama">
+            <label>Nama <span style="color:red;">*</span></label>
+            <input type="text" name="nama" placeholder="Masukkan nama" required maxlength="255">
           </div>
           <div class="col">
-            <label>Jumlah Orang</label>
-            <input type="number" name="jumlah_orang" placeholder="Jumlah orang">
+            <label>Jumlah Orang <span style="color:red;">*</span></label>
+            <input type="number" name="jumlah_orang" placeholder="Jumlah orang" required min="1" max="10">
           </div>
         </div>
 
+        <!-- Tanggal & Jam -->
         <div class="row">
           <div class="col">
-            <label>Tanggal</label>
-            <input type="date" name="tanggal">
+            <label>Tanggal <span style="color:red;">*</span></label>
+            <input type="date" name="tanggal" required>
           </div>
           <div class="col">
-            <label>Jam</label>
-            <input type="time" name="jam">
+            <label>Jam <span style="color:red;">*</span></label>
+            <input type="time" name="jam" required>
           </div>
         </div>
 
+        <!-- Pilih Meja -->
         <div class="full-width">
-          <label>Pilih Meja</label>
-          <select name="pilihan_meja">
+          <label>Pilih Meja <span style="color:red;">*</span></label>
+          <select name="pilihan_meja" required>
             <option value="">-- Pilih Meja --</option>
             <option value="Meja 1">Meja 1</option>
             <option value="Meja 2">Meja 2</option>
           </select>
         </div>
 
+        <!-- Catatan -->
         <div class="full-width">
           <label>Catatan</label>
-          <textarea name="catatan" placeholder="Tulis catatan di sini..."></textarea>
+          <textarea name="catatan" placeholder="Tulis catatan di sini..." rows="3"></textarea>
         </div>
 
+        <!-- Tombol Submit -->
         <button type="submit">Pesan Sekarang</button>
 
       </form>
     </div>
 
+    <!-- Syarat & Ketentuan -->
     <div class="syarat-side">
       <h3>Syarat & Ketentuan</h3>
       <ul>

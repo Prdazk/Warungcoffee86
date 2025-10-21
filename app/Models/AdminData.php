@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AdminData extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use Notifiable;
 
-    protected $table = 'admins_data';
+    protected $table = 'admin_data';
 
     protected $fillable = [
         'nama',

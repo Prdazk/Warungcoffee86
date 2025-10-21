@@ -49,18 +49,6 @@
             </div>
         </div>
 
-        <!-- Baris 3: Password & Konfirmasi Password -->
-        <div class="form-row">
-            <div class="form-group">
-                <label for="password" class="form-label">Password <small>(kosongkan jika tidak ingin diubah)</small></label>
-                <input type="password" name="password" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                <input type="password" name="password_confirmation" class="form-control">
-            </div>
-        </div>
-
         <!-- Tombol -->
         <div class="form-buttons">
             <button type="submit" class="btn btn-success">Update Admin</button>
