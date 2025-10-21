@@ -1,13 +1,30 @@
 <section id="reservasi">
   <div class="reservasi-container">
+
+    {{-- Flash message --}}
+    @if(session('success'))
+        <div id="flash-message" style="background:#d4edda; color:#155724; padding:10px; margin-bottom:15px; border-radius:5px; position:relative;">
+            {{ session('success') }}
+            <button onclick="this.parentElement.style.display='none'" 
+                    style="position:absolute; top:5px; right:10px; background:none; border:none; font-weight:bold; cursor:pointer;">
+                ✖
+            </button>
+        </div>
+
+        <script>
+            setTimeout(() => {
+                const flash = document.getElementById('flash-message');
+                if(flash) flash.style.display = 'none';
+            }, 5000); // otomatis hilang setelah 5 detik
+        </script>
+    @endif
+
     <div class="form-side">
       <h2>Silakan Pilih Meja</h2>
       
-      <!-- Form untuk reservasi -->
       <form action="{{ route('user.reservasi.store') }}" method="POST">
-        @csrf <!-- CSRF token wajib -->
+        @csrf
 
-        <!-- Nama & Jumlah Orang -->
         <div class="row">
           <div class="col">
             <label>Nama <span style="color:red;">*</span></label>
@@ -19,7 +36,6 @@
           </div>
         </div>
 
-        <!-- Tanggal & Jam -->
         <div class="row">
           <div class="col">
             <label>Tanggal <span style="color:red;">*</span></label>
@@ -31,7 +47,6 @@
           </div>
         </div>
 
-        <!-- Pilih Meja -->
         <div class="full-width">
           <label>Pilih Meja <span style="color:red;">*</span></label>
           <select name="pilihan_meja" required>
@@ -41,19 +56,16 @@
           </select>
         </div>
 
-        <!-- Catatan -->
         <div class="full-width">
           <label>Catatan</label>
           <textarea name="catatan" placeholder="Tulis catatan di sini..." rows="3"></textarea>
         </div>
 
-        <!-- Tombol Submit -->
         <button type="submit">Pesan Sekarang</button>
 
       </form>
     </div>
 
-    <!-- Syarat & Ketentuan -->
     <div class="syarat-side">
       <h3>Syarat & Ketentuan</h3>
       <ul>
