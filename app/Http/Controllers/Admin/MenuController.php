@@ -8,10 +8,12 @@ use App\Models\Menu;
 
 class MenuController extends Controller
 {
-    /** 🟩 Tampilkan semua menu */
+    /** 🟩 Tampilkan semua menu dengan pagination */
     public function index()
     {
-        $menus = Menu::orderBy('created_at', 'desc')->get();
+        // Ambil 5 menu per halaman, urut terbaru dulu
+        $menus = Menu::orderBy('created_at', 'desc')->paginate(5);
+
         return view('admin.menu.index', compact('menus'));
     }
 
@@ -71,7 +73,6 @@ class MenuController extends Controller
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // Jika ada gambar baru
         if ($request->hasFile('gambar')) {
             if ($menu->gambar && file_exists(public_path('images/' . $menu->gambar))) {
                 @unlink(public_path('images/' . $menu->gambar));
@@ -82,7 +83,6 @@ class MenuController extends Controller
             $gambar->move(public_path('images'), $menu->gambar);
         }
 
-        // Update data lain
         $menu->update([
             'nama' => $request->nama,
             'harga' => $request->harga,
