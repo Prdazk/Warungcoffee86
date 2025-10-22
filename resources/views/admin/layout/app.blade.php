@@ -2,8 +2,12 @@
 <html lang="id">
 <head>
     @include('admin.layout.head')
+
+    <!-- ===== Bootstrap 5 CSS ===== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        /* User Menu Container */
+        /* ===== USER MENU ===== */
         .user-menu {
             position: relative;
             cursor: pointer;
@@ -20,7 +24,6 @@
             object-fit: cover;
         }
 
-        /* Dropdown Menu */
         .user-dropdown {
             position: absolute;
             top: 100%;
@@ -28,13 +31,17 @@
             background: #fff;
             border: 1px solid #ccc;
             border-radius: 8px;
-            padding: 10px;
-            width: 220px;
+            padding: 6px;
+            width: 120px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex;
+            display: none;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             z-index: 1000;
+        }
+
+        .user-menu.active .user-dropdown {
+            display: flex;
         }
 
         .user-dropdown button,
@@ -58,14 +65,14 @@
             background: #f0f0f0;
         }
 
-        /* Notifikasi */
+        /* ===== NOTIFIKASI ===== */
         .notification-btn {
             position: relative;
-            cursor: default; /* Non-interaktif */
+            cursor: default;
         }
 
         .notification-btn span:first-child {
-            color: gold; /* Logo notifikasi kuning */
+            color: gold;
         }
 
         .notification-badge {
@@ -78,27 +85,66 @@
             font-size: 12px;
             padding: 2px 6px;
         }
+
+        /* ===== ANIMASI ===== */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            8% { transform: translateX(-3px); }
+            17% { transform: translateX(3px); }
+            25% { transform: translateX(-3px); }
+            33% { transform: translateX(3px); }
+            42% { transform: translateX(-3px); }
+            50% { transform: translateX(3px); }
+            58% { transform: translateX(-3px); }
+            67% { transform: translateX(3px); }
+            75% { transform: translateX(-3px); }
+            83% { transform: translateX(3px); }
+            92% { transform: translateX(-3px); }
+            100% { transform: translateX(0); }
+        }
+
+        #userMenu.reservation-alert {
+            animation: pulse 1s;
+            position: relative;
+        }
+
+        #userMenu.reservation-alert::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background: red;
+            border-radius: 50%;
+            animation: shake 1s;
+        }
     </style>
 </head>
+
 <body>
     @include('admin.layout.sidebar')
 
+    <!-- ===== USER MENU ===== -->
     <div style="position: fixed; top: 10px; right: 20px; z-index: 1000;">
         <div class="user-menu" id="userMenu">
             <span class="user-name">{{ Auth::user()->name ?? 'Prada TI' }}</span>
             <img src="{{ asset('images/avatar.png') }}" alt="User Avatar" class="user-avatar">
 
-            <!-- Dropdown -->
             <div class="user-dropdown">
-                <!-- Notifikasi (tidak bisa diklik) -->
                 <button type="button" class="notification-btn" onclick="return false;">
                     <span>🔔 Notifikasi</span>
-                    @if($jumlahBaru > 0)
+                    @if(!empty($jumlahBaru) && $jumlahBaru > 0)
                         <span class="notification-badge">{{ $jumlahBaru }}</span>
                     @endif
                 </button>
 
-                <!-- Logout -->
                 <a href="{{ route('admin.logout') }}"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                    ⬅️ Logout
@@ -110,23 +156,37 @@
         </div>
     </div>
 
+    <!-- ===== KONTEN HALAMAN ===== -->
     <div class="content">
         @yield('content')
     </div>
 
     @include('admin.layout.footer')
 
+    <!-- ===== Bootstrap 5 JS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        const userMenu = document.getElementById('userMenu');
+    const userMenu = document.getElementById('userMenu');
 
-        // Toggle user dropdown untuk logout saja
-        userMenu.addEventListener('click', function(e) {
-            this.classList.toggle('active');
-        });
+    // Toggle dropdown logout
+    userMenu.addEventListener('click', function(e) {
+        this.classList.toggle('active');
+    });
 
-        // Hapus event dropdown notifikasi karena sudah non-interaktif
+    // Animasi notifikasi
+    function triggerAlert() {
+        userMenu.classList.add('reservation-alert');
+        setTimeout(() => {
+            userMenu.classList.remove('reservation-alert');
+        }, 1000);
+    }
+
+    setInterval(triggerAlert, 5000);
     </script>
 
-    @yield('scripts')
+    <!-- ===== Stack Scripts dari Child Views ===== -->
+    @stack('scripts')
+
 </body>
 </html>

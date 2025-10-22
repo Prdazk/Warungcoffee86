@@ -8,16 +8,14 @@ use App\Models\Menu;
 
 class MenuController extends Controller
 {
-    /** 🟩 Tampilkan semua menu dengan pagination */
+    /** 🟩 Tampilkan semua menu (dengan pagination terbaru) */
     public function index()
     {
-        // Ambil 5 menu per halaman, urut terbaru dulu
-        $menus = Menu::orderBy('created_at', 'desc')->paginate(5);
-
+        $menus = Menu::latest()->paginate(5); // pagination aktif
         return view('admin.menu.index', compact('menus'));
     }
 
-    /** 🟦 Tampilkan form tambah menu */
+    /** 🟦 Tampilkan form tambah menu (opsional jika modal di index) */
     public function create()
     {
         return view('admin.menu.create');
@@ -26,31 +24,34 @@ class MenuController extends Controller
     /** 🟨 Simpan menu baru */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'harga' => 'required|numeric|min:0',
+        $validated = $request->validate([
+            'nama'     => 'required|string|max:255',
+            'harga'    => 'required|numeric|min:0',
             'kategori' => 'required|string|max:100',
-            'status' => 'required|string|max:50',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status'   => 'required|string|max:50',
+            'gambar'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $gambarName = null;
-
+        // Proses upload gambar jika ada
         if ($request->hasFile('gambar')) {
-            $gambar = $request->file('gambar');
-            $gambarName = time() . '_' . uniqid() . '.' . $gambar->getClientOriginalExtension();
-            $gambar->move(public_path('images'), $gambarName);
+            $file = $request->file('gambar');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Pastikan folder images ada dan writable
+            if (!is_dir(public_path('images'))) {
+                mkdir(public_path('images'), 0755, true);
+            }
+
+            $file->move(public_path('images'), $filename);
+            $validated['gambar'] = $filename;
         }
 
-        Menu::create([
-            'nama' => $request->nama,
-            'harga' => $request->harga,
-            'kategori' => $request->kategori,
-            'status' => $request->status,
-            'gambar' => $gambarName,
-        ]);
+        // Simpan ke database
+        Menu::create($validated);
 
-        return redirect()->route('admin.menu.index')->with('success', '✅ Menu berhasil ditambahkan!');
+        return redirect()
+            ->route('admin.menu.index')
+            ->with('success', '✅ Menu berhasil ditambahkan');
     }
 
     /** 🟧 Tampilkan form edit menu */
@@ -65,33 +66,32 @@ class MenuController extends Controller
     {
         $menu = Menu::findOrFail($id);
 
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'harga' => 'required|numeric|min:0',
+        $validated = $request->validate([
+            'nama'     => 'required|string|max:255',
+            'harga'    => 'required|numeric|min:0',
             'kategori' => 'required|string|max:100',
-            'status' => 'required|string|max:50',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status'   => 'required|string|max:50',
+            'gambar'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+        // Upload gambar baru jika ada
         if ($request->hasFile('gambar')) {
             if ($menu->gambar && file_exists(public_path('images/' . $menu->gambar))) {
                 @unlink(public_path('images/' . $menu->gambar));
             }
-
-            $gambar = $request->file('gambar');
-            $menu->gambar = time() . '_' . uniqid() . '.' . $gambar->getClientOriginalExtension();
-            $gambar->move(public_path('images'), $menu->gambar);
+            $file = $request->file('gambar');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $validated['gambar'] = $filename;
+        } else {
+            $validated['gambar'] = $menu->gambar;
         }
 
-        $menu->update([
-            'nama' => $request->nama,
-            'harga' => $request->harga,
-            'kategori' => $request->kategori,
-            'status' => $request->status,
-            'gambar' => $menu->gambar,
-        ]);
+        $menu->update($validated);
 
-        return redirect()->route('admin.menu.index')->with('success', '✅ Menu berhasil diperbarui!');
+        return redirect()
+            ->route('admin.menu.index')
+            ->with('success', '✅ Menu berhasil diperbarui');
     }
 
     /** ⛔ Hapus menu */
@@ -105,6 +105,8 @@ class MenuController extends Controller
 
         $menu->delete();
 
-        return redirect()->route('admin.menu.index')->with('success', '🗑️ Menu berhasil dihapus!');
+        return redirect()
+            ->route('admin.menu.index')
+            ->with('success', '🗑️ Menu berhasil dihapus');
     }
 }

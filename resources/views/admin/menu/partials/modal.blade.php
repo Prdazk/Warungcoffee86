@@ -1,15 +1,18 @@
-<!-- Modal Lihat Menu -->
-<div id="modalLihat" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
-    <div class="modal-content" style="background:#fff; padding:20px; border-radius:12px; max-width:600px; width:90%; position:relative; display:flex; gap:20px;">
-        <span class="close" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
-        <div class="modal-left">
-            <img id="modalGambar" src="" alt="Gambar Menu" style="max-width:200px; border-radius:8px;">
+<div class="modal fade" id="modalLihat" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3 rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNama"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body d-flex gap-3">
+        <img id="modalGambar" src="{{ asset('images/placeholder.png') }}" alt="Gambar Menu" class="rounded" style="max-width:200px;">
+        <div>
+          <p><strong>Harga:</strong> Rp <span id="modalHarga">0</span></p>
+          <p><strong>Kategori:</strong> <span id="modalKategori">-</span></p>
+          <p><strong>Status:</strong> <span id="modalStatus">-</span></p>
         </div>
-        <div class="modal-right">
-            <h2 id="modalNama"></h2>
-            <p><strong>Harga:</strong> Rp <span id="modalHarga"></span></p>
-            <p><strong>Kategori:</strong> <span id="modalKategori"></span></p>
-            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
-        </div>
+      </div>
     </div>
+  </div>
 </div>

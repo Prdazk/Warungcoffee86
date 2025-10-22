@@ -2,157 +2,198 @@
 @section('title','Kelola Menu')
 @section('content')
 
+@if(session('success'))
+  <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
 <!-- Tombol Tambah Menu -->
-<a href="{{ route('admin.menu.create') }}" class="btn-box btn-tambah mb-3">
-    <i class="fas fa-plus"></i> Tambah menu
-</a>
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-tambah" data-bs-toggle="modal" data-bs-target="#modalTambah">
+        <i class="fas fa-plus"></i> Tambah Menu
+    </button>
+</div>
 
-<table id="menuTable" class="table table-bordered" style="width:100%; border-collapse:collapse;">
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>Nama</th>
-            <th>Harga</th>
-            <th>Kategori</th>
-            <th>Status</th>
-            <th>Gambar</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse($menus as $index => $menu)
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $menu->nama }}</td>
-            <td>Rp {{ number_format($menu->harga,0,',','.') }}</td>
-            <td>{{ $menu->kategori }}</td>
-            <td>{{ $menu->status }}</td>
-            <td>
-                @if($menu->gambar)
-                    <img src="{{ asset('images/'.$menu->gambar) }}" width="60" alt="{{ $menu->nama }}">
-                @else
-                    <span>Tidak ada</span>
-                @endif
-            </td>
-            <td style="display:flex; gap:6px;">
-                <a href="{{ route('admin.menu.edit',$menu->id) }}" class="btn-box btn-edit">
-                    <i class="fas fa-edit"></i> Edit
-                </a>
+<!-- Tabel Menu -->
+<div class="card shadow-sm rounded-4 p-3">
+    <table class="table table-hover align-middle text-center">
+        <thead class="table-header">
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Harga</th>
+                <th>Kategori</th>
+                <th>Status</th>
+                <th>Gambar</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($menus as $menu)
+            <tr>
+                <td>{{ $loop->iteration + ($menus->currentPage()-1) * $menus->perPage() }}</td>
+                <td>{{ $menu->nama }}</td>
+                <td>Rp {{ number_format($menu->harga,0,',','.') }}</td>
+                <td>{{ $menu->kategori }}</td>
+                <td>
+                    <span class="badge {{ $menu->status == 'Tersedia' ? 'bg-success' : 'bg-danger' }}">
+                        {{ $menu->status }}
+                    </span>
+                </td>
+                <td>
+                    @if($menu->gambar && file_exists(public_path('images/'.$menu->gambar)))
+                        <img src="{{ asset('images/'.$menu->gambar) }}" width="60" class="rounded shadow-sm" alt="{{ $menu->nama }}">
+                    @else
+                        <span class="text-muted">Tidak ada</span>
+                    @endif
+                </td>
+                <td class="d-flex justify-content-center gap-2">
+                    <a href="{{ route('admin.menu.edit',$menu->id) }}" class="btn btn-edit">
+                        <i class="fas fa-edit"></i>
+                    </a>
 
-                <form action="{{ route('admin.menu.destroy', $menu->id) }}" method="POST" style="margin:0;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn-box btn-hapus" onclick="return confirm('Yakin hapus menu ini?')">
-                        <i class="fas fa-trash"></i> Hapus
+                    <form action="{{ route('admin.menu.destroy', $menu->id) }}" method="POST" onsubmit="return confirm('Yakin hapus menu ini?')" style="margin:0;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-hapus">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+
+                    <!-- Tombol Lihat Menu -->
+                    <button type="button" class="btn btn-lihat"
+                        onclick="showMenu(
+                            '{{ addslashes($menu->nama) }}',
+                            '{{ $menu->harga }}',
+                            '{{ addslashes($menu->kategori) }}',
+                            '{{ addslashes($menu->status) }}',
+                            '{{ $menu->gambar && file_exists(public_path("images/".$menu->gambar)) ? asset("images/".$menu->gambar) : asset("images/placeholder.png") }}'
+                        )">
+                        <i class="fas fa-eye"></i>
                     </button>
-                </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="7" class="text-muted text-center">Belum ada data menu.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
-                <button type="button" class="btn-box btn-lihat" 
-                    onclick="showMenu(
-                        @json($menu->nama),
-                        @json($menu->harga),
-                        @json($menu->kategori),
-                        @json($menu->status),
-                        @json($menu->gambar ? asset('images/'.$menu->gambar) : '')
-                    )">
-                    <i class="fas fa-eye"></i> Lihat
-                </button>
-            </td>
-        </tr>
-        @empty
-        <tr><td colspan="7" style="text-align:center;">Belum ada data menu.</td></tr>
-        @endforelse
-    </tbody>
-</table>
+<!-- Pagination -->
+<div class="d-flex justify-content-center mt-3">
+    <ul class="pagination">
+        <li class="page-item">
+            <a href="{{ $menus->previousPageUrl() ?? '#' }}" class="btn btn-tambah btn-sm">Kembali</a>
+        </li>
+        <li class="page-item">
+            <a href="{{ $menus->nextPageUrl() ?? '#' }}" class="btn btn-tambah btn-sm">Lanjut</a>
+        </li>
+    </ul>
+</div>
 
-<!-- Tombol Next & Kembali -->
-<div style="margin-top:10px; display:flex; justify-content:center; gap:10px;">
-    <button id="prevBtn" style="padding:6px 12px; border-radius:6px; border:none; background:#795548; color:white; cursor:pointer;">Kembali</button>
-    <button id="nextBtn" style="padding:6px 12px; border-radius:6px; border:none; background:#795548; color:white; cursor:pointer;">Next</button>
+<style>
+/* Tombol dan pagination tetap sama */
+.page-item { margin: 0 5px; }
+.page-item .btn { border-radius: 6px; padding: 8px 16px; border: 1px solid #795548; background-color: #795548; color: #fff; font-weight: 500; text-decoration: none; transition: background-color 0.2s, transform 0.1s; }
+.page-item .btn:hover { background-color: #a47148; transform: scale(1.05); }
+.page-item .btn:active { transform: scale(0.95); }
+@media (max-width: 576px) { .page-item .btn { padding: 6px 12px; font-size: 14px; } }
+
+.btn { border: none; padding: 8px 12px; border-radius: 6px; color: white; cursor: pointer; display: flex; align-items: center; gap: 4px; text-decoration: none; }
+.btn-tambah { background:#795548; }
+.btn-edit { background:#4CAF50; }
+.btn-hapus { background:#E53935; }
+.btn-lihat { background:#2196F3; }
+.btn-success { background:#4CAF50; }
+.btn:hover { opacity:0.9; transform: scale(1.02); transition: all 0.2s; }
+</style>
+
+<!-- Modal Tambah Menu -->
+<div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-lg" style="background:#a47148; color:white;">
+      <div class="modal-header border-0" style="background:#7b4e2e;">
+        <h5 class="modal-title" id="modalTambahLabel">Tambah Menu Baru</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-light">Nama Menu</label>
+              <input type="text" name="nama" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-light">Harga</label>
+              <input type="number" name="harga" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-light">Kategori</label>
+              <select name="kategori" class="form-select" required>
+                <option value="">-- Pilih Kategori --</option>
+                <option value="Makanan">Makanan</option>
+                <option value="Minuman">Minuman</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-light">Status</label>
+              <select name="status" class="form-select" required>
+                <option value="Tersedia">Tersedia</option>
+                <option value="Habis">Habis</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold text-light">Gambar</label>
+              <input type="file" name="gambar" class="form-control">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-tambah text-white" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-success">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Modal Lihat Menu -->
-<div id="modalLihat" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <div class="modal-body d-flex">
-            <div class="modal-left me-3">
-                <img id="modalGambar" src="" alt="Gambar Menu" style="max-width:200px;">
-            </div>
-            <div class="modal-right">
-                <h2 id="modalNama"></h2>
-                <p><strong>Harga:</strong> Rp <span id="modalHarga"></span></p>
-                <p><strong>Kategori:</strong> <span id="modalKategori"></span></p>
-                <p><strong>Status:</strong> <span id="modalStatus"></span></p>
-            </div>
+<div class="modal fade" id="modalLihat" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3 rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNama"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body d-flex gap-3">
+        <img id="modalGambar" src="{{ asset('images/placeholder.png') }}" class="rounded" style="max-width:200px;">
+        <div>
+          <p><strong>Harga:</strong> Rp <span id="modalHarga">0</span></p>
+          <p><strong>Kategori:</strong> <span id="modalKategori">-</span></p>
+          <p><strong>Status:</strong> <span id="modalStatus">-</span></p>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
-@endsection
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const rows = document.querySelectorAll('#menuTable tbody tr');
-    const rowsPerPage = 5;
-    let currentPage = 1;
-    const totalPages = Math.ceil(rows.length / rowsPerPage);
+function showMenu(nama, harga, kategori, status, gambar) {
+    document.getElementById('modalNama').textContent = nama || '-';
+    document.getElementById('modalHarga').textContent = harga ? Number(harga).toLocaleString('id-ID') : '-';
+    document.getElementById('modalKategori').textContent = kategori || '-';
+    document.getElementById('modalStatus').textContent = status || '-';
+    document.getElementById('modalGambar').src = gambar || '{{ asset("images/placeholder.png") }}';
 
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    function showPage(page){
-        const start = (page-1)*rowsPerPage;
-        const end = start + rowsPerPage;
-
-        rows.forEach((row,index)=>{
-            row.style.display = (index >= start && index < end) ? '' : 'none';
-        });
-
-        prevBtn.disabled = (page === 1);
-        nextBtn.disabled = (page === totalPages);
-
-        prevBtn.style.opacity = prevBtn.disabled ? 0.5 : 1;
-        nextBtn.style.opacity = nextBtn.disabled ? 0.5 : 1;
-    }
-
-    showPage(currentPage);
-
-    nextBtn.addEventListener('click', () => {
-        if(currentPage < totalPages){
-            currentPage++;
-            showPage(currentPage);
-        }
-    });
-
-    prevBtn.addEventListener('click', () => {
-        if(currentPage > 1){
-            currentPage--;
-            showPage(currentPage);
-        }
-    });
-
-    // Fungsi global untuk tombol Lihat
-    window.showMenu = function(nama, harga, kategori, status, gambar){
-        document.getElementById('modalNama').textContent = nama;
-        document.getElementById('modalHarga').textContent = harga;
-        document.getElementById('modalKategori').textContent = kategori;
-        document.getElementById('modalStatus').textContent = status;
-        document.getElementById('modalGambar').src = gambar || '';
-        document.getElementById('modalLihat').style.display = 'block';
-    }
-
-    document.querySelector('.close').onclick = function(){
-        document.getElementById('modalLihat').style.display = 'none';
-    }
-
-    window.onclick = function(event){
-        if(event.target == document.getElementById('modalLihat')){
-            document.getElementById('modalLihat').style.display = 'none';
-        }
-    }
-});
+    const modalEl = document.getElementById('modalLihat');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+}
 </script>
 @endpush
 
-
+@endsection
