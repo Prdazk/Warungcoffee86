@@ -9,10 +9,6 @@ class Reservasi extends Model
 {
     use HasFactory;
 
-    // Nama tabel di database
-    protected $table = 'reservasis';
-
-    // Kolom yang bisa diisi massal
     protected $fillable = [
         'nama',
         'jumlah_orang',
@@ -20,6 +16,6 @@ class Reservasi extends Model
         'tanggal',
         'jam',
         'catatan',
-        'status', // tambahkan status supaya bisa langsung di-set saat create
+        'status',
     ];
 }

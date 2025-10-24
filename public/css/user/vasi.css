@@ -1,0 +1,155 @@
+#reservasi {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  padding: 60px 15px;
+  background: transparent;
+  color: #e6ccb2;
+}
+
+/* === Container utama === */
+.reservasi-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 35px;
+  max-width: 940px;
+  margin: 0 auto;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* === Form === */
+.form-side {
+  flex: 1;
+  min-width: 330px;
+  background: #121212;
+  padding: 32px 28px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.form-side:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7);
+}
+
+.form-side h2 {
+  text-align: center;
+  color: #ffcc80;
+  margin-bottom: 24px;
+  font-size: 21px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+/* === Input layout === */
+.row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.col {
+  flex: 1;
+}
+.form-side label {
+  display: block;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #e0c9a6;
+  margin-bottom: 5px;
+}
+
+/* === Input === */
+.form-side input,
+.form-side select,
+.form-side textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  background: #1f1f1f;
+  font-size: 14px;
+  color: #e6ccb2;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+.form-side input:focus,
+.form-side select:focus,
+.form-side textarea:focus {
+  border-color: #ffcc80;
+  box-shadow: 0 0 8px rgba(255, 204, 128, 0.5);
+  outline: none;
+}
+.form-side textarea {
+  resize: none;
+  height: 70px;
+}
+
+/* === Tombol === */
+.form-side button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #a47148, #6f4e37);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+.form-side button:hover {
+  background: linear-gradient(135deg, #b08968, #4e342e);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
+}
+
+/* === Syarat & Ketentuan === */
+.syarat-side {
+  flex: 1;
+  min-width: 280px;
+  background: #181818;
+  border-radius: 18px;
+  padding: 28px 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.syarat-side:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7);
+}
+.syarat-side h3 {
+  color: #ffcc80;
+  font-size: 19px;
+  margin-bottom: 14px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.syarat-side ul {
+  padding-left: 22px;
+  font-size: 14px;
+  color: #d7ccc8;
+  line-height: 1.7;
+  list-style-type: disc;
+}
+
+/* === Animasi masuk === */
+#reservasi .form-side,
+#reservasi .syarat-side {
+  animation: fadeSlide 0.7s ease;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Responsif === */
+@media (max-width: 768px) {
+  .reservasi-container {
+    flex-direction: column;
+  }
+  .form-side, .syarat-side {
+    width: 100%;
+  }
+}
