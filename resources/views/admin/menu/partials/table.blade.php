@@ -47,17 +47,24 @@
                     @endif
                 </td>
                 <td class="d-flex justify-content-center gap-2">
-                    <a href="{{ route('admin.menu.edit',$menu->id) }}" class="btn btn-edit">
+                    <!-- Tombol Edit Modal -->
+                    <button type="button" class="btn btn-edit"
+                        onclick="showEditModal(
+                            {{ $menu->id }},
+                            '{{ addslashes($menu->nama) }}',
+                            '{{ $menu->harga }}',
+                            '{{ addslashes($menu->kategori) }}',
+                            '{{ addslashes($menu->status) }}'
+                        )">
                         <i class="fas fa-edit"></i>
-                    </a>
+                    </button>
 
-                    <form action="{{ route('admin.menu.destroy', $menu->id) }}" method="POST" onsubmit="return confirm('Yakin hapus menu ini?')" style="margin:0;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-hapus">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
+                  <!-- Tombol Hapus -->
+                    <button type="button" class="btn btn-hapus" 
+                        onclick="confirmDelete('{{ route('admin.menu.destroy', $menu->id) }}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+
 
                     <!-- Tombol Lihat Menu -->
                     <button type="button" class="btn btn-lihat"
@@ -94,12 +101,10 @@
 </div>
 
 <style>
-/* Tombol dan pagination tetap sama */
 .page-item { margin: 0 5px; }
 .page-item .btn { border-radius: 6px; padding: 8px 16px; border: 1px solid #795548; background-color: #795548; color: #fff; font-weight: 500; text-decoration: none; transition: background-color 0.2s, transform 0.1s; }
 .page-item .btn:hover { background-color: #a47148; transform: scale(1.05); }
 .page-item .btn:active { transform: scale(0.95); }
-@media (max-width: 576px) { .page-item .btn { padding: 6px 12px; font-size: 14px; } }
 
 .btn { border: none; padding: 8px 12px; border-radius: 6px; color: white; cursor: pointer; display: flex; align-items: center; gap: 4px; text-decoration: none; }
 .btn-tambah { background:#795548; }
@@ -160,6 +165,56 @@
   </div>
 </div>
 
+<!-- Modal Edit Menu -->
+<div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-lg" style="background:#8d6e63; color:white;">
+      <div class="modal-header border-0" style="background:#6d4c41;">
+        <h5 class="modal-title" id="modalEditLabel">Edit Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditMenu" method="POST" enctype="multipart/form-data">
+          @csrf
+          @method('PUT')
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-light">Nama Menu</label>
+              <input type="text" name="nama" id="editNama" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-light">Harga</label>
+              <input type="number" name="harga" id="editHarga" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-light">Kategori</label>
+              <select name="kategori" id="editKategori" class="form-select" required>
+                <option value="Makanan">Makanan</option>
+                <option value="Minuman">Minuman</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-light">Status</label>
+              <select name="status" id="editStatus" class="form-select" required>
+                <option value="Tersedia">Tersedia</option>
+                <option value="Habis">Habis</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold text-light">Gambar</label>
+              <input type="file" name="gambar" class="form-control">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-tambah text-white" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-success">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Lihat Menu -->
 <div class="modal fade" id="modalLihat" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -180,6 +235,78 @@
   </div>
 </div>
 
+<!-- Modal Konfirmasi Hapus -->
+<div class="modal fade" id="modalHapus" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4 rounded-4 shadow-lg" style="border:none;">
+      <h5 class="mb-3 text-dark fw-bold">Yakin ingin menghapus menu ini?</h5>
+      <p class="text-secondary mb-4">Tindakan ini tidak dapat dibatalkan.</p>
+      <div class="d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-secondary px-4" id="btnCancelDelete">Batal</button>
+        <button type="button" id="btnConfirmDelete" class="btn btn-danger px-4">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form id="deleteForm" method="POST" style="display:none;">
+  @csrf
+  @method('DELETE')
+</form>
+
+<script>
+let deleteUrl = null;
+let modalHapus = null;
+
+document.addEventListener('DOMContentLoaded', function () {
+  const modalEl = document.getElementById('modalHapus');
+  modalHapus = new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: false });
+
+  document.getElementById('btnConfirmDelete').addEventListener('click', function () {
+    if (!deleteUrl) return;
+    const form = document.getElementById('deleteForm');
+    form.action = deleteUrl;
+    modalHapus.hide(); // tutup modal dulu
+    setTimeout(() => form.submit(), 200); // beri jeda biar animasi selesai
+  });
+
+  document.getElementById('btnCancelDelete').addEventListener('click', function () {
+    modalHapus.hide();
+  });
+});
+
+function confirmDelete(url) {
+  deleteUrl = url;
+  if (!modalHapus) {
+    modalHapus = new bootstrap.Modal(document.getElementById('modalHapus'), { backdrop: 'static', keyboard: false });
+  }
+  modalHapus.show();
+}
+</script>
+
+<style>
+#modalHapus .modal-content {
+  animation: fadeInScale 0.25s ease-in-out;
+  background: #fefcfb;
+}
+@keyframes fadeInScale {
+  from { opacity:0; transform:scale(0.9); }
+  to { opacity:1; transform:scale(1); }
+}
+#modalHapus .btn-danger {
+  background-color: #d84315;
+  border: none;
+}
+#modalHapus .btn-danger:hover {
+  background-color: #bf360c;
+  transform: scale(1.05);
+}
+#modalHapus .btn-secondary {
+  background-color: #8d6e63;
+  border: none;
+}
+</style>
+
 @push('scripts')
 <script>
 function showMenu(nama, harga, kategori, status, gambar) {
@@ -188,9 +315,17 @@ function showMenu(nama, harga, kategori, status, gambar) {
     document.getElementById('modalKategori').textContent = kategori || '-';
     document.getElementById('modalStatus').textContent = status || '-';
     document.getElementById('modalGambar').src = gambar || '{{ asset("images/placeholder.png") }}';
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalLihat'));
+    modal.show();
+}
 
-    const modalEl = document.getElementById('modalLihat');
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+function showEditModal(id, nama, harga, kategori, status) {
+    document.getElementById('formEditMenu').action = `/admin/menu/${id}`;
+    document.getElementById('editNama').value = nama;
+    document.getElementById('editHarga').value = harga;
+    document.getElementById('editKategori').value = kategori;
+    document.getElementById('editStatus').value = status;
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEdit'));
     modal.show();
 }
 </script>
