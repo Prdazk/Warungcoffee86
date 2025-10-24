@@ -15,7 +15,8 @@ class AdminController extends Controller
 
     public function index()
     {
-        $admins = AdminData::where('role', 'admin')->get();
+        // Pagination 5 data per halaman
+        $admins = AdminData::orderBy('id', 'asc')->paginate(5);
         return view('admin.dataAdmin.index', compact('admins'));
     }
 
@@ -31,6 +32,7 @@ class AdminController extends Controller
             'email' => 'required|email|unique:admin_data,email',
             'jabatan' => 'required|string|max:100',
             'role' => 'required|in:admin,superadmin',
+            'password' => 'required|string|confirmed|min:6',
         ]);
 
         AdminData::create([
@@ -38,11 +40,11 @@ class AdminController extends Controller
             'email' => $request->email,
             'jabatan' => $request->jabatan,
             'role' => $request->role,
-            'password' => Hash::make('123456'),
+            'password' => Hash::make($request->password),
         ]);
 
         return redirect()->route('admin.dataAdmin.index')
-                         ->with('success', 'Admin berhasil ditambahkan! (Password default: 123456)');
+                         ->with('success', 'Admin berhasil ditambahkan!');
     }
 
     public function edit(AdminData $admin)
@@ -59,7 +61,13 @@ class AdminController extends Controller
             'role' => 'required|in:admin,superadmin',
         ]);
 
-        $admin->update($request->only(['nama', 'email', 'jabatan', 'role']));
+        // Update semua field agar role, nama, jabatan, email ikut berubah
+        $admin->update([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'jabatan' => $request->jabatan,
+            'role' => $request->role,
+        ]);
 
         return redirect()->route('admin.dataAdmin.index')
                          ->with('success', 'Data admin berhasil diperbarui!');
@@ -85,7 +93,7 @@ class AdminController extends Controller
     public function updatePassword(Request $request, AdminData $admin)
     {
         $request->validate([
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|string|confirmed|min:6',
         ]);
 
         $admin->password = Hash::make($request->password);

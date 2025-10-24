@@ -3,22 +3,12 @@
 @section('title', 'Data Admin')
 
 @section('content')
-<div class="content-section container py-4">
-
-    <h2 class="mb-4">Data Admin</h2>
+<div class="content-section container py-2">
 
     <!-- Tombol Tambah Admin -->
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahAdminModal">
         + Tambah Admin
     </button>
-
-    <!-- Pesan sukses -->
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
 
     <!-- Tabel Data Admin -->
     <div class="table-responsive">
@@ -35,35 +25,24 @@
             <tbody>
                 @foreach($admins as $index => $admin)
                 <tr class="text-center">
-                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $admins->firstItem() + $index }}</td>
                     <td>{{ $admin->nama }}</td>
                     <td>{{ $admin->email }}</td>
                     <td>{{ $admin->jabatan }}</td>
                     <td>
-                        <!-- Tombol Edit -->
-                        <button type="button" class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editAdminModal{{ $admin->id }}" title="Edit Admin">
-                            ✏️ Edit
-                        </button>
-
-                        <!-- Tombol Hapus -->
-                        <button type="button" class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteAdminModal{{ $admin->id }}" title="Hapus Admin">
-                            🗑️ Hapus
-                        </button>
-
-                        <!-- Tombol Kelola Password -->
-                        <button type="button" class="btn btn-sm btn-secondary ms-1" data-bs-toggle="modal" data-bs-target="#passwordAdminModal{{ $admin->id }}" title="Kelola Password">
-                            🔒 Password
-                        </button>
+                        <button type="button" class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editAdminModal{{ $admin->id }}">✏️ Edit</button>
+                        <button type="button" class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteAdminModal{{ $admin->id }}">🗑️ Hapus</button>
+                        <button type="button" class="btn btn-sm btn-secondary ms-1" data-bs-toggle="modal" data-bs-target="#passwordAdminModal{{ $admin->id }}">🔒 Password</button>
                     </td>
                 </tr>
 
                 <!-- Modal Edit Admin -->
-                <div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1" aria-labelledby="editAdminLabel{{ $admin->id }}" aria-hidden="true">
+                <div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
                             <div class="modal-header border-0">
-                                <h5 class="modal-title" id="editAdminLabel{{ $admin->id }}">Edit Admin</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h5 class="modal-title">Edit Admin</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
                             <form action="{{ route('admin.dataAdmin.update', $admin->id) }}" method="POST">
                                 @csrf
@@ -102,17 +81,16 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer border-0">
-                                    <button type="button" class="btn" style="background-color:#D9534F; color:#FFF;" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn" style="background-color:rgb(18, 63, 212); color:#FFF;">Update Admin</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Update Admin</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-                <!-- End Modal Edit -->
 
                 <!-- Modal Hapus Admin -->
-                <div class="modal fade" id="deleteAdminModal{{ $admin->id }}" tabindex="-1" aria-labelledby="deleteAdminLabel{{ $admin->id }}" aria-hidden="true">
+                <div class="modal fade" id="deleteAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content shadow-lg rounded-4">
                             <div class="modal-header" style="background-color:#c47429; color:#fff;">
@@ -133,14 +111,13 @@
                         </div>
                     </div>
                 </div>
-                <!-- End Modal Hapus -->
 
-                <!-- Modal Kelola Password Admin -->
-                <div class="modal fade" id="passwordAdminModal{{ $admin->id }}" tabindex="-1" aria-labelledby="passwordAdminLabel{{ $admin->id }}" aria-hidden="true">
+                <!-- Modal Password Admin -->
+                <div class="modal fade" id="passwordAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
                             <div class="modal-header border-0">
-                                <h5 class="modal-title" id="passwordAdminLabel{{ $admin->id }}">Ubah Data Password: {{ $admin->nama }}</h5>
+                                <h5 class="modal-title">Ubah Password: {{ $admin->nama }}</h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
                             <form action="{{ route('admin.dataAdmin.updatePassword', $admin) }}" method="POST">
@@ -173,16 +150,20 @@
                         </div>
                     </div>
                 </div>
-                <!-- End Modal Password -->
 
                 @endforeach
             </tbody>
         </table>
     </div>
+    <!-- Tombol Pagination Custom -->
+    <div style="margin-top:10px; display:flex; justify-content:center; gap:10px;">
+        <button id="prevBtn" style="padding:6px 12px; border-radius:6px; border:none; background:#795548; color:white; cursor:pointer;" {{ $admins->onFirstPage() ? 'disabled' : '' }}>kembali</button>
+        <button id="nextBtn" style="padding:6px 12px; border-radius:6px; border:none; background:#795548; color:white; cursor:pointer;" {{ $admins->hasMorePages() ? '' : 'disabled' }}>lanjut</button>
+    </div>
 </div>
 
 <!-- Modal Tambah Admin -->
-<div class="modal fade" id="tambahAdminModal" tabindex="-1" aria-labelledby="tambahAdminLabel" aria-hidden="true">
+<div class="modal fade" id="tambahAdminModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
             <div class="modal-header border-0">
@@ -192,6 +173,15 @@
             <form action="{{ route('admin.dataAdmin.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
+                    @if($errors->any())
+                        <div class="alert alert-danger bg-danger-subtle text-danger border-0">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Nama</label>
@@ -213,6 +203,15 @@
                                 <option value="superadmin" {{ old('role')=='superadmin' ? 'selected' : '' }}>Superadmin</option>
                             </select>
                         </div>
+                        <!-- Password -->
+                        <div class="col-md-6">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control shadow-sm" required style="background-color:#815b3b; color:#FFF; border:none;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Konfirmasi Password</label>
+                            <input type="password" name="password_confirmation" class="form-control shadow-sm" required style="background-color:#815b3b; color:#FFF; border:none;">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
@@ -224,12 +223,67 @@
     </div>
 </div>
 
-<style>
-    .form-control:focus, .form-select:focus {
-        box-shadow: 0 0 8px rgba(255,255,255,0.3);
-    }
-</style>
+<!-- Modal Sukses -->
+@if(session('success'))
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-4 text-center" style="background: #28a745; color:#fff; transform: scale(0.8); opacity:0; transition: all 0.3s ease;">
+      <div class="modal-body py-4">
+        <h3><i class="bi bi-check-circle-fill"></i> Sukses!</h3>
+        <p>{{ session('success') }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+@endif
 
+
+<!-- Scripts -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/cosmo/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Tombol Next/Kembali
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    prevBtn?.addEventListener('click', () => {
+        const prevUrl = "{{ $admins->previousPageUrl() }}";
+        if(prevUrl) window.location.href = prevUrl;
+    });
+
+    nextBtn?.addEventListener('click', () => {
+        const nextUrl = "{{ $admins->nextPageUrl() }}";
+        if(nextUrl) window.location.href = nextUrl;
+    });
+
+    // Modal Sukses
+    const modalEl = document.getElementById('successModal');
+    if(modalEl){
+        const modalContent = modalEl.querySelector('.modal-content');
+        const bsModal = new bootstrap.Modal(modalEl);
+
+        // set awal
+        modalContent.style.transform = 'scale(0.8)';
+        modalContent.style.opacity = '0';
+
+        // tampilkan modal
+        bsModal.show();
+        requestAnimationFrame(() => {
+            modalContent.style.transform = 'scale(1)';
+            modalContent.style.opacity = '1';
+        });
+
+        // hilang otomatis
+        setTimeout(() => {
+            modalContent.style.transform = 'scale(0.8)';
+            modalContent.style.opacity = '0';
+            setTimeout(() => bsModal.hide(), 300);
+        }, 3000);
+    }
+});
+</script>
+
 @endsection

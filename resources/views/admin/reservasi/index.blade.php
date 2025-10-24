@@ -43,35 +43,35 @@
           @else
             -
           @endif
-        </td>
-        <td class="aksi" style="display:flex; gap:6px;">
+       <td>
+  <div style="display:flex; justify-content:center; gap:8px; align-items:center;">
+      <!-- Tombol Lihat -->
+      <button 
+        class="btn-lihat" 
+        style="background:#2196F3; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:5px; box-shadow:0 2px 4px rgba(0,0,0,0.2);"
+        data-nama="{{ $r->nama }}"
+        data-jumlah="{{ $r->jumlah_orang }}"
+        data-meja="{{ $r->pilihan_meja }}"
+        data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('d-m-Y') }}"
+        data-jam="{{ $r->jam }}"
+        data-catatan="{{ $r->catatan ?? '-' }}">
+        <i class="fas fa-eye"></i> Lihat
+      </button>
 
-          <!-- Tombol Lihat -->
+      <!-- Tombol Hapus -->
+      <form action="{{ route('admin.reservasi.destroy', $r->id) }}" method="POST" class="hapusForm" style="margin:0;">
+          @csrf
+          @method('DELETE')
           <button 
-            class="btn-lihat" 
-            style="background:#2196F3; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:5px; box-shadow:0 2px 4px rgba(0,0,0,0.2);"
-            data-nama="{{ $r->nama }}"
-            data-jumlah="{{ $r->jumlah_orang }}"
-            data-meja="{{ $r->pilihan_meja }}"
-            data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('d-m-Y') }}"
-            data-jam="{{ $r->jam }}"
-            data-catatan="{{ $r->catatan ?? '-' }}">
-            <i class="fas fa-eye"></i> Lihat
+              type="button" 
+              class="btn-hapus"
+              style="background:#f44336; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:5px; box-shadow:0 2px 4px rgba(0,0,0,0.2);">
+              <i class="fas fa-trash"></i> Hapus
           </button>
+      </form>
+  </div>
+</td>
 
-          <!-- Tombol Hapus -->
-          <form action="{{ route('admin.reservasi.destroy', $r->id) }}" method="POST" class="hapusForm" style="margin:0;">
-              @csrf
-              @method('DELETE')
-              <button 
-                  type="button" 
-                  class="btn-hapus"
-                  style="background:#f44336; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px; display:flex; align-items:center; gap:5px; box-shadow:0 2px 4px rgba(0,0,0,0.2);">
-                  <i class="fas fa-trash"></i> Hapus
-              </button>
-          </form>
-
-        </td>
       </tr>
     @empty
       <tr><td colspan="8" style="text-align:center;">Belum ada reservasi masuk</td></tr>
