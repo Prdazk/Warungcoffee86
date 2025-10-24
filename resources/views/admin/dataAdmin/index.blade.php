@@ -112,49 +112,68 @@
                     </div>
                 </div>
 
-                <!-- Modal Password Admin -->
+                                        <!-- Modal Password Admin -->
                 <div class="modal fade" id="passwordAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
+
                             <div class="modal-header border-0">
                                 <h5 class="modal-title">Ubah Password: {{ $admin->nama }}</h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
+
                             <form action="{{ route('admin.dataAdmin.updatePassword', $admin) }}" method="POST">
                                 @csrf
                                 @method('PUT')
-                                <div class="modal-body">
-                                    @if($errors->any())
-                                        <div class="alert alert-danger bg-danger-subtle text-danger border-0">
-                                            <ul class="mb-0">
-                                                @foreach($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                    <div class="mb-3">
+
+                                <div class="modal-body" style="display:flex; flex-direction:column; gap:1rem;">
+
+                                    <!-- Password Lama -->
+                                    <div style="position: relative; width: 100%;">
+                                        <label>Password Lama</label>
+                                        <input type="password" name="current_password" class="form-control shadow-sm" required
+                                            style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem; width:100%;">
+                                        <span class="toggle-password"
+                                            style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🐵</span>
+                                        @if($errors->has('current_password'))
+                                            <div class="text-danger mt-1">{{ $errors->first('current_password') }}</div>
+                                        @endif
+                                    </div>
+
+                                    <!-- Password Baru -->
+                                    <div style="position: relative; width: 100%;">
                                         <label>Password Baru</label>
-                                        <input type="password" name="password" class="form-control shadow-sm" required style="background-color:#815b3b; color:#FFF; border:none;">
+                                        <input type="password" name="password" class="form-control shadow-sm" required
+                                            style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem; width:100%;">
+                                        <span class="toggle-password"
+                                            style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🐵</span>
                                     </div>
-                                    <div class="mb-3">
+
+                                    <!-- Konfirmasi Password -->
+                                    <div style="position: relative; width: 100%;">
                                         <label>Konfirmasi Password</label>
-                                        <input type="password" name="password_confirmation" class="form-control shadow-sm" required style="background-color:#815b3b; color:#FFF; border:none;">
+                                        <input type="password" name="password_confirmation" class="form-control shadow-sm" required
+                                            style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem; width:100%;">
+                                        <span class="toggle-password"
+                                            style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🐵</span>
                                     </div>
+
                                 </div>
+
                                 <div class="modal-footer border-0">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                                     <button type="submit" class="btn btn-primary">Simpan Password</button>
                                 </div>
+
                             </form>
                         </div>
                     </div>
                 </div>
-
                 @endforeach
             </tbody>
         </table>
     </div>
+    
     <!-- Tombol Pagination Custom -->
     <div style="margin-top:10px; display:flex; justify-content:center; gap:10px;">
         <button id="prevBtn" style="padding:6px 12px; border-radius:6px; border:none; background:#795548; color:white; cursor:pointer;" {{ $admins->onFirstPage() ? 'disabled' : '' }}>kembali</button>
@@ -203,15 +222,23 @@
                                 <option value="superadmin" {{ old('role')=='superadmin' ? 'selected' : '' }}>Superadmin</option>
                             </select>
                         </div>
-                        <!-- Password -->
-                        <div class="col-md-6">
+
+                         <!-- Password -->
+                        <div class="col-md-6" style="position: relative;">
                             <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control shadow-sm" required style="background-color:#815b3b; color:#FFF; border:none;">
+                            <input type="password" id="password" name="password" class="form-control shadow-sm" required 
+                                style="background-color:#815b3b; color:#FFF; border:none; padding-right: 2.5rem;">
+                            <span class="toggle-password" style="position:absolute; top:40%; right:10px; cursor:pointer; font-size: 1.2rem;">🐵</span>
                         </div>
-                        <div class="col-md-6">
+
+                        <!-- Konfirmasi Password -->
+                        <div class="col-md-6" style="position: relative;">
                             <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" class="form-control shadow-sm" required style="background-color:#815b3b; color:#FFF; border:none;">
+                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control shadow-sm" required 
+                                style="background-color:#815b3b; color:#FFF; border:none; padding-right: 2.5rem;">
+                            <span class="toggle-password" style="position:absolute; top:40%; right:10px; cursor:pointer; font-size: 1.2rem;">🐵</span>
                         </div>
+
                     </div>
                 </div>
                 <div class="modal-footer border-0">
@@ -237,15 +264,9 @@
 </div>
 @endif
 
-
-<!-- Scripts -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/cosmo/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Tombol Next/Kembali
+
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
@@ -259,31 +280,52 @@ document.addEventListener('DOMContentLoaded', function () {
         if(nextUrl) window.location.href = nextUrl;
     });
 
-    // Modal Sukses
     const modalEl = document.getElementById('successModal');
     if(modalEl){
         const modalContent = modalEl.querySelector('.modal-content');
         const bsModal = new bootstrap.Modal(modalEl);
 
-        // set awal
+        // Set posisi awal animasi
         modalContent.style.transform = 'scale(0.8)';
         modalContent.style.opacity = '0';
 
-        // tampilkan modal
+        // Tampilkan modal
         bsModal.show();
         requestAnimationFrame(() => {
             modalContent.style.transform = 'scale(1)';
             modalContent.style.opacity = '1';
         });
 
-        // hilang otomatis
+        // Hilang otomatis setelah 3 detik
         setTimeout(() => {
             modalContent.style.transform = 'scale(0.8)';
             modalContent.style.opacity = '0';
             setTimeout(() => bsModal.hide(), 300);
         }, 3000);
     }
+
+    function togglePassword(input) {
+        if (!input) return;
+        // Tampilkan password selama 1 detik
+        input.type = "text";
+        setTimeout(() => {
+            input.type = "password"; // Kembalikan ke password otomatis
+        }, 1000);
+    }
+
+    const toggleSpans = document.querySelectorAll('.toggle-password');
+    toggleSpans.forEach(span => {
+        span.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            if(input) togglePassword(input);
+        });
+    });
+
+    @if($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation'))
+        var passwordModal = new bootstrap.Modal(document.getElementById('passwordAdminModal{{ $admin->id }}'));
+        passwordModal.show();
+    @endif
+
 });
 </script>
-
 @endsection

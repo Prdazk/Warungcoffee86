@@ -14,6 +14,5 @@
 </div> 
 
 @include('admin.menu.partials.table')
-@include('admin.menu.partials.modal') <!-- Pastikan modalLihat ada di sini -->
 
 @endsection

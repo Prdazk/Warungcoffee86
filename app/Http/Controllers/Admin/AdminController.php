@@ -15,7 +15,6 @@ class AdminController extends Controller
 
     public function index()
     {
-        // Pagination 5 data per halaman
         $admins = AdminData::orderBy('id', 'asc')->paginate(5);
         return view('admin.dataAdmin.index', compact('admins'));
     }
@@ -61,7 +60,6 @@ class AdminController extends Controller
             'role' => 'required|in:admin,superadmin',
         ]);
 
-        // Update semua field agar role, nama, jabatan, email ikut berubah
         $admin->update([
             'nama' => $request->nama,
             'email' => $request->email,
@@ -92,10 +90,20 @@ class AdminController extends Controller
 
     public function updatePassword(Request $request, AdminData $admin)
     {
+        // Validasi input
         $request->validate([
-            'password' => 'required|string|confirmed|min:6',
+            'current_password' => 'required',
+            'password' => 'required|string|confirmed|min:6', // password_confirmation otomatis diperiksa
         ]);
 
+        // Cek password lama
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return back()->withErrors([
+                'current_password' => 'Password lama Anda salah'
+            ])->withInput();
+        }
+
+        // Update password baru
         $admin->password = Hash::make($request->password);
         $admin->save();
 

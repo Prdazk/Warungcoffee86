@@ -9,7 +9,7 @@
       <div class="stat-icon">👤</div>
       <div class="stat-text">
         <h2>{{ \App\Models\AdminData::count() }}</h2>
-        <p>Admin</p>
+        <p>Data Admin</p>
       </div>
     </div>
 
@@ -18,7 +18,7 @@
       <div class="stat-icon">📋</div>
       <div class="stat-text">
         <h2>{{ \App\Models\Menu::count() }}</h2>
-        <p>Menu</p>
+        <p>Data Menu</p>
       </div>
     </div>
 
@@ -27,7 +27,7 @@
       <div class="stat-icon">🗓️</div>
       <div class="stat-text">
         <h2>{{ \App\Models\Reservasi::count() }}</h2>
-        <p>Reservasi</p>
+        <p>Data Reservasi</p>
       </div>
     </div>
 

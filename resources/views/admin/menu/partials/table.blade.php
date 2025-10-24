@@ -50,24 +50,21 @@
                     @endif
                 </td>
                 <td class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-warning btn-sm"
-                        onclick="showEditModal({{ $menu->id }},'{{ addslashes($menu->nama) }}','{{ $menu->harga }}','{{ addslashes($menu->kategori) }}','{{ addslashes($menu->status) }}')">
-                        ✏️
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm"
-                        onclick="confirmDelete('{{ route('admin.menu.destroy', $menu->id) }}')">
-                        🗑️
-                    </button>
-              <!-- Tombol view-menu -->
-                <button type="button" class="btn btn-secondary btn-sm view-menu"
-                    data-bs-toggle="modal" data-bs-target="#modalLihat"
-                    data-nama="{{ $menu->nama }}"
-                    data-harga="{{ $menu->harga }}"
-                    data-kategori="{{ $menu->kategori }}"
-                    data-status="{{ $menu->status }}"
-                    data-gambar="{{ $menu->gambar ? asset('images/'.$menu->gambar) : asset('images/placeholder.png') }}">
-                    🔍
-                </button>
+          <!-- Tombol Edit -->
+              <button type="button" class="btn btn-warning btn-sm"
+                  onclick="showEditModal({{ $menu->id }},'{{ addslashes($menu->nama) }}','{{ $menu->harga }}','{{ addslashes($menu->kategori) }}','{{ addslashes($menu->status) }}')"
+                  style="font-size:0.85rem; padding:0.35rem 0.6rem; border-radius:0.4rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                  ✏️ Edit
+              </button>
+
+              <!-- Tombol Hapus -->
+              <button type="button" class="btn btn-danger btn-sm"
+                  onclick="confirmDelete('{{ route('admin.menu.destroy', $menu->id) }}')"
+                  style="font-size:0.85rem; padding:0.35rem 0.6rem; border-radius:0.4rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                  🗑️ Hapus
+              </button>
+
+
                 </td>
             </tr>
             @empty
@@ -185,7 +182,6 @@
   </div>
 </div>
 
-<!-- Modal Lihat -->
 <div class="modal fade" id="modalLihat" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow-lg rounded-4" style="background:#4B3621; color:#FFF;">
@@ -208,6 +204,7 @@
   </div>
 </div>
 
+
 <!-- Modal Hapus Menu -->
 <div class="modal fade" id="modalHapus" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -226,22 +223,35 @@
   @method('DELETE')
 </form>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Update isi modal saat dibuka
+    // =========================
+    // Modal Lihat Menu
+    // =========================
     const modalLihatEl = document.getElementById('modalLihat');
-    modalLihatEl.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; // tombol yang memicu modal
+
+    // Fungsi untuk menampilkan modal dengan data dari tombol
+    function showMenuModal(button) {
         document.getElementById('modalNama').textContent = button.dataset.nama;
         document.getElementById('modalHarga').textContent = Number(button.dataset.harga).toLocaleString('id-ID');
         document.getElementById('modalKategori').textContent = button.dataset.kategori;
         document.getElementById('modalStatus').textContent = button.dataset.status;
         document.getElementById('modalGambar').src = button.dataset.gambar;
+
+        const modal = new bootstrap.Modal(modalLihatEl);
+        modal.show();
+    }
+
+    // Pasang event listener ke semua tombol view-menu
+    document.querySelectorAll('.view-menu').forEach(btn => {
+        btn.addEventListener('click', function() {
+            showMenuModal(this);
+        });
     });
 
-    // Modal Hapus tetap manual
+    // =========================
+    // Modal Hapus Manual
+    // =========================
     let deleteUrl = null;
     const modalHapus = new bootstrap.Modal(document.getElementById('modalHapus'));
     const btnConfirmDelete = document.getElementById('btnConfirmDelete');
@@ -254,6 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modalHapus.hide();
         setTimeout(() => deleteForm.submit(), 200);
     });
+
     btnCancelDelete.addEventListener('click', () => modalHapus.hide());
 
     window.confirmDelete = function(url) {
@@ -261,6 +272,9 @@ document.addEventListener('DOMContentLoaded', function () {
         modalHapus.show();
     }
 
+    // =========================
+    // Modal Edit
+    // =========================
     window.showEditModal = function(id, nama, harga, kategori, status) {
         document.getElementById('formEditMenu').action = `/admin/menu/${id}`;
         document.getElementById('editNama').value = nama;
@@ -271,8 +285,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/cosmo/bootstrap.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 @endsection
