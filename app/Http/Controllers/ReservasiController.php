@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservasi;
+use App\Models\Meja;
 
 class ReservasiController extends Controller
 {
@@ -12,15 +13,21 @@ class ReservasiController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'jumlah_orang' => 'required|integer|min:1|max:10',
-            'pilihan_meja' => 'required|string',
             'tanggal' => 'required|date',
             'jam' => 'required',
+            'pilihan_meja' => 'required|string',
             'catatan' => 'nullable|string',
         ]);
 
-        Reservasi::create(array_merge($validated, [
-            'status' => 'baru',
-        ]));
+        $validated['status'] = 'baru';
+        Reservasi::create($validated);
+
+        // Tandai meja jadi Terpakai
+        $meja = Meja::where('nama_meja', $validated['pilihan_meja'])->first();
+        if($meja){
+            $meja->status_meja = 'Terpakai';
+            $meja->save();
+        }
 
         return response()->json([
             'status' => 'success',

@@ -1,7 +1,18 @@
+@php
+use App\Models\Meja;
+use App\Models\Reservasi;
+
+// Ambil semua meja
+$allMejas = Meja::orderBy('id', 'asc')->get();
+
+// Filter meja yang sudah dipesan untuk tanggal & jam tertentu (default hari ini)
+// Kita hanya bisa filter jika user memilih tanggal & jam, jadi untuk form awal tampil semua meja dulu
+$availableMejas = $allMejas; // awalnya tampil semua, nanti AJAX bisa filter
+@endphp
+
 <section id="reservasi">
   <div class="reservasi-container">
 
-    {{-- Flash container untuk pesan sukses AJAX --}}
     <div id="flash-container"></div>
 
     <div class="form-side">
@@ -10,47 +21,61 @@
       <form id="reservasiForm" action="{{ route('user.reservasi.store') }}" method="POST">
         @csrf
 
-        <div class="row">
+        {{-- Nama & Jumlah Orang --}}
+        <div class="row" style="gap:15px;">
           <div class="col">
             <label>Nama <span style="color:red;">*</span></label>
-            <input type="text" name="nama" placeholder="Masukkan nama" required maxlength="255">
+            <input type="text" name="nama" placeholder="Masukkan nama" required maxlength="255"
+                   style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
           </div>
           <div class="col">
             <label>Jumlah Orang <span style="color:red;">*</span></label>
-            <input type="number" name="jumlah_orang" placeholder="Jumlah orang" required min="1" max="10">
+            <input type="number" name="jumlah_orang" placeholder="Jumlah orang" required min="1" max="10"
+                   style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
           </div>
         </div>
 
-        <div class="row">
+        {{-- Tanggal & Jam --}}
+        <div class="row" style="gap:15px; margin-top:15px;">
           <div class="col">
             <label>Tanggal <span style="color:red;">*</span></label>
-            <input type="date" name="tanggal" required>
+            <input type="date" name="tanggal" required id="tanggalInput"
+                   style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
           </div>
           <div class="col">
             <label>Jam <span style="color:red;">*</span></label>
-            <input type="time" name="jam" required>
+            <input type="time" name="jam" required id="jamInput"
+                   style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
           </div>
         </div>
 
-        <div class="full-width">
+        {{-- Pilih Meja --}}
+        <div class="full-width" style="margin-top:15px;">
           <label>Pilih Meja <span style="color:red;">*</span></label>
-          <select name="pilihan_meja" required>
-            <option value="">-- Pilih Meja --</option>
-            <option value="Meja 1">Meja 1</option>
-            <option value="Meja 2">Meja 2</option>
+          <select name="pilihan_meja" required id="mejaSelect"
+                  style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+              <option value="">-- Pilih Meja --</option>
+              @foreach($availableMejas as $meja)
+                  <option value="{{ $meja->nama_meja }}">{{ $meja->nama_meja }}</option>
+              @endforeach
           </select>
         </div>
 
-        <div class="full-width">
+        {{-- Catatan --}}
+        <div class="full-width" style="margin-top:15px;">
           <label>Catatan</label>
-          <textarea name="catatan" placeholder="Tulis catatan di sini..." rows="3"></textarea>
+          <textarea name="catatan" placeholder="Tulis catatan di sini..." rows="3"
+                    style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"></textarea>
         </div>
 
-        <button type="submit" id="submitBtn">Pesan Sekarang</button>
+        <button type="submit" id="submitBtn"
+                style="margin-top:15px; background:#6c4f1e; color:white; border:none; border-radius:8px; padding:10px 20px; cursor:pointer; font-size:15px;">
+          Pesan Sekarang
+        </button>
       </form>
     </div>
 
-    <div class="syarat-side">
+    <div class="syarat-side" style="margin-top:20px;">
       <h3>Syarat & Ketentuan</h3>
       <ul>
         <li>Reservasi minimal 45 menit sebelum kedatangan.</li>
@@ -62,12 +87,42 @@
     </div>
   </div>
 </section>
+
 <script>
-document.getElementById('reservasiForm').addEventListener('submit', async function(e) {
+const form = document.getElementById('reservasiForm');
+const submitBtn = document.getElementById('submitBtn');
+const tanggalInput = document.getElementById('tanggalInput');
+const jamInput = document.getElementById('jamInput');
+const mejaSelect = document.getElementById('mejaSelect');
+
+async function updateAvailableMeja(){
+  const tanggal = tanggalInput.value;
+  const jam = jamInput.value;
+  if(!tanggal || !jam) return;
+
+  try {
+    const response = await fetch(`/api/available-meja?tanggal=${tanggal}&jam=${jam}`);
+    const mejas = await response.json();
+
+    // reset options
+    mejaSelect.innerHTML = `<option value="">-- Pilih Meja --</option>`;
+    mejas.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.nama_meja;
+      opt.textContent = m.nama_meja;
+      mejaSelect.appendChild(opt);
+    });
+  } catch {
+    console.log('Gagal mengambil data meja');
+  }
+}
+
+tanggalInput.addEventListener('change', updateAvailableMeja);
+jamInput.addEventListener('change', updateAvailableMeja);
+
+form.addEventListener('submit', async function(e){
   e.preventDefault();
-  const form = e.target;
   const formData = new FormData(form);
-  const submitBtn = document.getElementById('submitBtn');
 
   submitBtn.disabled = true;
   submitBtn.textContent = 'Mengirim...';
@@ -75,15 +130,18 @@ document.getElementById('reservasiForm').addEventListener('submit', async functi
   try {
     const response = await fetch(form.action, {
       method: 'POST',
-      headers: { 'X-CSRF-TOKEN': formData.get('_token') },
+      headers: {'X-CSRF-TOKEN': formData.get('_token')},
       body: formData
     });
 
     const result = await response.json();
 
-    if (result.status === 'success') {
+    if(result.status === 'success'){
       showPopup(result.message);
       form.reset();
+      mejaSelect.innerHTML = `<option value="">-- Pilih Meja --</option>`;
+      // reload meja
+      updateAvailableMeja();
     } else {
       showPopup(result.message || 'Gagal mengirim reservasi.', true);
     }
@@ -95,84 +153,43 @@ document.getElementById('reservasiForm').addEventListener('submit', async functi
   }
 });
 
-function showPopup(message, isError = false) {
-  // Overlay
+function showPopup(message, isError = false){
   const overlay = document.createElement('div');
-  overlay.id = 'popup-overlay';
   Object.assign(overlay.style, {
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    width: '100%',
-    height: '100%',
-    background: 'rgba(0,0,0,0.45)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: '9999',
-    opacity: '0',
-    transition: 'opacity 0.4s ease'
+    position:'fixed', top:'0', left:'0', width:'100%', height:'100%',
+    background:'rgba(0,0,0,0.45)', display:'flex', justifyContent:'center', alignItems:'center',
+    zIndex:'9999', opacity:'0', transition:'opacity 0.4s ease'
   });
 
-  // Popup
   const popup = document.createElement('div');
   Object.assign(popup.style, {
-    background: isError ? '#f8d7da' : 'white',
-    color: isError ? '#721c24' : '#333',
-    padding: '25px 30px',
-    borderRadius: '16px',
-    boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
-    textAlign: 'center',
-    position: 'relative',
-    transform: 'scale(0.8)',
-    transition: 'transform 0.3s ease, opacity 0.3s ease',
-    opacity: '0',
-    fontFamily: 'Poppins, Arial, sans-serif',
-    maxWidth: '400px',
-    width: '80%'
+    background:isError ? '#f8d7da':'white',
+    color:isError ? '#721c24':'#333',
+    padding:'25px 30px', borderRadius:'16px', textAlign:'center',
+    boxShadow:'0 8px 25px rgba(0,0,0,0.2)',
+    transform:'scale(0.8)', opacity:'0', transition:'transform 0.3s ease, opacity 0.3s ease',
+    fontFamily:'Poppins, Arial, sans-serif', maxWidth:'400px', width:'80%'
   });
 
   popup.innerHTML = `
-    <p style="font-size:17px; margin-bottom:20px;">
-      ${message}
-    </p>
+    <p style="font-size:17px; margin-bottom:20px;">${message}</p>
     <button id="popup-close" style="
-      background:${isError ? '#721c24' : '#6c4f1e'};
-      color:white;
-      border:none;
-      border-radius:8px;
-      padding:10px 18px;
-      font-size:15px;
-      cursor:pointer;
-      transition:background 0.2s ease;
-    ">Tutup</button>
+      background:${isError ? '#721c24':'#6c4f1e'};
+      color:white; border:none; border-radius:8px; padding:10px 18px;
+      font-size:15px; cursor:pointer;">Tutup</button>
   `;
 
   overlay.appendChild(popup);
   document.body.appendChild(overlay);
 
-  // Fade + Zoom animation
-  setTimeout(() => {
-    overlay.style.opacity = '1';
-    popup.style.opacity = '1';
-    popup.style.transform = 'scale(1)';
-  }, 50);
+  setTimeout(() => { overlay.style.opacity='1'; popup.style.opacity='1'; popup.style.transform='scale(1)'; }, 50);
 
-  // Tutup manual
-  document.getElementById('popup-close').addEventListener('click', () => {
-    closePopup(overlay, popup);
-  });
-
-  // Auto close 4 detik
-  setTimeout(() => {
-    closePopup(overlay, popup);
-  }, 4000);
+  document.getElementById('popup-close').addEventListener('click', () => closePopup(overlay, popup));
+  setTimeout(() => closePopup(overlay, popup), 4000);
 }
 
-function closePopup(overlay, popup) {
-  popup.style.opacity = '0';
-  popup.style.transform = 'scale(0.9)';
-  overlay.style.opacity = '0';
+function closePopup(overlay, popup){
+  popup.style.opacity='0'; popup.style.transform='scale(0.9)'; overlay.style.opacity='0';
   setTimeout(() => overlay.remove(), 300);
 }
 </script>
