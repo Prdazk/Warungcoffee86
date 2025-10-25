@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
             'email' => 'superadmin@gmail.com',
             'jabatan' => 'Superadmin',
             'role' => 'superadmin',
-            'password' => Hash::make('superadmin123'),
+            'password' => Hash::make('sehatselalu'), // <-- ganti di sini
         ]);
 
         AdminData::create([
