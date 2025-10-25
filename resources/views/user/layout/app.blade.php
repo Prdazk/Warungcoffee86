@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="{{ asset('css/user/tentang.css') }}">
   <link rel="stylesheet" href="{{ asset('css/user/lokasi.css') }}">
   <link rel="stylesheet" href="{{ asset('css/user/about.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/user/popupmenu.css') }}">
 </head>
 <body>
   <div class="page-wrapper">

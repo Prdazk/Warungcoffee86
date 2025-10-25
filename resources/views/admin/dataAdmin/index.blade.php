@@ -82,37 +82,51 @@
                                 </div>
                                 <div class="modal-footer border-0">
                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Update Admin</button>
+                                    <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal Hapus Admin -->
-                <div class="modal fade" id="deleteAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content shadow-lg rounded-4">
-                            <div class="modal-header" style="background-color:#c47429; color:#fff;">
-                                <h5 class="modal-title">Konfirmasi Hapus</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body text-center">
-                                Apakah Anda yakin ingin menghapus admin <strong>{{ $admin->nama }}</strong>?
-                            </div>
-                            <div class="modal-footer">
-                                <form action="{{ route('admin.dataAdmin.destroy', $admin) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Iya, Hapus</button>
-                                </form>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
+                    
+                 <!-- Modal Hapus Admin -->
+                    <div class="modal fade" id="deleteAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog" style="max-width:380px; margin-top:80px;">
+                            <div class="modal-content shadow-lg rounded-4 border-0">
+
+                                <!-- Header -->
+                                <div class="modal-header" 
+                                    style="background:#4B3621; color:#ffffff; justify-content:center; text-align:center; border-bottom:none;">
+                                    <h5 class="modal-title w-100" style="font-size:16px; font-weight:500;">
+                                        Apakah Anda yakin ingin menghapus admin ini?
+                                    </h5>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="modal-footer justify-content-center gap-2 border-top-0">
+                                    <!-- Tombol Yakin -->
+                                    <form action="{{ route('admin.dataAdmin.destroy', $admin) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn"
+                                                style="background:#388E3C; color:#fff; padding:8px 18px; font-weight:bold; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:all 0.2s ease;">
+                                            Yakin
+                                        </button>
+                                    </form>
+                                    <!-- Tombol Batal -->
+                                    <button type="button" class="btn" data-bs-dismiss="modal"
+                                            style="background:#D32F2F; color:#fff; padding:8px 18px; font-weight:bold; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:all 0.2s ease;">
+                                        Batal
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                </div>
 
-                                        <!-- Modal Password Admin -->
+
+                                                            <!-- Modal Password Admin -->
                 <div class="modal fade" id="passwordAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
@@ -128,41 +142,40 @@
 
                                 <div class="modal-body" style="display:flex; flex-direction:column; gap:1rem;">
 
-                                    <!-- Password Lama -->
-                                    <div style="position: relative; width: 100%;">
-                                        <label>Password Lama</label>
-                                        <input type="password" name="current_password" class="form-control shadow-sm" required
+                                                            <!-- Password Lama -->
+                                    <div style="position: relative; width: 100%; margin-bottom:12px;">
+                                        <label class="form-label">Password Lama</label>
+                                        <input type="password" name="current_password" class="form-control shadow-sm password-input" required
                                             style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem; width:100%;">
                                         <span class="toggle-password"
-                                            style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🐵</span>
+                                            style="position:absolute; top:54%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                                         @if($errors->has('current_password'))
                                             <div class="text-danger mt-1">{{ $errors->first('current_password') }}</div>
                                         @endif
                                     </div>
 
                                     <!-- Password Baru -->
-                                    <div style="position: relative; width: 100%;">
-                                        <label>Password Baru</label>
-                                        <input type="password" name="password" class="form-control shadow-sm" required
+                                    <div style="position: relative; width: 100%; margin-bottom:12px;">
+                                        <label class="form-label">Password Baru</label>
+                                        <input type="password" name="password" class="form-control shadow-sm password-input" required
                                             style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem; width:100%;">
                                         <span class="toggle-password"
-                                            style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🐵</span>
+                                            style="position:absolute; top:54%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                                     </div>
 
                                     <!-- Konfirmasi Password -->
-                                    <div style="position: relative; width: 100%;">
-                                        <label>Konfirmasi Password</label>
-                                        <input type="password" name="password_confirmation" class="form-control shadow-sm" required
+                                    <div style="position: relative; width: 100%; margin-bottom:12px;">
+                                        <label class="form-label">Konfirmasi Password</label>
+                                        <input type="password" name="password_confirmation" class="form-control shadow-sm password-input" required
                                             style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem; width:100%;">
                                         <span class="toggle-password"
-                                            style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🐵</span>
+                                            style="position:absolute; top:54%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                                     </div>
-
                                 </div>
 
                                 <div class="modal-footer border-0">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Simpan Password</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
                                 </div>
 
                             </form>
@@ -222,28 +235,29 @@
                                 <option value="superadmin" {{ old('role')=='superadmin' ? 'selected' : '' }}>Superadmin</option>
                             </select>
                         </div>
+                    <!-- Password -->
+                    <div class="col-md-6" style="position: relative; margin-bottom:12px;">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-control shadow-sm password-input" required 
+                            style="background-color:#815b3b; color:#FFF; border:none; padding-right:2.5rem;">
+                        <span class="toggle-password" 
+                            style="position:absolute; top:53%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
+                    </div>
 
-                         <!-- Password -->
-                        <div class="col-md-6" style="position: relative;">
-                            <label class="form-label">Password</label>
-                            <input type="password" id="password" name="password" class="form-control shadow-sm" required 
-                                style="background-color:#815b3b; color:#FFF; border:none; padding-right: 2.5rem;">
-                            <span class="toggle-password" style="position:absolute; top:40%; right:10px; cursor:pointer; font-size: 1.2rem;">🐵</span>
-                        </div>
-
-                        <!-- Konfirmasi Password -->
-                        <div class="col-md-6" style="position: relative;">
-                            <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control shadow-sm" required 
-                                style="background-color:#815b3b; color:#FFF; border:none; padding-right: 2.5rem;">
-                            <span class="toggle-password" style="position:absolute; top:40%; right:10px; cursor:pointer; font-size: 1.2rem;">🐵</span>
-                        </div>
+                    <!-- Konfirmasi Password -->
+                    <div class="col-md-6" style="position: relative; margin-bottom:12px;">
+                        <label class="form-label">Konfirmasi Password</label>
+                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-control shadow-sm password-input" required 
+                            style="background-color:#815b3b; color:#FFF; border:none; padding-right:2.5rem;">
+                        <span class="toggle-password" 
+                            style="position:absolute; top:53%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
+                    </div>
 
                     </div>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan Admin</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
@@ -266,7 +280,49 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const toggleSpans = document.querySelectorAll('.toggle-password');
+    
+    toggleSpans.forEach(span => {
+        span.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            if (!input) return;
 
+            if(input.type === "password"){
+                input.type = "text";      // tampilkan password
+                this.textContent = "👀";  // ikon buka mata
+
+                // Kembalikan ke password otomatis setelah 1 detik
+                setTimeout(() => {
+                    input.type = "password";
+                    this.textContent = "🙈";
+                }, 1000);
+            }
+        });
+    });
+
+    // Modal sukses animasi
+    const modalEl = document.getElementById('successModal');
+    if(modalEl){
+        const modalContent = modalEl.querySelector('.modal-content');
+        const bsModal = new bootstrap.Modal(modalEl);
+
+        modalContent.style.transform = 'scale(0.8)';
+        modalContent.style.opacity = '0';
+
+        bsModal.show();
+        requestAnimationFrame(() => {
+            modalContent.style.transform = 'scale(1)';
+            modalContent.style.opacity = '1';
+        });
+
+        setTimeout(() => {
+            modalContent.style.transform = 'scale(0.8)';
+            modalContent.style.opacity = '0';
+            setTimeout(() => bsModal.hide(), 300);
+        }, 3000);
+    }
+
+    // Pagination prev & next
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
@@ -280,52 +336,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if(nextUrl) window.location.href = nextUrl;
     });
 
-    const modalEl = document.getElementById('successModal');
-    if(modalEl){
-        const modalContent = modalEl.querySelector('.modal-content');
-        const bsModal = new bootstrap.Modal(modalEl);
-
-        // Set posisi awal animasi
-        modalContent.style.transform = 'scale(0.8)';
-        modalContent.style.opacity = '0';
-
-        // Tampilkan modal
-        bsModal.show();
-        requestAnimationFrame(() => {
-            modalContent.style.transform = 'scale(1)';
-            modalContent.style.opacity = '1';
-        });
-
-        // Hilang otomatis setelah 3 detik
-        setTimeout(() => {
-            modalContent.style.transform = 'scale(0.8)';
-            modalContent.style.opacity = '0';
-            setTimeout(() => bsModal.hide(), 300);
-        }, 3000);
-    }
-
-    function togglePassword(input) {
-        if (!input) return;
-        // Tampilkan password selama 1 detik
-        input.type = "text";
-        setTimeout(() => {
-            input.type = "password"; // Kembalikan ke password otomatis
-        }, 1000);
-    }
-
-    const toggleSpans = document.querySelectorAll('.toggle-password');
-    toggleSpans.forEach(span => {
-        span.addEventListener('click', function() {
-            const input = this.parentElement.querySelector('input');
-            if(input) togglePassword(input);
-        });
-    });
-
+    // Tampilkan modal password jika ada error
     @if($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation'))
         var passwordModal = new bootstrap.Modal(document.getElementById('passwordAdminModal{{ $admin->id }}'));
         passwordModal.show();
     @endif
-
 });
 </script>
 @endsection

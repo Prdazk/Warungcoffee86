@@ -78,8 +78,16 @@
 
 <!-- Pagination -->
 <div class="d-flex justify-content-center mt-3 gap-2">
-    <a href="{{ $menus->previousPageUrl() ?? '#' }}" class="btn btn-secondary">Kembali</a>
-    <a href="{{ $menus->nextPageUrl() ?? '#' }}" class="btn btn-success">Lanjut</a>
+    <a href="{{ $menus->previousPageUrl() ?? '#' }}" 
+       class="btn" 
+       style="background-color:#8B5E3C; color:#FFF; border:none; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+       Kembali
+    </a>
+    <a href="{{ $menus->nextPageUrl() ?? '#' }}" 
+       class="btn" 
+       style="background-color:#8B5E3C; color:#FFF; border:none; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+       Lanjut
+    </a>
 </div>
 
 <!-- Modal Tambah Menu -->
@@ -207,12 +215,18 @@
 
 <!-- Modal Hapus Menu -->
 <div class="modal fade" id="modalHapus" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog" style="margin-top:80px; max-width:400px;">
     <div class="modal-content shadow-lg rounded-4 p-4 text-center" style="background:#4B3621; color:#FFF;">
-      <h5 class="mb-3">Yakin ingin menghapus menu ini?</h5>
+      <h5 class="mb-3">apakah anda Yakin ingin menghapus menu ini?</h5>
       <div class="d-flex justify-content-center gap-3">
-        <button type="button" class="btn btn-secondary" id="btnCancelDelete">Batal</button>
-        <button type="button" class="btn btn-danger" id="btnConfirmDelete">Ya, Hapus</button>
+        <button type="button" class="btn" id="btnCancelDelete" 
+                style="background:#D32F2F; color:#fff; padding:8px 18px; border-radius:8px; font-weight:bold;">
+          Batal
+        </button>
+        <button type="button" class="btn" id="btnConfirmDelete" 
+                style="background:#388E3C; color:#fff; padding:8px 18px; border-radius:8px; font-weight:bold;">
+          Hapus
+        </button>
       </div>
     </div>
   </div>
@@ -225,12 +239,30 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // ===== Alert Sukses / Hapus 3 detik (Tengah Atas) =====
+    const alerts = document.querySelectorAll('.alert-success, .alert-danger');
+    alerts.forEach(alertEl => {
+        // Set posisi tengah atas
+        alertEl.style.position = 'fixed';
+        alertEl.style.top = '20px';
+        alertEl.style.left = '50%';
+        alertEl.style.transform = 'translateX(-50%)';
+        alertEl.style.zIndex = '1050';
+        alertEl.style.transition = 'all 0.5s ease';
+        alertEl.style.opacity = '1';
+
+        setTimeout(() => {
+            alertEl.style.opacity = '0';
+            alertEl.style.transform = 'translateX(-50%) translateY(-20px)';
+            setTimeout(() => alertEl.remove(), 500);
+        }, 3000); // 3 detik
+    });
+
     // =========================
     // Modal Lihat Menu
     // =========================
     const modalLihatEl = document.getElementById('modalLihat');
 
-    // Fungsi untuk menampilkan modal dengan data dari tombol
     function showMenuModal(button) {
         document.getElementById('modalNama').textContent = button.dataset.nama;
         document.getElementById('modalHarga').textContent = Number(button.dataset.harga).toLocaleString('id-ID');
@@ -242,7 +274,6 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.show();
     }
 
-    // Pasang event listener ke semua tombol view-menu
     document.querySelectorAll('.view-menu').forEach(btn => {
         btn.addEventListener('click', function() {
             showMenuModal(this);

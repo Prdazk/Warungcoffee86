@@ -13,7 +13,7 @@
     <!-- ===== USER MENU ===== -->
     <div style="position: fixed; top: 10px; right: 20px; z-index: 1000;">
         <div class="user-menu" id="userMenu">
-            <span class="user-name">{{ Auth::user()->name ?? 'Prada TI' }}</span>
+            <span class="user-name">{{ Auth::user()->name ?? 'Admin 86' }}</span>
             <img src="{{ asset('images/avatar.png') }}" alt="User Avatar" class="user-avatar">
 
             <div class="user-dropdown">

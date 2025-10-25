@@ -12,8 +12,11 @@
     type="text" 
     id="searchInput" 
     placeholder="Cari nama..." 
-    style="padding:6px 10px; border:1px solid #ccc; border-radius:6px; width:250px;">
+    style="padding:6px 10px; border:1px solid #beb5b5; border-radius:6px; width:220px; font-size:14px; box-shadow:0 1px 3px rgba(0,0,0,0.1); transition:all 0.2s ease; outline:none;" 
+    onfocus="this.style.borderColor='#4CAF50'; this.style.boxShadow='0 2px 6px rgba(76,175,80,0.3)';" 
+    onblur="this.style.borderColor='#ccc'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';">
 </div>
+
 
 <table id="reservasiTable" style="width:100%; border-collapse:collapse;">
   <thead>
