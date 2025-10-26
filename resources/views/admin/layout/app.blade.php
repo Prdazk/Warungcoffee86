@@ -10,32 +10,41 @@
 <body>
     @include('admin.layout.sidebar')
 
-    <!-- ===== USER MENU ===== -->
-    <div style="position: fixed; top: 10px; right: 20px; z-index: 1000;">
-        <div class="user-menu" id="userMenu">
-            <span class="user-name">{{ Auth::user()->name ?? 'Admin 86' }}</span>
-            <img src="{{ asset('images/avatar.png') }}" alt="User Avatar" class="user-avatar">
+                <div style="position: fixed; top: 10px; right: 20px; z-index: 1000;">
+                <div class="user-menu" id="userMenu">
+                    <!-- Nama admin dinamis -->
+                    <span class="user-name">
+                        {{ Auth::guard('admin')->check() ? Auth::guard('admin')->user()->nama : '' }}
+                    </span>
 
-            <div class="user-dropdown">
-                <button type="button" class="notification-btn" 
-                        onclick="window.location.href='{{ route('admin.reservasi.index') }}'">
-                    <span>🔔 Notifikasi</span>
-                    @if(!empty($jumlahBaru) && $jumlahBaru > 0)
-                        <span class="notification-badge">{{ $jumlahBaru }}</span>
-                    @endif
-                </button>
+                    <!-- Avatar -->
+                    <img src="{{ asset('images/avatar.png') }}" alt="User Avatar" class="user-avatar">
 
-                <a href="{{ route('admin.logout') }}"
-                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                   ⬅️ Logout
-                </a>
+                  <div class="user-dropdown">
+                    <button type="button" class="notification-btn" 
+                            onclick="window.location.href='{{ route('admin.reservasi.index') }}'">
+                        <!-- wrap ikon agar badge bisa absolute terhadap ikon -->
+                        <span class="notification-icon">
+                            🔔
+                            @if(!empty($jumlahBaru) && $jumlahBaru > 0)
+                                <span class="notification-badge">{{ $jumlahBaru }}</span>
+                            @endif
+                        </span>
+                        Notifikasi
+                    </button>
 
-                <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display:none;">
-                    @csrf
-                </form>
+                    <a href="{{ route('admin.logout') }}" 
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    ⬅️ Logout
+                    </a>
+
+                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display:none;">
+                        @csrf
+                    </form>
+                </div>
+
+                </div>
             </div>
-        </div>
-    </div>
 
     <!-- ===== KONTEN HALAMAN ===== -->
     <div class="content">
@@ -47,33 +56,7 @@
     <!-- ===== Bootstrap 5 JS ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-    const userMenu = document.getElementById('userMenu');
-
-    // Toggle dropdown saat klik user menu
-    userMenu.addEventListener('click', function(e) {
-        e.stopPropagation();
-        this.classList.toggle('active');
-    });
-
-    // Tutup dropdown jika klik di luar
-    document.addEventListener('click', function() {
-        userMenu.classList.remove('active');
-    });
-
-    // Animasi badge notifikasi
-    function triggerAlert() {
-        userMenu.classList.add('reservation-alert');
-        setTimeout(() => {
-            userMenu.classList.remove('reservation-alert');
-        }, 1000);
-    }
-
-    setInterval(triggerAlert, 5000);
-    </script>
-
     <!-- ===== Stack Scripts dari Child Views ===== -->
     @stack('scripts')
-
 </body>
 </html>

@@ -15,5 +15,5 @@
 <link rel="stylesheet" href="{{ asset('css/admin/tomboladmin.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin/admin-form.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin/index.css') }}">
-<link rel="stylesheet" href="{{ asset('css/admin/user-reservasi.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin/avatar.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

@@ -4,4 +4,5 @@
 <script src="{{ asset('js/admin/script.js') }}"></script>
 <script src="{{ asset('js/admin/modal-menu.js') }}"></script>
 <script src="{{ asset('js/admin/showmenu.js') }}"></script>
+<script src="{{ asset('js/admin/user-menu.js') }}"></script>
 
