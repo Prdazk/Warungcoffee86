@@ -18,7 +18,7 @@ class ReservasiController extends Controller
         $reservasis = Reservasi::with('meja')->latest()->get();
         $mejas = Meja::orderBy('id', 'asc')->get();
 
-        // Update status meja otomatis untuk hari ini
+        // Update status meja otomatis berdasarkan reservasi hari ini
         $today = now()->format('Y-m-d');
         $mejaIdsDipesan = Reservasi::whereDate('tanggal', $today)
             ->where('status', 'Dipesan')
@@ -37,18 +37,6 @@ class ReservasiController extends Controller
     }
 
     /**
-     * 🔄 Ambil data reservasi terbaru (untuk AJAX polling)
-     */
-    public function latest()
-    {
-        $reservasis = Reservasi::with('meja')->latest()->get();
-        return response()->json([
-            'status' => 'success',
-            'data' => $reservasis
-        ]);
-    }
-
-    /**
      * ➕ Tambah meja baru
      */
     public function storeMeja(Request $request)
@@ -64,7 +52,7 @@ class ReservasiController extends Controller
             'status_meja' => 'Kosong',
         ]);
 
-        return back(); // tanpa message
+        return back()->with('success', 'Meja berhasil ditambahkan.');
     }
 
     /**
@@ -85,35 +73,11 @@ class ReservasiController extends Controller
             'status_meja' => $request->status_meja,
         ]);
 
-        return back();
+        return back()->with('success', 'Meja berhasil diperbarui.');
     }
 
     /**
-     * 🗑️ Hapus meja
-     */
-    public function destroyMeja($id)
-    {
-        $meja = Meja::findOrFail($id);
-
-        // Cegah penghapusan meja yang sedang digunakan
-        $sedangDipakai = Reservasi::where('meja_id', $meja->id)
-            ->where('status', 'Dipesan')
-            ->exists();
-
-        if ($sedangDipakai) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Meja sedang digunakan dan tidak bisa dihapus.'
-            ], 400);
-        }
-
-        $meja->delete();
-
-        return response()->json(['status' => 'success']);
-    }
-
-    /**
-     * ❌ Hapus reservasi
+     * 🗑️ Hapus reservasi (non-AJAX)
      */
     public function destroy($id)
     {
@@ -121,26 +85,27 @@ class ReservasiController extends Controller
         try {
             $reservasi = Reservasi::findOrFail($id);
 
+            // Kembalikan status meja menjadi Kosong
             if ($reservasi->meja_id) {
-                $meja = Meja::find($reservasi->meja_id);
-                if ($meja) $meja->update(['status_meja' => 'Kosong']);
+                Meja::where('id', $reservasi->meja_id)->update(['status_meja' => 'Kosong']);
             }
 
             $reservasi->delete();
 
             DB::commit();
-            return response()->json(['status' => 'success']);
+
+            // Redirect biasa, tidak JSON
+            return redirect()->route('admin.reservasi.index')
+                ->with('success', 'Reservasi berhasil dihapus.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Terjadi kesalahan sistem.'
-            ], 500);
+            return redirect()->route('admin.reservasi.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus reservasi.');
         }
     }
 
     /**
-     * 🔧 Update reservasi (versi AJAX)
+     * 🔧 Update reservasi (AJAX optional)
      */
     public function update(Request $request, $id)
     {
@@ -153,16 +118,16 @@ class ReservasiController extends Controller
             'tanggal' => 'required|date|after_or_equal:' . now()->format('Y-m-d'),
             'jam' => 'required',
             'catatan' => 'nullable|string|max:500',
-            'status' => 'required|in:Dipesan,Selesai,Dibatalkan',
+            'status' => 'required|in:Dipesan,Dibatalkan',
         ]);
 
         DB::beginTransaction();
         try {
-            // Update status meja lama & baru
+            // Update status meja lama jika ganti meja
             if ($request->meja_id != $reservasi->meja_id) {
-                Meja::where('id', $reservasi->meja_id)
-                    ->update(['status_meja' => 'Kosong']);
-
+                if ($reservasi->meja_id) {
+                    Meja::where('id', $reservasi->meja_id)->update(['status_meja' => 'Kosong']);
+                }
                 Meja::where('id', $request->meja_id)
                     ->update(['status_meja' => $request->status === 'Dipesan' ? 'Dipesan' : 'Kosong']);
             } else {
@@ -170,7 +135,6 @@ class ReservasiController extends Controller
                     ->update(['status_meja' => $request->status === 'Dipesan' ? 'Dipesan' : 'Kosong']);
             }
 
-            // Update reservasi
             $reservasi->update([
                 'nama' => $request->nama,
                 'jumlah_orang' => $request->jumlah_orang,

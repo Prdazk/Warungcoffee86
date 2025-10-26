@@ -6,14 +6,13 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
 <section id="reservasi">
   <div class="reservasi-container">
 
-    {{-- Bagian Form --}}
+    {{-- Form Reservasi --}}
     <div class="form-side">
       <h2 class="form-title">Silakan Pilih Meja</h2>
 
       <form id="reservasiForm" action="{{ route('user.reservasi.store') }}" method="POST">
         @csrf
 
-        {{-- Nama & Jumlah Orang --}}
         <div class="row" style="gap:15px;">
           <div class="col">
             <label>Nama <span class="text-danger">*</span></label>
@@ -25,7 +24,6 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
           </div>
         </div>
 
-        {{-- Tanggal & Jam --}}
         <div class="row" style="gap:15px; margin-top:15px;">
           <div class="col">
             <label>Tanggal <span class="text-danger">*</span></label>
@@ -37,35 +35,31 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
           </div>
         </div>
 
-        {{-- Pilih Meja --}}
-        <div class="full-width" style="margin-top:15px;">
+            <div class="full-width" style="margin-top:15px;">
           <label>Pilih Meja <span class="text-danger">*</span></label>
           <select id="mejaSelect" name="meja_id" required class="input-field">
-            <option value="">-- Pilih Meja --</option>
-            @foreach($availableMejas as $meja)
-              @php $isTerpakai = in_array($meja->status_meja, ['Dipesan','Terisi']); @endphp
-              <option 
-                value="{{ $meja->id }}" 
-                {{ $isTerpakai ? 'disabled' : '' }}
-                style="color:{{ $isTerpakai ? 'red' : 'green' }}">
-                {{ $meja->nama_meja }} ({{ $isTerpakai ? 'Terpakai' : 'Kosong' }})
-              </option>
-            @endforeach
+              <option value="">-- Pilih Meja --</option>
+              @foreach($availableMejas as $meja)
+                  <option 
+                      value="{{ $meja['id'] }}" 
+                      {{ in_array($meja['status_meja'], ['Dipesan','Terisi']) ? 'disabled' : '' }}
+                      style="color:{{ in_array($meja['status_meja'], ['Dipesan','Terisi']) ? 'red' : 'green' }};">
+                      {{ $meja['nama_meja'] }} ({{ in_array($meja['status_meja'], ['Dipesan','Terisi']) ? 'Terpakai' : 'Kosong' }})
+                  </option>
+              @endforeach
           </select>
-        </div>
+      </div>
 
-        {{-- Catatan --}}
+
         <div class="full-width" style="margin-top:15px;">
           <label>Catatan</label>
           <textarea name="catatan" placeholder="Tulis catatan di sini..." rows="3" class="input-field"></textarea>
         </div>
 
-        {{-- Tombol Submit --}}
         <button type="submit" id="submitBtn" class="btn-submit">Pesan Sekarang</button>
       </form>
     </div>
 
-    {{-- Syarat & Ketentuan --}}
     <div class="syarat-side">
       <h3>Syarat & Ketentuan</h3>
       <ul>
@@ -81,41 +75,18 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
 </section>
 
 {{-- Panggil JS --}}
-<script src="{{ asset('js/user/reservasi.js') }}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('js/user/servasi.js') }}"></script>
 
 {{-- Styling --}}
 <style>
-.reservasi-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: space-between;
-  margin-top: 20px;
-}
+.reservasi-container { display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-between; margin-top: 20px; }
 .form-side, .syarat-side { flex: 1; min-width: 320px; }
 .form-title { margin-bottom: 15px; color: #6c4f1e; }
-.input-field {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-.btn-submit {
-  margin-top: 20px;
-  background: #6c4f1e;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: background 0.3s ease;
-}
+.input-field { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+.btn-submit { margin-top: 20px; background: #6c4f1e; color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; font-size: 15px; transition: background 0.3s ease; }
 .btn-submit:hover { background: #8b6428; }
-.btn-submit:disabled {
-  background: #a68c6d;
-  cursor: not-allowed;
-}
+.btn-submit:disabled { background: #a68c6d; cursor: not-allowed; }
 .text-danger { color: red; }
+@media screen and (max-width: 768px) { .reservasi-container { flex-direction: column; } }
 </style>

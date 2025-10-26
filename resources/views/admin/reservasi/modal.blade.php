@@ -1,4 +1,4 @@
-<!-- ===== Modal Lihat Reservasi (Versi Perbaikan) ===== -->
+<!-- ===== Modal Lihat Reservasi (Final) ===== -->
 <div id="modalLihatReservasi" 
      style="display:none;
             position:fixed;
@@ -60,7 +60,7 @@
         <p id="detail-meja" style="margin:5px 0 0 0;"></p>
       </div>
 
-      <!-- ✅ Tambahan: Status -->
+      <!-- Status -->
       <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
         <strong>Status</strong>
         <p id="detail-status" 
@@ -106,7 +106,7 @@
   const modalContent = document.getElementById('modalContent');
   const closeModalBtn = document.getElementById('closeModalBtn');
 
-  // ✅ Buka modal dan isi data
+  // Buka modal dan isi data
   function openModalLihatReservasi(data) {
     document.getElementById('detail-nama').textContent = data.nama || '-';
     document.getElementById('detail-jumlah').textContent = data.jumlah || '-';
@@ -115,17 +115,20 @@
     document.getElementById('detail-jam').textContent = data.jam || '-';
     document.getElementById('detail-catatan').textContent = data.catatan || '-';
 
-    // Warna status
+    // Status
     const statusEl = document.getElementById('detail-status');
-    const status = data.status || 'Kosong';
+    const status = data.status ? data.status : 'Dipesan'; // Default "Dipesan"
     statusEl.textContent = status;
 
+    // Warna status
     if (status === 'Dipesan') {
       statusEl.style.background = '#FF9800';
-    } else if (status === 'Terisi') {
+    } else if (status === 'Dibatalkan') {
       statusEl.style.background = '#e53935';
-    } else {
+    } else if (status === 'Terisi') {
       statusEl.style.background = '#4CAF50';
+    } else { // fallback
+      statusEl.style.background = '#757575';
     }
 
     // Tampilkan modal
@@ -136,7 +139,7 @@
     });
   }
 
-  // ✅ Tutup modal dengan efek halus
+  // Tutup modal
   function closeModal() {
     modal.classList.remove('show');
     modalContent.classList.remove('show');
@@ -147,22 +150,20 @@
     }, 250);
   }
 
-  // Klik tombol silang
   closeModalBtn.addEventListener('click', closeModal);
 
-  // Klik luar area modal
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
   });
 
-  // Klik tombol lihat di tabel
+  // Tombol lihat di tabel (tidak perlu ubah HTML tombol)
   document.querySelectorAll('.btn-lihat').forEach(btn => {
     btn.addEventListener('click', () => {
       const data = {
         nama: btn.getAttribute('data-nama'),
         jumlah: btn.getAttribute('data-jumlah'),
         meja: btn.getAttribute('data-meja'),
-        status: btn.getAttribute('data-status'),
+        status: btn.getAttribute('data-status') || 'Dipesan', // default jika tidak ada
         tanggal: btn.getAttribute('data-tanggal'),
         jam: btn.getAttribute('data-jam'),
         catatan: btn.getAttribute('data-catatan'),
