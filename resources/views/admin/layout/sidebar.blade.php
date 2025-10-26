@@ -23,7 +23,6 @@
             </a>
         </li>
 
-        <!-- Hanya tampil untuk superadmin -->
         @auth('admin')
             @if(Auth::guard('admin')->user()->role === 'superadmin')
                 <li class="menu-item">

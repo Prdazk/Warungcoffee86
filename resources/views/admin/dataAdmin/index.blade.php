@@ -264,83 +264,133 @@
     </div>
 </div>
 
-<!-- Modal Sukses -->
-@if(session('success'))
-<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg rounded-4 text-center" style="background: #28a745; color:#fff; transform: scale(0.8); opacity:0; transition: all 0.3s ease;">
-      <div class="modal-body py-4">
-        <h3><i class="bi bi-check-circle-fill"></i> Sukses!</h3>
-        <p>{{ session('success') }}</p>
-      </div>
-    </div>
-  </div>
-</div>
-@endif
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const toggleSpans = document.querySelectorAll('.toggle-password');
-    
-    toggleSpans.forEach(span => {
-        span.addEventListener('click', function() {
-            const input = this.previousElementSibling;
-            if (!input) return;
 
-            if(input.type === "password"){
-                input.type = "text";      // tampilkan password
-                this.textContent = "👀";  // ikon buka mata
+  // =======================
+  // 👁️ Toggle Password View
+  // =======================
+  const toggleSpans = document.querySelectorAll('.toggle-password');
+  toggleSpans.forEach(span => {
+    span.addEventListener('click', function () {
+      const input = this.previousElementSibling;
+      if (!input) return;
 
-                // Kembalikan ke password otomatis setelah 1 detik
-                setTimeout(() => {
-                    input.type = "password";
-                    this.textContent = "🙈";
-                }, 1000);
-            }
-        });
-    });
-
-    // Modal sukses animasi
-    const modalEl = document.getElementById('successModal');
-    if(modalEl){
-        const modalContent = modalEl.querySelector('.modal-content');
-        const bsModal = new bootstrap.Modal(modalEl);
-
-        modalContent.style.transform = 'scale(0.8)';
-        modalContent.style.opacity = '0';
-
-        bsModal.show();
-        requestAnimationFrame(() => {
-            modalContent.style.transform = 'scale(1)';
-            modalContent.style.opacity = '1';
-        });
-
+      if (input.type === "password") {
+        input.type = "text";
+        this.textContent = "👀";
         setTimeout(() => {
-            modalContent.style.transform = 'scale(0.8)';
-            modalContent.style.opacity = '0';
-            setTimeout(() => bsModal.hide(), 300);
-        }, 3000);
-    }
+          input.type = "password";
+          this.textContent = "🙈";
+        }, 1000);
+      }
+    });
+  });
 
-    // Pagination prev & next
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
+  // =======================
+  // ✨ Modal Sukses (Animasi Masuk + Otomatis Hilang)
+  // =======================
+  const modalEl = document.getElementById('successModal');
+  if (modalEl) {
+    const modalContent = modalEl.querySelector('.modal-content');
+    const bsModal = new bootstrap.Modal(modalEl);
 
-    prevBtn?.addEventListener('click', () => {
-        const prevUrl = "{{ $admins->previousPageUrl() }}";
-        if(prevUrl) window.location.href = prevUrl;
+    modalContent.style.transform = 'scale(0.8)';
+    modalContent.style.opacity = '0';
+    bsModal.show();
+
+    requestAnimationFrame(() => {
+      modalContent.style.transform = 'scale(1)';
+      modalContent.style.opacity = '1';
+      modalContent.style.transition = 'all 0.3s ease';
     });
 
-    nextBtn?.addEventListener('click', () => {
-        const nextUrl = "{{ $admins->nextPageUrl() }}";
-        if(nextUrl) window.location.href = nextUrl;
-    });
+    setTimeout(() => {
+      modalContent.style.transform = 'scale(0.8)';
+      modalContent.style.opacity = '0';
+      setTimeout(() => bsModal.hide(), 300);
+    }, 3000);
+  }
 
-    // Tampilkan modal password jika ada error
-    @if($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation'))
-        var passwordModal = new bootstrap.Modal(document.getElementById('passwordAdminModal{{ $admin->id }}'));
-        passwordModal.show();
-    @endif
+  // =======================
+  // 🔄 Pagination (Next & Prev)
+  // =======================
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  prevBtn?.addEventListener('click', () => {
+    const prevUrl = "{{ $admins->previousPageUrl() }}";
+    if (prevUrl) window.location.href = prevUrl;
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    const nextUrl = "{{ $admins->nextPageUrl() }}";
+    if (nextUrl) window.location.href = nextUrl;
+  });
+
+  // =======================
+  // ⚠️ Konfirmasi Hapus Admin
+  // =======================
+  document.querySelectorAll('.btn-hapus').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const form = this.closest('form');
+
+      Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data admin ini akan hilang permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+        }
+      });
+    });
+  });
+
+  // =======================
+  // ✅ Notifikasi Setelah Tambah / Edit / Update
+  // (gunakan session()->has('success') di Blade)
+  // =======================
+  @if(session('success'))
+    Swal.fire({
+      icon: 'success',
+      title: 'Berhasil!',
+      text: "{{ session('success') }}",
+      timer: 1500,
+      showConfirmButton: false
+    });
+  @endif
+
+  @if(session('error'))
+    Swal.fire({
+      icon: 'error',
+      title: 'Gagal!',
+      text: "{{ session('error') }}",
+    });
+  @endif
+
+  // =======================
+  // 🚫 Tampilkan Modal Ganti Password jika Ada Error Validasi
+  // =======================
+  @if($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation'))
+    const errorModal = new bootstrap.Modal(document.getElementById('passwordAdminModal{{ $admin->id }}'));
+    errorModal.show();
+    Swal.fire({
+      icon: 'error',
+      title: 'Kesalahan!',
+      text: 'Periksa kembali input password Anda.',
+    });
+  @endif
+
 });
 </script>
 @endsection

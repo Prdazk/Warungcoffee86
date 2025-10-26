@@ -12,11 +12,18 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->integer('jumlah_orang');
-            $table->string('pilihan_meja');
+
+            // Foreign key ke meja
+            $table->unsignedBigInteger('meja_id');
+            $table->foreign('meja_id')->references('id')->on('mejas')->onDelete('cascade');
+
             $table->date('tanggal');
             $table->time('jam');
             $table->text('catatan')->nullable();
+            $table->enum('status',['baru','Dipesan','selesai','batal'])->default('baru');
             $table->timestamps();
+
+            $table->engine = 'InnoDB';
         });
     }
 

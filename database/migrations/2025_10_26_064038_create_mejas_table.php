@@ -11,8 +11,11 @@ return new class extends Migration
         Schema::create('mejas', function (Blueprint $table) {
             $table->id();
             $table->string('nama_meja')->unique();
-            $table->enum('status_meja', ['Tersedia', 'Terpakai'])->default('Tersedia');
+            $table->integer('kapasitas')->default(4);
+            $table->enum('status_meja', ['Kosong','Dipesan','Terisi'])->default('Kosong');
             $table->timestamps();
+            $table->index('status_meja');
+            $table->engine = 'InnoDB';
         });
     }
 

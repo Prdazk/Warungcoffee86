@@ -10,16 +10,17 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     /**
-     * Tampilkan daftar admin
+     * 🧾 Tampilkan daftar semua admin
      */
     public function index()
     {
-        $admins = AdminData::all();
+        // Gunakan pagination agar tidak berat
+        $admins = AdminData::orderBy('id', 'asc')->paginate(10);
         return view('admin.dataAdmin.index', compact('admins'));
     }
 
     /**
-     * Form tambah admin baru
+     * ➕ Form tambah admin baru
      */
     public function create()
     {
@@ -27,16 +28,16 @@ class AdminController extends Controller
     }
 
     /**
-     * Simpan admin baru
+     * 💾 Simpan admin baru
      */
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string',
+            'nama' => 'required|string|max:100',
             'email' => 'required|email|unique:admins_data,email',
-            'jabatan' => 'required|string',
-            'role' => 'required|string',
-            'password' => 'required|string|confirmed|min:6', // confirmed otomatis cek password_confirmation
+            'jabatan' => 'required|string|max:100',
+            'role' => 'required|string|max:50',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
         AdminData::create([
@@ -44,15 +45,15 @@ class AdminController extends Controller
             'email' => $request->email,
             'jabatan' => $request->jabatan,
             'role' => $request->role,
-            'password' => Hash::make($request->password), // hash password
+            'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('admin.dataAdmin.index')
-                         ->with('success', 'Admin berhasil ditambahkan');
+        // SweetAlert sudah handle di front-end, jadi tidak perlu alert tambahan
+        return redirect()->route('admin.dataAdmin.index');
     }
 
     /**
-     * Form edit admin
+     * ✏️ Form edit admin
      */
     public function edit(AdminData $admin)
     {
@@ -60,36 +61,34 @@ class AdminController extends Controller
     }
 
     /**
-     * Update admin
+     * 🔁 Update data admin
      */
     public function update(Request $request, AdminData $admin)
     {
         $request->validate([
-            'nama' => 'required|string',
+            'nama' => 'required|string|max:100',
             'email' => 'required|email|unique:admins_data,email,' . $admin->id,
-            'jabatan' => 'required|string',
-            'role' => 'required|string',
+            'jabatan' => 'required|string|max:100',
+            'role' => 'required|string|max:50',
         ]);
 
-        $admin->update($request->only('nama', 'email', 'jabatan', 'role'));
+        $admin->update($request->only(['nama', 'email', 'jabatan', 'role']));
 
-        return redirect()->route('admin.dataAdmin.index')
-                         ->with('success', 'Admin berhasil diupdate');
+        return redirect()->route('admin.dataAdmin.index');
     }
 
     /**
-     * Hapus admin
+     * 🗑️ Hapus admin
      */
     public function destroy(AdminData $admin)
     {
         $admin->delete();
 
-        return redirect()->route('admin.dataAdmin.index')
-                         ->with('success', 'Admin berhasil dihapus');
+        return redirect()->route('admin.dataAdmin.index');
     }
 
     /**
-     * Update password admin
+     * 🔐 Update password admin
      */
     public function updatePassword(Request $request, AdminData $admin)
     {
@@ -101,7 +100,6 @@ class AdminController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('admin.dataAdmin.index')
-                         ->with('success', 'Password admin berhasil diperbarui');
+        return redirect()->route('admin.dataAdmin.index');
     }
 }

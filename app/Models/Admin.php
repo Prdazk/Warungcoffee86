@@ -10,14 +10,10 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Guard yang digunakan untuk autentikasi admin.
-     */
+    protected $table = 'admin_data'; // ⬅️ ubah ini!
+
     protected $guard = 'admin';
 
-    /**
-     * Kolom yang dapat diisi mass-assignment.
-     */
     protected $fillable = [
         'nama',
         'email',
@@ -26,17 +22,11 @@ class Admin extends Authenticatable
         'role',
     ];
 
-    /**
-     * Kolom yang tidak akan ditampilkan saat model dikonversi ke array/json.
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Enkripsi otomatis password saat disimpan.
-     */
     public function setPasswordAttribute($value)
     {
         if ($value) {

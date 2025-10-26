@@ -20,11 +20,13 @@ class AppServiceProvider extends ServiceProvider
         Route::aliasMiddleware('checkRole', \App\Http\Middleware\CheckRole::class);
         Route::aliasMiddleware('admin.auth', \App\Http\Middleware\AdminAuthMiddleware::class);
 
-        // View composer untuk semua view admin.*
-        View::composer('admin.*', function ($view) {
-            $reservasiBaru = Reservasi::where('status', 'baru')->latest()->get();
+            View::composer('admin.*', function ($view) {
+            // Ambil semua reservasi yang status-nya Dipesan (artinya baru masuk)
+            $reservasiBaru = Reservasi::where('status', 'Dipesan')->latest()->get();
             $jumlahBaru = $reservasiBaru->count();
+
             $view->with(compact('reservasiBaru', 'jumlahBaru'));
         });
+
     }
 }
