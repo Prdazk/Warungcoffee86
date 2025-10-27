@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('tanggal');
             $table->time('jam');
             $table->text('catatan')->nullable();
-            $table->enum('status',['baru','Dipesan','selesai','batal'])->default('baru');
+            $table->enum('status', ['baru','Dipesan','selesai','Dibatalkan'])->default('baru')->change();
             $table->timestamps();
 
             $table->engine = 'InnoDB';

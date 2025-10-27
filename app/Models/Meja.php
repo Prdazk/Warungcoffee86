@@ -13,10 +13,12 @@ class Meja extends Model
 
     protected $fillable = [
         'nama_meja',
-        'kapasitas',
-        'status_meja', // disamakan dengan Blade
+        'status_meja', // misal: 'kosong' atau 'terisi'
     ];
 
+    /**
+     * Relasi 1 meja ke banyak reservasi
+     */
     public function reservasis()
     {
         return $this->hasMany(Reservasi::class, 'meja_id');

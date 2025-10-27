@@ -16,6 +16,7 @@ class AdminData extends Authenticatable
         'email',
         'jabatan',
         'role',
+        'no_hp',
         'password',
     ];
 

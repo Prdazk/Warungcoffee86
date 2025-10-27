@@ -1,4 +1,4 @@
-<!-- ===== Modal Lihat Reservasi (Final) ===== -->
+<!-- ===== Modal Lihat Reservasi ===== -->
 <div id="modalLihatReservasi" 
      style="display:none;
             position:fixed;
@@ -44,7 +44,7 @@
 
     <!-- Isi Detail -->
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-      
+
       <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
         <strong>Nama</strong>
         <p id="detail-nama" style="margin:5px 0 0 0;"></p>
@@ -56,15 +56,14 @@
       </div>
 
       <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
-        <strong>Meja</strong>
-        <p id="detail-meja" style="margin:5px 0 0 0;"></p>
-      </div>
-
-      <!-- Status -->
-      <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
-        <strong>Status</strong>
-        <p id="detail-status" 
-           style="margin:5px 0 0 0; font-weight:bold; padding:4px 8px; border-radius:6px; display:inline-block;">
+        <strong>Status Meja</strong>
+        <p id="detail-meja" 
+           style="margin:5px 0 0 0; 
+                  font-weight:bold; 
+                  padding:4px 8px; 
+                  border-radius:6px; 
+                  display:inline-block; 
+                  color:#FFF;">
         </p>
       </div>
 
@@ -87,88 +86,71 @@
   </div>
 </div>
 
-<!-- ===== Animasi Buka / Tutup ===== -->
+<!-- ===== Style Animasi ===== -->
 <style>
-  #modalLihatReservasi.show {
-    display:flex !important;
-    opacity:1;
-  }
-
-  #modalContent.show {
-    transform:scale(1);
-    opacity:1;
-  }
+#modalLihatReservasi.show { display:flex !important; opacity:1; }
+#modalContent.show { transform:scale(1); opacity:1; }
 </style>
 
 <!-- ===== Script Modal ===== -->
 <script>
-  const modal = document.getElementById('modalLihatReservasi');
-  const modalContent = document.getElementById('modalContent');
-  const closeModalBtn = document.getElementById('closeModalBtn');
+const modal = document.getElementById('modalLihatReservasi');
+const modalContent = document.getElementById('modalContent');
+const closeModalBtn = document.getElementById('closeModalBtn');
 
-  // Buka modal dan isi data
-  function openModalLihatReservasi(data) {
+function openModalLihatReservasi(data) {
+    // Nama & Jumlah
     document.getElementById('detail-nama').textContent = data.nama || '-';
     document.getElementById('detail-jumlah').textContent = data.jumlah || '-';
-    document.getElementById('detail-meja').textContent = data.meja || '-';
+
+    // Status meja otomatis: hanya Dipesan / Batal
+    const mejaEl = document.getElementById('detail-meja');
+    const status = (data.status || 'Dipesan').toLowerCase();
+    if(status === 'batal'){
+        mejaEl.textContent = 'Batal';
+        mejaEl.style.background = '#e53935';
+    } else {
+        mejaEl.textContent = 'Dipesan';
+        mejaEl.style.background = '#FF9800';
+    }
+    mejaEl.style.color = '#FFF';
+
+    // Tanggal, Jam, Catatan
     document.getElementById('detail-tanggal').textContent = data.tanggal || '-';
     document.getElementById('detail-jam').textContent = data.jam || '-';
     document.getElementById('detail-catatan').textContent = data.catatan || '-';
 
-    // Status
-    const statusEl = document.getElementById('detail-status');
-    const status = data.status ? data.status : 'Dipesan'; // Default "Dipesan"
-    statusEl.textContent = status;
-
-    // Warna status
-    if (status === 'Dipesan') {
-      statusEl.style.background = '#FF9800';
-    } else if (status === 'Dibatalkan') {
-      statusEl.style.background = '#e53935';
-    } else if (status === 'Terisi') {
-      statusEl.style.background = '#4CAF50';
-    } else { // fallback
-      statusEl.style.background = '#757575';
-    }
-
     // Tampilkan modal
     modal.style.display = 'flex';
-    requestAnimationFrame(() => {
-      modal.classList.add('show');
-      modalContent.classList.add('show');
+    requestAnimationFrame(()=>{ 
+        modal.classList.add('show'); 
+        modalContent.classList.add('show'); 
     });
-  }
+}
 
-  // Tutup modal
-  function closeModal() {
+function closeModal() {
     modal.classList.remove('show');
     modalContent.classList.remove('show');
     modal.style.opacity = '0';
-    setTimeout(() => {
-      modal.style.display = 'none';
-      modal.style.opacity = '1';
-    }, 250);
-  }
+    setTimeout(()=>{ modal.style.display='none'; modal.style.opacity='1'; }, 250);
+}
 
-  closeModalBtn.addEventListener('click', closeModal);
+// Event tombol
+closeModalBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if(e.target===modal) closeModal(); });
 
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
-
-  // Tombol lihat di tabel (tidak perlu ubah HTML tombol)
-  document.querySelectorAll('.btn-lihat').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const data = {
-        nama: btn.getAttribute('data-nama'),
-        jumlah: btn.getAttribute('data-jumlah'),
-        meja: btn.getAttribute('data-meja'),
-        status: btn.getAttribute('data-status') || 'Dipesan', // default jika tidak ada
-        tanggal: btn.getAttribute('data-tanggal'),
-        jam: btn.getAttribute('data-jam'),
-        catatan: btn.getAttribute('data-catatan'),
-      };
-      openModalLihatReservasi(data);
+// Tombol lihat di tabel
+document.querySelectorAll('.btn-lihat').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+        const data = {
+            nama: btn.getAttribute('data-nama'),
+            jumlah: btn.getAttribute('data-jumlah'),
+            status: btn.getAttribute('data-status') || 'Dipesan',
+            tanggal: btn.getAttribute('data-tanggal'),
+            jam: btn.getAttribute('data-jam'),
+            catatan: btn.getAttribute('data-catatan')
+        };
+        openModalLihatReservasi(data);
     });
-  });
+});
 </script>

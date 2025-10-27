@@ -2,8 +2,6 @@
 <html lang="id">
 <head>
     @include('admin.layout.head')
-
-    <!-- ===== Bootstrap 5 CSS ===== -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -12,18 +10,15 @@
 
                 <div style="position: fixed; top: 10px; right: 20px; z-index: 1000;">
                 <div class="user-menu" id="userMenu">
-                    <!-- Nama admin dinamis -->
                     <span class="user-name">
                         {{ Auth::guard('admin')->check() ? Auth::guard('admin')->user()->nama : '' }}
                     </span>
 
-                    <!-- Avatar -->
                     <img src="{{ asset('images/avatar.png') }}" alt="User Avatar" class="user-avatar">
 
                   <div class="user-dropdown">
                     <button type="button" class="notification-btn" 
                             onclick="window.location.href='{{ route('admin.reservasi.index') }}'">
-                        <!-- wrap ikon agar badge bisa absolute terhadap ikon -->
                         <span class="notification-icon">
                             🔔
                             @if(!empty($jumlahBaru) && $jumlahBaru > 0)
@@ -46,17 +41,14 @@
                 </div>
             </div>
 
-    <!-- ===== KONTEN HALAMAN ===== -->
     <div class="content">
         @yield('content')
     </div>
 
     @include('admin.layout.footer')
 
-    <!-- ===== Bootstrap 5 JS ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- ===== Stack Scripts dari Child Views ===== -->
     @stack('scripts')
 </body>
 </html>

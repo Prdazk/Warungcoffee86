@@ -1,3 +1,4 @@
+// File: public/js/tambahMejaAlert.js
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('formTambahMeja');
   if (!form) return;
@@ -6,14 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault(); // cegah submit langsung
 
     const nama = form.querySelector('input[name="nama_meja"]').value.trim();
-    const kapasitas = form.querySelector('input[name="kapasitas"]').value.trim();
 
     // Validasi manual
-    if (!nama || !kapasitas) {
+    if (!nama) {
       Swal.fire({
         icon: 'warning',
         title: 'Oops...',
-        text: 'Semua kolom wajib diisi ya 💬',
+        text: 'Nama meja wajib diisi 💬',
         background: 'rgba(255,255,255,0.95)',
         backdrop: 'rgba(0,0,0,0.4) blur(4px)',
         confirmButtonColor: '#6F4E37',
@@ -42,14 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
           background: 'rgba(255,255,255,0.95)',
           backdrop: 'rgba(0,0,0,0.5) blur(6px)',
           showConfirmButton: false,
-          timer: 1800,
+          timer: 1500,
           timerProgressBar: true,
         });
 
         // Delay biar alert tampil dulu baru submit
         setTimeout(() => {
           form.submit();
-        }, 1800);
+        }, 1500);
       }
     });
   });

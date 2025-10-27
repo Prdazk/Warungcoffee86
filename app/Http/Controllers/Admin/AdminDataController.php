@@ -10,11 +10,10 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     /**
-     * 🧾 Tampilkan daftar semua admin
+     * 🧾 Tampilkan daftar semua admin dengan pagination
      */
     public function index()
     {
-        // Gunakan pagination agar tidak berat
         $admins = AdminData::orderBy('id', 'asc')->paginate(10);
         return view('admin.dataAdmin.index', compact('admins'));
     }
@@ -33,23 +32,24 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'email' => 'required|email|unique:admins_data,email',
-            'jabatan' => 'required|string|max:100',
-            'role' => 'required|string|max:50',
-            'password' => 'required|string|min:6|confirmed',
+            'nama'      => 'required|string|max:100',
+            'email'     => 'required|email|unique:admins_data,email',
+            'jabatan'   => 'required|string|max:100',
+            'no_hp'     => 'nullable|string|max:20',
+            'role'      => 'required|string|max:50',
+            'password'  => 'required|string|min:6|confirmed',
         ]);
 
         AdminData::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'jabatan' => $request->jabatan,
-            'role' => $request->role,
-            'password' => Hash::make($request->password),
+            'nama'      => $request->nama,
+            'email'     => $request->email,
+            'jabatan'   => $request->jabatan,
+            'no_hp'     => $request->no_hp,
+            'role'      => $request->role,
+            'password'  => Hash::make($request->password),
         ]);
 
-        // SweetAlert sudah handle di front-end, jadi tidak perlu alert tambahan
-        return redirect()->route('admin.dataAdmin.index');
+        return redirect()->route('admin.dataAdmin.index')->with('success', 'Admin berhasil ditambahkan.');
     }
 
     /**
@@ -66,15 +66,22 @@ class AdminController extends Controller
     public function update(Request $request, AdminData $admin)
     {
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'email' => 'required|email|unique:admins_data,email,' . $admin->id,
-            'jabatan' => 'required|string|max:100',
-            'role' => 'required|string|max:50',
+            'nama'      => 'required|string|max:100',
+            'email'     => 'required|email|unique:admins_data,email,' . $admin->id,
+            'jabatan'   => 'required|string|max:100',
+            'no_hp'     => 'nullable|string|max:20',
+            'role'      => 'required|string|max:50',
         ]);
 
-        $admin->update($request->only(['nama', 'email', 'jabatan', 'role']));
+        $admin->update([
+            'nama'    => $request->nama,
+            'email'   => $request->email,
+            'jabatan' => $request->jabatan,
+            'no_hp'   => $request->no_hp,
+            'role'    => $request->role,
+        ]);
 
-        return redirect()->route('admin.dataAdmin.index');
+        return redirect()->route('admin.dataAdmin.index')->with('success', 'Data admin berhasil diperbarui.');
     }
 
     /**
@@ -83,23 +90,38 @@ class AdminController extends Controller
     public function destroy(AdminData $admin)
     {
         $admin->delete();
+        return redirect()->route('admin.dataAdmin.index')->with('success', 'Data admin berhasil dihapus.');
+    }
 
-        return redirect()->route('admin.dataAdmin.index');
+    /**
+     * 🔐 Form edit password (opsional, bisa digunakan jika ingin modal khusus)
+     */
+    public function editPassword(AdminData $admin)
+    {
+        return view('admin.dataAdmin.password', compact('admin'));
     }
 
     /**
      * 🔐 Update password admin
+     * ✅ Mengecek password lama sebelum update
      */
     public function updatePassword(Request $request, AdminData $admin)
     {
         $request->validate([
-            'password' => 'required|string|confirmed|min:6',
+            'current_password' => 'required|string',
+            'password'         => 'required|string|confirmed|min:6',
         ]);
 
+        // Cek password lama
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return back()->withErrors(['current_password' => 'Password lama salah!'])->withInput();
+        }
+
+        // Update password baru
         $admin->update([
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('admin.dataAdmin.index');
+        return redirect()->route('admin.dataAdmin.index')->with('success', 'Password admin berhasil diperbarui.');
     }
 }

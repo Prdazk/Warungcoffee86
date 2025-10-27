@@ -23,15 +23,15 @@ class Reservasi extends Model
 
     protected $casts = [
         'tanggal' => 'date',
-        'jam' => 'string', // ← Ubah dari datetime ke string, agar tidak error saat input jam manual
+        'jam' => 'string', // Supaya jam bisa diinput manual
     ];
 
     protected $attributes = [
-        'status' => 'Pending', // Default status saat baru dibuat
+        'status' => 'Dipesan', // Default reservasi baru
     ];
 
     /**
-     * Relasi ke model Meja (satu reservasi punya satu meja)
+     * Relasi ke model Meja
      */
     public function meja()
     {
@@ -39,7 +39,7 @@ class Reservasi extends Model
     }
 
     /**
-     * Scope untuk mengambil reservasi aktif (hari ini & status Dipesan)
+     * Scope untuk reservasi aktif (hari ini & status Dipesan)
      */
     public function scopeAktif($query)
     {

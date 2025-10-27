@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class MejaController extends Controller
 {
+    /**
+     * Tampilkan halaman tambah meja dan status meja
+     */
     public function index()
     {
         // Ambil semua meja
@@ -32,19 +35,29 @@ class MejaController extends Controller
         return view('admin.reservasi.tambah-meja', compact('mejas'));
     }
 
+    /**
+     * Simpan meja baru
+     */
     public function store(Request $request)
     {
         $request->validate([
             'nama_meja' => 'required|string|max:100|unique:mejas,nama_meja',
         ]);
 
-        // Tambah meja baru
         Meja::create([
             'nama_meja' => ucfirst($request->nama_meja),
-            'kapasitas' => 4, // Default kapasitas
-            'status_meja' => 'Kosong',
+            'status_meja' => 'Kosong', // default status
         ]);
 
         return back()->with('success', 'Meja baru berhasil ditambahkan!');
+    }
+
+    /**
+     * Hapus meja
+     */
+    public function destroy(Meja $meja)
+    {
+        $meja->delete();
+        return back()->with('success', 'Meja berhasil dihapus!');
     }
 }
