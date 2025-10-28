@@ -3,7 +3,7 @@
 @section('title', 'Data Admin')
 
 @section('content')
-<div class="content-section container py-2">
+<div class="container py-2">
 
     <!-- Tombol Tambah Admin -->
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahAdminModal">
@@ -12,91 +12,123 @@
 
     <!-- Tabel Data Admin -->
     <div class="table-responsive">
-        <table class="table table-striped table-bordered align-middle">
-            <thead class="table-dark text-center">
+        <table class="table table-striped table-bordered align-middle text-center">
+            <thead class="table-dark">
                 <tr>
                     <th>No</th>
                     <th>Nama</th>
                     <th>Email</th>
                     <th>Jabatan</th>
-                    <th>No HP</th> <!-- Ditambahkan -->
+                    <th>No HP</th>
+                    <th>Status</th> <!-- sebelumnya Role -->
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($admins as $index => $admin)
-                <tr class="text-center">
+                <tr>
                     <td>{{ $admins->firstItem() + $index }}</td>
                     <td>{{ $admin->nama }}</td>
                     <td>{{ $admin->email }}</td>
                     <td>{{ $admin->jabatan }}</td>
                     <td>{{ $admin->no_hp ?? '-' }}</td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editAdminModal{{ $admin->id }}">✏️</button>
-                        <button type="button" class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteAdminModal{{ $admin->id }}">🗑️</button>
-                        <button type="button" class="btn btn-sm btn-secondary ms-1" data-bs-toggle="modal" data-bs-target="#passwordAdminModal{{ $admin->id }}">🔒</button>
+                        @if($admin->role == 'superadmin')
+                            <span class="badge bg-success">Superadmin</span>
+                        @else
+                            <span class="badge bg-primary">Admin</span>
+                        @endif
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-sm me-1" data-bs-toggle="modal" data-bs-target="#editAdminModal{{ $admin->id }}">✏️</button>
+                        <button class="btn btn-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#deleteAdminModal{{ $admin->id }}">🗑️</button>
+                        <button class="btn btn-secondary btn-sm ms-1" data-bs-toggle="modal" data-bs-target="#passwordAdminModal{{ $admin->id }}">🔒</button>
                     </td>
                 </tr>
+                
+                                <!-- Modal Edit Admin -->
+            <div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
+                        
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Edit Admin</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
 
-                
-                
-                <!-- Modal Edit Admin -->
-<div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
-            <div class="modal-header border-0">
-                <h5 class="modal-title">Edit Admin</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="{{ route('admin.dataAdmin.update', $admin->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    @if($errors->any())
-                        <div class="alert alert-danger bg-danger-subtle text-danger border-0">
-                            <ul class="mb-0">
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Nama</label>
-                            <input type="text" name="nama" class="form-control shadow-sm" value="{{ old('nama', $admin->nama) }}" required style="background-color:#815b3b; color:#FFF; border:none;">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control shadow-sm" value="{{ old('email', $admin->email) }}" required style="background-color:#815b3b; color:#FFF; border:none;">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Jabatan</label>
-                            <input type="text" name="jabatan" class="form-control shadow-sm" value="{{ old('jabatan', $admin->jabatan) }}" required style="background-color:#815b3b; color:#FFF; border:none;">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">No HP</label>
-                            <input type="text" name="no_hp" class="form-control shadow-sm" value="{{ old('no_hp', $admin->no_hp) }}" style="background-color:#815b3b; color:#FFF; border:none;">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Role</label>
-                            <select name="role" class="form-select shadow-sm" required style="background-color:#815b3b; color:#FFF; border:none;">
-                                <option value="">-- Pilih Role --</option>
-                                <option value="admin" {{ old('role', $admin->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="superadmin" {{ old('role', $admin->role) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
-                            </select>
-                        </div>
+                        <form action="{{ route('admin.dataAdmin.update', $admin->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="modal-body">
+                                @if($errors->any())
+                                    <div class="alert alert-danger bg-danger-subtle text-danger border-0">
+                                        <ul class="mb-0">
+                                            @foreach($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
+                                <div class="row g-3">
+                                    <!-- Nama -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nama</label>
+                                        <input type="text" name="nama" class="form-control shadow-sm" 
+                                            value="{{ old('nama', $admin->nama) }}" required
+                                            style="background-color:#815b3b; color:#FFF; border:none;">
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control shadow-sm" 
+                                            value="{{ old('email', $admin->email) }}" required
+                                            style="background-color:#815b3b; color:#FFF; border:none;">
+                                    </div>
+
+                                <!-- Jabatan (dropdown Admin / Superadmin) -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Jabatan</label>
+                                        <select name="jabatan" class="form-select shadow-sm" required
+                                            style="background-color:#815b3b; color:#FFF; border:none;">
+                                            <option value="">-- Pilih Jabatan --</option>
+                                            <option value="admin" {{ old('jabatan', $admin->jabatan) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                            <option value="superadmin" {{ old('jabatan', $admin->jabatan) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
+                                        </select>
+                                    </div>
+
+
+                                    <!-- No HP -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">No HP</label>
+                                        <input type="text" name="no_hp" class="form-control shadow-sm"
+                                            value="{{ old('no_hp', $admin->no_hp) }}"
+                                            style="background-color:#815b3b; color:#FFF; border:none;">
+                                    </div>
+
+                                    <!-- Status (Admin / Superadmin) -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Status</label>
+                                        <select name="role" class="form-select shadow-sm" required
+                                            style="background-color:#815b3b; color:#FFF; border:none;">
+                                            <option value="admin" {{ old('role', $admin->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                            <option value="superadmin" {{ old('role', $admin->role) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
+            </div>
                     
                  <!-- Modal Hapus Admin -->
                     <div class="modal fade" id="deleteAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
@@ -217,6 +249,7 @@
                 <h5 class="modal-title">Tambah Admin Baru</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
+
             <form action="{{ route('admin.dataAdmin.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
@@ -229,27 +262,41 @@
                             </ul>
                         </div>
                     @endif
+
                     <div class="row g-2">
+                        <!-- Nama -->
                         <div class="col-md-6">
                             <label class="form-label">Nama</label>
-                            <input type="text" name="nama" class="form-control shadow-sm" value="{{ old('nama') }}" required style="background-color:#815b3b; color:#FFF; border:none;">
+                            <input type="text" name="nama" class="form-control shadow-sm" value="{{ old('nama') }}" required 
+                                style="background-color:#815b3b; color:#FFF; border:none;">
                         </div>
+
+                        <!-- Email -->
                         <div class="col-md-6">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control shadow-sm" value="{{ old('email') }}" required style="background-color:#815b3b; color:#FFF; border:none;">
+                            <input type="email" name="email" class="form-control shadow-sm" value="{{ old('email') }}" required 
+                                style="background-color:#815b3b; color:#FFF; border:none;">
                         </div>
+
+                        <!-- Jabatan -->
                         <div class="col-md-6">
                             <label class="form-label">Jabatan</label>
-                            <input type="text" name="jabatan" class="form-control shadow-sm" value="{{ old('jabatan') }}" required style="background-color:#815b3b; color:#FFF; border:none;">
+                            <input type="text" name="jabatan" class="form-control shadow-sm" value="{{ old('jabatan') }}" required
+                                style="background-color:#815b3b; color:#FFF; border:none;">
                         </div>
+
+                        <!-- No HP -->
                         <div class="col-md-6">
                             <label class="form-label">No HP</label>
-                            <input type="text" name="no_hp" class="form-control shadow-sm" value="{{ old('no_hp') }}" style="background-color:#815b3b; color:#FFF; border:none;">
+                            <input type="text" name="no_hp" class="form-control shadow-sm" value="{{ old('no_hp') }}" 
+                                style="background-color:#815b3b; color:#FFF; border:none;">
                         </div>
+
+                        <!-- Status -->
                         <div class="col-md-6">
-                            <label class="form-label">Role</label>
+                            <label class="form-label">Status</label>
                             <select name="role" class="form-select shadow-sm" required style="background-color:#815b3b; color:#FFF; border:none;">
-                                <option value="">-- Pilih Role --</option>
+                                <option value="">-- Pilih Status --</option>
                                 <option value="admin" {{ old('role')=='admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="superadmin" {{ old('role')=='superadmin' ? 'selected' : '' }}>Superadmin</option>
                             </select>
@@ -258,22 +305,21 @@
                         <!-- Password -->
                         <div class="col-md-6" style="position: relative; margin-bottom:12px;">
                             <label class="form-label">Password</label>
-                            <input type="password" id="password" name="password" class="form-control shadow-sm password-input" required 
+                            <input type="password" name="password" class="form-control shadow-sm password-input" required
                                 style="background-color:#815b3b; color:#FFF; border:none; padding-right:2.5rem;">
-                            <span class="toggle-password" 
-                                style="position:absolute; top:53%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
+                            <span class="toggle-password" style="position:absolute; top:53%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                         </div>
 
                         <!-- Konfirmasi Password -->
                         <div class="col-md-6" style="position: relative; margin-bottom:12px;">
                             <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control shadow-sm password-input" required 
+                            <input type="password" name="password_confirmation" class="form-control shadow-sm password-input" required
                                 style="background-color:#815b3b; color:#FFF; border:none; padding-right:2.5rem;">
-                            <span class="toggle-password" 
-                                style="position:absolute; top:53%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
+                            <span class="toggle-password" style="position:absolute; top:53%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                         </div>
                     </div>
                 </div>
+
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>

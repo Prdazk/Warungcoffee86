@@ -18,7 +18,10 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $admins = AdminData::orderBy('id', 'asc')->paginate(5);
+        $admins = AdminData::orderByRaw("CASE WHEN role = 'superadmin' THEN 0 ELSE 1 END")
+                       ->orderBy('id', 'asc')
+                       ->paginate(5);
+
         return view('admin.dataAdmin.index', compact('admins'));
     }
 

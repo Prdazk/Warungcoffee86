@@ -11,10 +11,23 @@ class ReservasiController extends Controller
 {
     /**
      * 🧾 Tampilkan daftar reservasi & status meja
+     * Bisa difilter berdasarkan nama via GET parameter "search"
      */
-    public function index()
+    public function index(Request $request)
     {
-        $reservasis = Reservasi::with('meja')->latest()->get();
+        $search = $request->input('search');
+
+        // Query reservasi, otomatis eager load meja
+        $reservasis = Reservasi::with('meja')->latest();
+
+        // Jika ada input pencarian, filter berdasarkan nama
+        if ($search) {
+            $reservasis->where('nama', 'like', "%{$search}%");
+        }
+
+        $reservasis = $reservasis->get();
+
+        // Ambil semua meja
         $mejas = Meja::orderBy('id', 'asc')->get();
 
         // Update status meja otomatis berdasarkan reservasi hari ini
@@ -30,7 +43,7 @@ class ReservasiController extends Controller
             ]);
         }
 
-        return view('admin.reservasi.index', compact('reservasis', 'mejas'));
+        return view('admin.reservasi.index', compact('reservasis', 'mejas', 'search'));
     }
 
     /**
@@ -92,13 +105,12 @@ class ReservasiController extends Controller
     }
 
     /**
-     * 🔧 Update reservasi (AJAX) - sukses semua
+     * 🔧 Update reservasi (AJAX)
      */
     public function update(Request $request, $id)
     {
         $reservasi = Reservasi::findOrFail($id);
 
-        // Validasi input
         $request->validate([
             'nama' => 'required|string|max:255',
             'jumlah_orang' => 'required|integer|min:1|max:10',
@@ -137,11 +149,42 @@ class ReservasiController extends Controller
             'status' => $request->status,
         ]);
 
-        // Response sukses
         return response()->json([
             'status' => 'success',
             'message' => 'Reservasi berhasil diperbarui.',
             'data' => $reservasi->load('meja')
         ]);
+    }
+
+    /**
+     * ➕ Tambah reservasi baru
+     */
+    public function storeReservasi(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'jumlah_orang' => 'required|integer|min:1|max:10',
+            'meja_id' => 'required|exists:mejas,id',
+            'tanggal' => 'required|date|after_or_equal:' . now()->format('Y-m-d'),
+            'jam' => 'required',
+            'catatan' => 'nullable|string|max:500',
+            'status' => 'required|in:baru,Dipesan,selesai,batal',
+        ]);
+
+        // Update status meja
+        Meja::where('id', $request->meja_id)
+            ->update(['status_meja' => $request->status === 'Dipesan' ? 'Dipesan' : 'Kosong']);
+
+        $reservasi = Reservasi::create([
+            'nama' => $request->nama,
+            'jumlah_orang' => $request->jumlah_orang,
+            'meja_id' => $request->meja_id,
+            'tanggal' => $request->tanggal,
+            'jam' => $request->jam,
+            'catatan' => $request->catatan,
+            'status' => $request->status,
+        ]);
+
+        return back()->with('success', 'Reservasi berhasil ditambahkan.');
     }
 }

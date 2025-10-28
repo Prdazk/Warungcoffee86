@@ -44,21 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
       refreshPagination();
     }
   });
-
-  // ===== Search =====
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
-    searchInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      rows.forEach(row => {
-        const nama = row.cells[1]?.textContent.toLowerCase() || '';
-        row.style.display = nama.includes(filter) ? '' : 'none';
-      });
-      currentPage = 1;
-      refreshPagination();
-    });
-  }
-
   // ===== Modal Edit Reservasi =====
   document.querySelectorAll('.btn-edit').forEach(btn => {
     btn.addEventListener('click', () => {

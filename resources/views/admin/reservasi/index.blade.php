@@ -6,14 +6,13 @@
   <div id="pesanSukses" data-message="{{ session('success') }}"></div>
 @endif
 
-<!-- Tombol Tambah & Pencarian -->
-<div class="action-bar" style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+<!-- Tombol Tambah -->
+<div class="action-bar" style="margin-bottom:20px; display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:10px;">
   <button type="button" class="btn-tambah" data-bs-toggle="modal" data-bs-target="#tambahMejaModal">
     <i class="fas fa-plus"></i> Tambah Meja
   </button>
-
-  <input type="text" id="searchInput" placeholder="🔍 Cari nama reservasi..." class="search-input">
 </div>
+
 
 <!-- Tabel Reservasi -->
 <div class="table-wrapper">
