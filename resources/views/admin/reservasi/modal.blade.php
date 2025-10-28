@@ -10,7 +10,7 @@
             z-index:9999;
             opacity:0;
             transition:opacity 0.25s ease;">
-  
+
   <div id="modalContent"
        style="background:#4B3621;
               color:#FFF;
@@ -21,12 +21,14 @@
               box-shadow:0 10px 30px rgba(0,0,0,0.4);
               transform:scale(0.85);
               opacity:0;
-              transition:all 0.3s ease;">
+              transition:all 0.3s ease; position:relative;">
     
     <!-- Tombol Tutup -->
     <button id="closeModalBtn" 
-            style="float:right;
-                   background:#f44336;
+            style="position:absolute;
+                   top:15px;
+                   right:15px;
+                   background:#D32F2F;
                    color:#fff;
                    border:none;
                    padding:6px 12px;
@@ -38,48 +40,46 @@
     </button>
 
     <!-- Judul -->
-    <h2 style="margin-top:10px; margin-bottom:25px; text-align:center; font-size:22px; font-weight:600;">
+    <h2 class="text-center fw-semibold mb-4" style="font-size:22px;">
       <i class="fas fa-info-circle me-2"></i> Detail Reservasi
     </h2>
 
     <!-- Isi Detail -->
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      @php
+        $detailStyle = 'background:#815b3b; border-radius:8px; padding:12px 15px;';
+        $labelStyle = 'margin:0; font-weight:500;';
+        $valueStyle = 'margin:5px 0 0 0;';
+      @endphp
 
-      <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
-        <strong>Nama</strong>
-        <p id="detail-nama" style="margin:5px 0 0 0;"></p>
+      <div style="{{ $detailStyle }}">
+        <strong style="{{ $labelStyle }}">Nama</strong>
+        <p id="detail-nama" style="{{ $valueStyle }}">-</p>
       </div>
 
-      <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
-        <strong>Jumlah Orang</strong>
-        <p id="detail-jumlah" style="margin:5px 0 0 0;"></p>
+      <div style="{{ $detailStyle }}">
+        <strong style="{{ $labelStyle }}">Jumlah Orang</strong>
+        <p id="detail-jumlah" style="{{ $valueStyle }}">-</p>
       </div>
 
-      <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
-        <strong>Status Meja</strong>
-        <p id="detail-meja" 
-           style="margin:5px 0 0 0; 
-                  font-weight:bold; 
-                  padding:4px 8px; 
-                  border-radius:6px; 
-                  display:inline-block; 
-                  color:#FFF;">
-        </p>
+      <div style="{{ $detailStyle }}">
+        <strong style="{{ $labelStyle }}">Status Meja</strong>
+        <p id="detail-meja" style="margin:5px 0 0 0; font-weight:bold; padding:4px 8px; border-radius:6px; display:inline-block; color:#FFF;">-</p>
       </div>
 
-      <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
-        <strong>Tanggal</strong>
-        <p id="detail-tanggal" style="margin:5px 0 0 0;"></p>
+      <div style="{{ $detailStyle }}">
+        <strong style="{{ $labelStyle }}">Tanggal</strong>
+        <p id="detail-tanggal" style="{{ $valueStyle }}">-</p>
       </div>
 
-      <div style="background:#815b3b; border-radius:8px; padding:12px 15px;">
-        <strong>Jam</strong>
-        <p id="detail-jam" style="margin:5px 0 0 0;"></p>
+      <div style="{{ $detailStyle }}">
+        <strong style="{{ $labelStyle }}">Jam</strong>
+        <p id="detail-jam" style="{{ $valueStyle }}">-</p>
       </div>
 
-      <div style="grid-column: span 2; background:#815b3b; border-radius:8px; padding:12px 15px;">
-        <strong>Catatan</strong>
-        <p id="detail-catatan" style="margin:5px 0 0 0; white-space:pre-line;"></p>
+      <div style="{{ $detailStyle }} grid-column: span 2;">
+        <strong style="{{ $labelStyle }}">Catatan</strong>
+        <p id="detail-catatan" style="margin:5px 0 0 0; white-space:pre-line;">-</p>
       </div>
     </div>
 
@@ -99,11 +99,9 @@ const modalContent = document.getElementById('modalContent');
 const closeModalBtn = document.getElementById('closeModalBtn');
 
 function openModalLihatReservasi(data) {
-    // Nama & Jumlah
     document.getElementById('detail-nama').textContent = data.nama || '-';
     document.getElementById('detail-jumlah').textContent = data.jumlah || '-';
 
-    // Status meja otomatis: hanya Dipesan / Batal
     const mejaEl = document.getElementById('detail-meja');
     const status = (data.status || 'Dipesan').toLowerCase();
     if(status === 'batal'){
@@ -115,12 +113,10 @@ function openModalLihatReservasi(data) {
     }
     mejaEl.style.color = '#FFF';
 
-    // Tanggal, Jam, Catatan
     document.getElementById('detail-tanggal').textContent = data.tanggal || '-';
     document.getElementById('detail-jam').textContent = data.jam || '-';
     document.getElementById('detail-catatan').textContent = data.catatan || '-';
 
-    // Tampilkan modal
     modal.style.display = 'flex';
     requestAnimationFrame(()=>{ 
         modal.classList.add('show'); 
@@ -135,11 +131,9 @@ function closeModal() {
     setTimeout(()=>{ modal.style.display='none'; modal.style.opacity='1'; }, 250);
 }
 
-// Event tombol
 closeModalBtn.addEventListener('click', closeModal);
 modal.addEventListener('click', e => { if(e.target===modal) closeModal(); });
 
-// Tombol lihat di tabel
 document.querySelectorAll('.btn-lihat').forEach(btn=>{
     btn.addEventListener('click', ()=>{
         const data = {

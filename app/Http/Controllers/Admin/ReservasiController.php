@@ -13,22 +13,29 @@ class ReservasiController extends Controller
      * 🧾 Tampilkan daftar reservasi & status meja
      * Bisa difilter berdasarkan nama via GET parameter "search"
      */
-    public function index(Request $request)
+        public function index(Request $request)
     {
         $search = $request->input('search');
 
-        // Query reservasi, otomatis eager load meja
-        $reservasis = Reservasi::with('meja')->latest();
+        // Ambil semua meja
+        $mejas = Meja::orderBy('id')->get();
 
-        // Jika ada input pencarian, filter berdasarkan nama
+        // Jika belum ada meja sama sekali, buat 1 meja dummy
+        if ($mejas->isEmpty()) {
+            $dummyMeja = Meja::create([
+                'nama_meja' => 'Meja 1',
+                'kapasitas' => 4,
+                'status_meja' => 'Kosong',
+            ]);
+            $mejas = Meja::orderBy('id')->get();
+        }
+
+        // Query reservasi
+        $reservasis = Reservasi::with('meja')->latest();
         if ($search) {
             $reservasis->where('nama', 'like', "%{$search}%");
         }
-
         $reservasis = $reservasis->get();
-
-        // Ambil semua meja
-        $mejas = Meja::orderBy('id', 'asc')->get();
 
         // Update status meja otomatis berdasarkan reservasi hari ini
         $today = now()->format('Y-m-d');
@@ -45,6 +52,7 @@ class ReservasiController extends Controller
 
         return view('admin.reservasi.index', compact('reservasis', 'mejas', 'search'));
     }
+
 
     /**
      * ➕ Tambah meja baru
@@ -87,13 +95,30 @@ class ReservasiController extends Controller
     }
 
     /**
+     * 🗑️ Hapus meja permanen
+     */
+    public function destroyMeja($id)
+    {
+        $meja = Meja::findOrFail($id);
+
+        // Hapus semua reservasi terkait meja ini (opsional)
+        Reservasi::where('meja_id', $id)->delete();
+
+        $meja->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Meja berhasil dihapus.'
+        ]);
+    }
+
+    /**
      * 🗑️ Hapus reservasi
      */
     public function destroy($id)
     {
         $reservasi = Reservasi::findOrFail($id);
 
-        // Kembalikan status meja menjadi Kosong
         if ($reservasi->meja_id) {
             Meja::where('id', $reservasi->meja_id)->update(['status_meja' => 'Kosong']);
         }
@@ -127,27 +152,13 @@ class ReservasiController extends Controller
 
         // Update status meja lama jika pindah meja
         if ($oldMejaId != $newMejaId) {
-            if ($oldMejaId) {
-                Meja::where('id', $oldMejaId)->update(['status_meja' => 'Kosong']);
-            }
-            Meja::where('id', $newMejaId)
-                ->update(['status_meja' => $status === 'Dipesan' ? 'Dipesan' : 'Kosong']);
+            if ($oldMejaId) Meja::where('id', $oldMejaId)->update(['status_meja' => 'Kosong']);
+            Meja::where('id', $newMejaId)->update(['status_meja' => $status === 'Dipesan' ? 'Dipesan' : 'Kosong']);
         } else {
-            // Tetap di meja yang sama, update status meja sesuai status reservasi
-            Meja::where('id', $newMejaId)
-                ->update(['status_meja' => $status === 'Dipesan' ? 'Dipesan' : 'Kosong']);
+            Meja::where('id', $newMejaId)->update(['status_meja' => $status === 'Dipesan' ? 'Dipesan' : 'Kosong']);
         }
 
-        // Update data reservasi
-        $reservasi->update([
-            'nama' => $request->nama,
-            'jumlah_orang' => $request->jumlah_orang,
-            'meja_id' => $request->meja_id,
-            'tanggal' => $request->tanggal,
-            'jam' => $request->jam,
-            'catatan' => $request->catatan,
-            'status' => $request->status,
-        ]);
+        $reservasi->update($request->only(['nama','jumlah_orang','meja_id','tanggal','jam','catatan','status']));
 
         return response()->json([
             'status' => 'success',
@@ -171,19 +182,10 @@ class ReservasiController extends Controller
             'status' => 'required|in:baru,Dipesan,selesai,batal',
         ]);
 
-        // Update status meja
         Meja::where('id', $request->meja_id)
             ->update(['status_meja' => $request->status === 'Dipesan' ? 'Dipesan' : 'Kosong']);
 
-        $reservasi = Reservasi::create([
-            'nama' => $request->nama,
-            'jumlah_orang' => $request->jumlah_orang,
-            'meja_id' => $request->meja_id,
-            'tanggal' => $request->tanggal,
-            'jam' => $request->jam,
-            'catatan' => $request->catatan,
-            'status' => $request->status,
-        ]);
+        Reservasi::create($request->only(['nama','jumlah_orang','meja_id','tanggal','jam','catatan','status']));
 
         return back()->with('success', 'Reservasi berhasil ditambahkan.');
     }

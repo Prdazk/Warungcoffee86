@@ -10,9 +10,9 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\ReservasiController as UserReservasiController;
 
 /*
-|--------------------------------------------------------------------------
+|-------------------------------------------------------------------------- 
 | ROUTE USER
-|--------------------------------------------------------------------------
+|-------------------------------------------------------------------------- 
 */
 
 // Halaman utama user
@@ -25,6 +25,9 @@ Route::get('/', function () {
 // Simpan reservasi dari user
 Route::post('/user/reservasi/store', [UserReservasiController::class, 'store'])
     ->name('user.reservasi.store');
+
+// Ambil daftar meja tersedia untuk tanggal & jam tertentu
+Route::get('/api/available-meja', [UserReservasiController::class, 'availableMeja']);
 
 
 /*
@@ -67,12 +70,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy');
         });
 
-        /*
+            /*
         |--------------------------------------------------------------------------
         | RESERVASI + KELOLA MEJA
         |--------------------------------------------------------------------------
         */
-          Route::prefix('reservasi')->name('reservasi.')->group(function () {
+        Route::prefix('reservasi')->name('reservasi.')->group(function () {
 
             // Halaman utama reservasi
             Route::get('/', [AdminReservasiController::class, 'index'])->name('index');

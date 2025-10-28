@@ -6,13 +6,13 @@
   <div id="pesanSukses" data-message="{{ session('success') }}"></div>
 @endif
 
-<!-- Tombol Tambah -->
+<!-- Tombol Kelola Meja -->
 <div class="action-bar" style="margin-bottom:20px; display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:10px;">
-  <button type="button" class="btn-tambah" data-bs-toggle="modal" data-bs-target="#tambahMejaModal">
-    <i class="fas fa-plus"></i> Tambah Meja
+  <!-- Tombol Kelola Meja -->
+  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#kelolaMejaModal">
+    <i class="fas fa-cog"></i> Kelola Meja
   </button>
 </div>
-
 
 <!-- Tabel Reservasi -->
 <div class="table-wrapper">
@@ -63,6 +63,7 @@
                 <i class="fas fa-eye"></i> Lihat
               </button>
 
+              <!-- Edit -->
               <button class="btn-edit" 
                   data-bs-toggle="modal" data-bs-target="#editReservasiModal"
                   data-id="{{ $r->id }}"
@@ -103,8 +104,8 @@
 </div>
 
 @include('admin.reservasi.modal')
-@include('admin.reservasi.tambah')
 @include('admin.reservasi.edit')
+@include('admin.reservasi.kelola')
 
 <style>
 .table-wrapper { overflow-x:auto; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }

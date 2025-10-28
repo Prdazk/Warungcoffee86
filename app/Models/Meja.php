@@ -13,14 +13,23 @@ class Meja extends Model
 
     protected $fillable = [
         'nama_meja',
-        'status_meja', // misal: 'kosong' atau 'terisi'
+        'kapasitas',
+        'status_meja', // Kosong, Dipesan, Terisi
     ];
 
     /**
-     * Relasi 1 meja ke banyak reservasi
+     * Relasi: satu meja bisa punya banyak reservasi
      */
     public function reservasis()
     {
         return $this->hasMany(Reservasi::class, 'meja_id');
+    }
+
+    /**
+     * Scope: hanya meja yang tersedia
+     */
+    public function scopeTersedia($query)
+    {
+        return $query->where('status_meja', 'Kosong');
     }
 }

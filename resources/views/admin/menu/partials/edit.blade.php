@@ -1,47 +1,76 @@
+<!-- ===== Modal Edit Menu ===== -->
 <div class="modal fade" id="modalEdit" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content shadow-lg rounded-4" style="background:#4B3621; color:#FFF;">
+
+      <!-- Header -->
       <div class="modal-header border-0">
-        <h5 class="modal-title">Edit Menu</h5>
+        <h5 class="modal-title fw-semibold">Edit Menu</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
+
+      <!-- Form -->
       <form id="formEditMenu" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+
+        <!-- Body -->
         <div class="modal-body">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Nama Menu</label>
-                    <input type="text" name="nama" id="editNama" class="form-control" required style="background:#815b3b; color:#FFF; border:none;">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Harga</label>
-                    <input type="number" name="harga" id="editHarga" class="form-control" required style="background:#815b3b; color:#FFF; border:none;">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Kategori</label>
-                    <select name="kategori" id="editKategori" class="form-select" required style="background:#815b3b; color:#FFF; border:none;">
-                        <option value="Makanan">Makanan</option>
-                        <option value="Minuman">Minuman</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Status</label>
-                    <select name="status" id="editStatus" class="form-select" required style="background:#815b3b; color:#FFF; border:none;">
-                        <option value="Tersedia">Tersedia</option>
-                        <option value="Habis">Habis</option>
-                    </select>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">Gambar</label>
-                    <input type="file" name="gambar" class="form-control" style="background:#815b3b; color:#FFF; border:none;">
-                </div>
+          <div class="row g-3">
+
+            <!-- Nama Menu -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Nama Menu</label>
+              <input type="text" name="nama" id="editNama" class="form-control shadow-sm" required
+                     style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
             </div>
+
+            <!-- Harga -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Harga</label>
+              <input type="number" name="harga" id="editHarga" class="form-control shadow-sm" required
+                     style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
+            </div>
+
+            <!-- Kategori -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Kategori</label>
+              <select name="kategori" id="editKategori" class="form-select shadow-sm" required
+                      style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
+                <option value="Makanan">Makanan</option>
+                <option value="Minuman">Minuman</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Status</label>
+              <select name="status" id="editStatus" class="form-select shadow-sm" required
+                      style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
+                <option value="Tersedia">Tersedia</option>
+                <option value="Habis">Habis</option>
+              </select>
+            </div>
+
+            <!-- Gambar -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">Gambar</label>
+              <input type="file" name="gambar" class="form-control shadow-sm"
+                     style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
+            </div>
+
+          </div>
         </div>
-        <div class="modal-footer border-0">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-            <button type="submit" class="btn btn-primary">Update</button>
+
+        <!-- Footer -->
+        <div class="modal-footer border-0 d-flex justify-content-center gap-3 pb-3">
+          <button type="button" class="btn px-4 py-2 rounded-3 fw-semibold"
+                  style="background:#D32F2F; color:#FFF; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:all 0.2s ease;"
+                  data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn px-4 py-2 rounded-3 fw-semibold"
+                  style="background:#8B5E3C; color:#FFF; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:all 0.2s ease;">Update</button>
         </div>
+
       </form>
     </div>
   </div>

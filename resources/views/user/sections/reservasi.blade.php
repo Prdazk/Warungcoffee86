@@ -7,7 +7,7 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
   <div class="reservasi-container" style="gap:20px;">
 
     <!-- Form -->
-    <div class="form-side" style="padding:25px 30px; border-radius:12px;">
+    <div class="form-side" style="padding:35px 35px; border-radius:12px;">
       <h2 class="form-title" style="text-align:center; margin-bottom:12px; font-size:17px;">Silakan Pilih Meja</h2>
 
       <form id="reservasiForm" action="{{ route('user.reservasi.store') }}" method="POST">
