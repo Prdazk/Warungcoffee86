@@ -46,14 +46,18 @@
                     </td>
                 </tr>
                 
-          <!-- Modal Edit Admin -->
+         <!-- Modal Edit Admin -->
 <div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="margin-top:-10px;">
+        <div class="modal-content"
+             style="background:#1b1b1b; color:#fff; border-radius:14px; border:1px solid #3a3a3a; box-shadow:0 0 20px rgba(0,0,0,0.7); padding-bottom:10px;">
 
             <!-- Header -->
             <div class="modal-header border-0">
-                <h5 class="modal-title">Edit Admin</h5>
+                <h5 class="modal-title"
+                    style="width:100%; text-align:center; font-size:20px; font-weight:700; letter-spacing:1px; color:#c18b4a; text-transform:uppercase;">
+                    Edit Admin
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
@@ -62,9 +66,8 @@
                 @csrf
                 @method('PUT')
 
-                <div class="modal-body">
+                <div class="modal-body" style="padding-top:5px;">
 
-                    <!-- Error -->
                     @if($errors->any())
                         <div class="alert alert-danger bg-danger-subtle text-danger border-0">
                             <ul class="mb-0">
@@ -79,56 +82,68 @@
 
                         <!-- Nama -->
                         <div class="col-md-6">
-                            <label class="form-label">Nama</label>
-                            <input type="text" name="nama" class="form-control shadow-sm" 
+                            <label class="form-label" style="color:#c18b4a;">Nama</label>
+                            <input type="text" name="nama" class="form-control shadow-sm"
                                    value="{{ old('nama', $admin->nama) }}" required
-                                   style="background-color:#815b3b; color:#FFF; border:none;">
+                                   style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
                         <!-- Email -->
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control shadow-sm" 
+                            <label class="form-label" style="color:#c18b4a;">Email</label>
+                            <input type="email" name="email" class="form-control shadow-sm"
                                    value="{{ old('email', $admin->email) }}" required
-                                   style="background-color:#815b3b; color:#FFF; border:none;">
+                                   style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
-                        <!-- Jabatan -->
+                      <!-- Jabatan -->
                         <div class="col-md-6">
-                            <label class="form-label">Jabatan</label>
+                            <label class="form-label" style="color:#c18b4a;">Jabatan</label>
                             <select name="jabatan" class="form-select shadow-sm" required
-                                    style="background-color:#815b3b; color:#FFF; border:none;">
-                                <option value="">-- Pilih Jabatan --</option>
-                                <option value="admin" {{ old('jabatan', $admin->jabatan) == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="superadmin" {{ old('jabatan', $admin->jabatan) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
+                                    style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
+                                <option value="" style="color:#888;">-- Pilih Jabatan --</option>
+                                <option value="admin" style="color:#fff;" {{ old('jabatan', $admin->jabatan) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="superadmin" style="color:#fff;" {{ old('jabatan', $admin->jabatan) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
                             </select>
                         </div>
+
 
                         <!-- No HP -->
                         <div class="col-md-6">
-                            <label class="form-label">No HP</label>
+                            <label class="form-label" style="color:#c18b4a;">No HP</label>
                             <input type="text" name="no_hp" class="form-control shadow-sm"
                                    value="{{ old('no_hp', $admin->no_hp) }}"
-                                   style="background-color:#815b3b; color:#FFF; border:none;">
+                                   style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
-                        <!-- Role / Status -->
-                        <div class="col-md-6">
-                            <label class="form-label">Status</label>
-                            <select name="role" class="form-select shadow-sm" required
-                                    style="background-color:#815b3b; color:#FFF; border:none;">
-                                <option value="admin" {{ old('role', $admin->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="superadmin" {{ old('role', $admin->role) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
-                            </select>
-                        </div>
+                        <!-- Role -->
+                            <div class="col-md-6">
+                                <label class="form-label" style="color:#c18b4a;">Status</label>
+                                <select name="role" class="form-select shadow-sm" required
+                                        style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
+                                    <option value="admin" style="color:#fff;" {{ old('role', $admin->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="superadmin" style="color:#fff;" {{ old('role', $admin->role) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
+                                </select>
+                            </div>
+
 
                     </div>
                 </div>
 
                 <!-- Footer Tombol Tengah -->
-                <div class="modal-footer border-0 justify-content-center gap-3">
-                    <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning px-4 py-2" style="background-color:#8B5E3C; border:none;">Update</button>
+                <div class="modal-footer border-0 justify-content-center gap-3 pb-3">
+                    <button type="button"
+                            class="btn"
+                            data-bs-dismiss="modal"
+                            style="background:#5b5b5b; border-radius:8px; padding:8px 30px; font-weight:600; color:#fff; border:none;">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="btn"
+                            style="background:#c18b4a; border-radius:8px; padding:8px 30px; font-weight:600; color:#fff; border:none;">
+                        Update
+                    </button>
                 </div>
 
             </form>
@@ -136,54 +151,93 @@
     </div>
 </div>
 
+
                     
-               <!-- Modal Hapus Admin -->
+   <!-- ===== Modal Hapus Admin ===== -->
 <div class="modal fade" id="deleteAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" style="max-width:380px; margin-top:80px;">
-        <div class="modal-content shadow-lg rounded-4 border-0">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:420px; margin-top:-40px;">
+    <div class="modal-content" style="
+      background:#1b1b1b;
+      color:#fff;
+      border-radius:14px;
+      border:1px solid #3a3a3a;
+      box-shadow:0 0 20px rgba(0,0,0,0.6);
+      padding:25px 20px 20px;
+      text-align:center;
+    ">
 
-            <!-- Header -->
-            <div class="modal-header" 
-                 style="background:#4B3621; color:#ffffff; justify-content:center; text-align:center; border-bottom:none;">
-                <h5 class="modal-title w-100" style="font-size:16px; font-weight:500;">
-                    Apakah Anda yakin ingin menghapus admin ini?
-                </h5>
-            </div>
+      <!-- Judul -->
+      <h5 style="
+        font-weight:700;
+        color:#c18b4a;
+        letter-spacing:1px;
+        text-transform:uppercase;
+        margin-bottom:18px;
+      ">
+        Hapus Admin
+      </h5>
 
-            <!-- Footer Tombol Tengah -->
-            <div class="modal-footer justify-content-center gap-3 border-top-0 pt-3 pb-3">
+      <!-- Pesan -->
+      <p style="
+        font-size:14px;
+        color:#e9e9e9;
+        opacity:1;
+        margin-bottom:25px;
+      ">
+        Apakah Anda yakin ingin menghapus admin ini?
+      </p>
 
-                <!-- Tombol Yakin -->
-                <form action="{{ route('admin.dataAdmin.destroy', $admin) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn"
-                            style="background:#8B5E3C; color:#fff; padding:8px 20px; font-weight:bold; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:all 0.2s ease;">
-                        Yakin
-                    </button>
-                </form>
+      <!-- Tombol Aksi -->
+      <div class="d-flex justify-content-center gap-3">
+        <button type="button"
+                class="btn"
+                style="
+                  background:#5b5b5b;
+                  border-radius:8px;
+                  padding:8px 30px;
+                  font-weight:600;
+                  color:#fff;
+                  transition:.3s;
+                  border:none;
+                  font-size:14px;"
+                data-bs-dismiss="modal">Batal</button>
 
-                <!-- Tombol Batal -->
-                <button type="button" class="btn" data-bs-dismiss="modal"
-                        style="background:#D32F2F; color:#fff; padding:8px 20px; font-weight:bold; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:all 0.2s ease;">
-                    Batal
-                </button>
+        <form action="{{ route('admin.dataAdmin.destroy', $admin->id) }}" method="POST">
+          @csrf
+          @method('DELETE')
+          <button type="submit"
+                  class="btn"
+                  style="
+                    background:#c18b4a;
+                    border-radius:8px;
+                    padding:8px 30px;
+                    font-weight:600;
+                    color:#fff;
+                    transition:.3s;
+                    border:none;
+                    font-size:14px;">
+            Hapus
+          </button>
+        </form>
+      </div>
 
-            </div>
-
-        </div>
     </div>
+  </div>
 </div>
 
 
-               <!-- Modal Password Admin -->
+<!-- Modal Password Admin -->
 <div class="modal fade" id="passwordAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:430px; margin-top:-10px;">
+        <div class="modal-content"
+             style="background:#1b1b1b; color:#fff; border-radius:14px; border:1px solid #3a3a3a; box-shadow:0 0 20px rgba(0,0,0,0.7);">
 
             <!-- Header -->
             <div class="modal-header border-0">
-                <h5 class="modal-title">Ubah Password: {{ $admin->nama }}</h5>
+                <h5 class="modal-title"
+                    style="width:100%; text-align:center; font-size:18px; font-weight:700; letter-spacing:1px; color:#c18b4a;">
+                    Ubah Password: {{ $admin->nama }}
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
@@ -192,53 +246,62 @@
                 @csrf
                 @method('PUT')
 
-                <div class="modal-body d-flex flex-column gap-3">
+                <div class="modal-body d-flex flex-column gap-3" style="padding-top:0px;">
 
                     <!-- Password Lama -->
                     <div class="position-relative w-100">
-                        <label class="form-label">Password Lama</label>
-                        <input type="password" name="current_password" class="form-control shadow-sm password-input" required
-                               style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem;">
+                        <label class="form-label" style="color:#c18b4a; font-weight:600;">Password Lama</label>
+                        <input type="password" name="current_password" placeholder="Masukkan password lama"
+                               required
+                               style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff; padding-right:2.3rem;">
                         <span class="toggle-password"
-                              style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
-                        @error('current_password')
-                        <div class="text-danger mt-1">{{ $message }}</div>
-                        @enderror
+                              style="position:absolute; top:50%; right:12px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                     </div>
 
                     <!-- Password Baru -->
                     <div class="position-relative w-100">
-                        <label class="form-label">Password Baru</label>
-                        <input type="password" name="password" class="form-control shadow-sm password-input" required
-                               style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem;">
+                        <label class="form-label" style="color:#c18b4a; font-weight:600;">Password Baru</label>
+                        <input type="password" name="password" placeholder="Masukkan password baru"
+                               required
+                               style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff; padding-right:2.3rem;">
                         <span class="toggle-password"
-                              style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
-                        @error('password')
-                        <div class="text-danger mt-1">{{ $message }}</div>
-                        @enderror
+                              style="position:absolute; top:50%; right:12px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                     </div>
 
-                    <!-- Konfirmasi Password -->
+                    <!-- Konfirmasi -->
                     <div class="position-relative w-100">
-                        <label class="form-label">Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" class="form-control shadow-sm password-input" required
-                               style="background-color:#201a15; color:#FFF; border:none; padding-right:2.5rem;">
+                        <label class="form-label" style="color:#c18b4a; font-weight:600;">Konfirmasi Password</label>
+                        <input type="password" name="password_confirmation" placeholder="Konfirmasi password anda"
+                               required
+                               style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff; padding-right:2.3rem;">
                         <span class="toggle-password"
-                              style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
+                              style="position:absolute; top:50%; right:12px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                     </div>
 
                 </div>
 
-                <!-- Footer Tombol Tengah -->
-                <div class="modal-footer border-0 justify-content-center gap-3">
-                    <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning px-4 py-2" style="background-color:#8B5E3C; border:none;">Simpan</button>
+                <!-- Buttons -->
+                <div class="modal-footer border-0 justify-content-center gap-3 pb-3">
+                    <button type="button"
+                            class="btn"
+                            data-bs-dismiss="modal"
+                            style="background:#5b5b5b; border-radius:8px; padding:8px 30px; font-weight:600; color:#fff; border:none;">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="btn"
+                            style="background:#c18b4a; border-radius:8px; padding:8px 30px; font-weight:600; color:#fff; border:none;">
+                        Simpan
+                    </button>
                 </div>
 
             </form>
         </div>
     </div>
 </div>
+
+
                 @endforeach
             </tbody>
         </table>
@@ -260,12 +323,16 @@
 
 <!-- Modal Tambah Admin -->
 <div class="modal fade" id="tambahAdminModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content shadow-lg rounded-4" style="background-color:#4B3621; color:#FFF;">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="margin-top:-20px;">
+        <div class="modal-content"
+             style="background:#1b1b1b; color:#fff; border-radius:14px; border:1px solid #3a3a3a; box-shadow:0 0 20px rgba(0,0,0,0.6); padding-bottom:10px;">
 
             <!-- Header -->
             <div class="modal-header border-0">
-                <h5 class="modal-title">Tambah Admin Baru</h5>
+                <h5 class="modal-title"
+                    style="width:100%; text-align:center; font-size:20px; font-weight:700; letter-spacing:1px; color:#c18b4a; text-transform:uppercase;">
+                    Tambah Admin Baru
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
@@ -273,7 +340,7 @@
             <form action="{{ route('admin.dataAdmin.store') }}" method="POST">
                 @csrf
 
-                <div class="modal-body">
+                <div class="modal-body" style="padding-top:5px;">
 
                     <!-- Error -->
                     @if($errors->any())
@@ -290,74 +357,95 @@
 
                         <!-- Nama -->
                         <div class="col-md-6">
-                            <label class="form-label">Nama</label>
-                            <input type="text" name="nama" class="form-control shadow-sm" value="{{ old('nama') }}" required 
-                                   style="background-color:#815b3b; color:#FFF; border:none;">
+                            <label class="form-label" style="color:#c18b4a;">Nama</label>
+                            <input type="text" name="nama" placeholder="Masukkan nama"
+                                   value="{{ old('nama') }}"
+                                   required
+                                   style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
                         <!-- Email -->
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control shadow-sm" value="{{ old('email') }}" required 
-                                   style="background-color:#815b3b; color:#FFF; border:none;">
+                            <label class="form-label" style="color:#c18b4a;">Email</label>
+                            <input type="email" name="email" placeholder="Masukkan email"
+                                   value="{{ old('email') }}"
+                                   required
+                                   style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
                         <!-- Jabatan -->
                         <div class="col-md-6">
-                            <label class="form-label">Jabatan</label>
-                            <input type="text" name="jabatan" class="form-control shadow-sm" value="{{ old('jabatan') }}" required
-                                   style="background-color:#815b3b; color:#FFF; border:none;">
+                            <label class="form-label" style="color:#c18b4a;">Jabatan</label>
+                            <input type="text" name="jabatan" placeholder="Masukkan jabatan"
+                                   value="{{ old('jabatan') }}"
+                                   required
+                                   style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
                         <!-- No HP -->
                         <div class="col-md-6">
-                            <label class="form-label">No HP</label>
-                            <input type="text" name="no_hp" class="form-control shadow-sm" value="{{ old('no_hp') }}" 
-                                   style="background-color:#815b3b; color:#FFF; border:none;">
+                            <label class="form-label" style="color:#c18b4a;">No HP</label>
+                            <input type="text" name="no_hp" placeholder="Masukkan No HP"
+                                   value="{{ old('no_hp') }}"
+                                   style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
-                        <!-- Status -->
+                       <!-- Status -->
                         <div class="col-md-6">
-                            <label class="form-label">Status</label>
-                            <select name="role" class="form-select shadow-sm" required 
-                                    style="background-color:#815b3b; color:#FFF; border:none;">
-                                <option value="">-- Pilih Status --</option>
-                                <option value="admin" {{ old('role')=='admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="superadmin" {{ old('role')=='superadmin' ? 'selected' : '' }}>Superadmin</option>
+                            <label class="form-label" style="color:#c18b4a;">Status</label>
+                            <select name="role" class="form-select shadow-sm" required
+                                    style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
+                                <option value="" style="color:#888;">-- Pilih Status --</option>
+                                <option value="admin" style="color:#fff;" {{ old('role')=='admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="superadmin" style="color:#fff;" {{ old('role')=='superadmin' ? 'selected' : '' }}>Superadmin</option>
                             </select>
                         </div>
 
+
                         <!-- Password -->
                         <div class="col-md-6 position-relative">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control shadow-sm password-input" required
-                                   style="background-color:#815b3b; color:#FFF; border:none; padding-right:2.5rem;">
-                            <span class="toggle-password" 
+                            <label class="form-label" style="color:#c18b4a;">Password</label>
+                            <input type="password" name="password" placeholder="Masukkan password"
+                                   required
+                                   style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff; padding-right:2.5rem;">
+                            <span class="toggle-password"
                                   style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                         </div>
 
                         <!-- Konfirmasi Password -->
                         <div class="col-md-6 position-relative">
-                            <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" class="form-control shadow-sm password-input" required
-                                   style="background-color:#815b3b; color:#FFF; border:none; padding-right:2.5rem;">
-                            <span class="toggle-password" 
+                            <label class="form-label" style="color:#c18b4a;">Konfirmasi Password</label>
+                            <input type="password" name="password_confirmation" placeholder="Konfirmasi password"
+                                   required
+                                   style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff; padding-right:2.5rem;">
+                            <span class="toggle-password"
                                   style="position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                         </div>
 
                     </div>
                 </div>
 
-                <!-- Footer Tombol Tengah -->
-                <div class="modal-footer border-0 justify-content-center gap-3">
-                    <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning px-4 py-2" style="background-color:#8B5E3C; border:none;">Simpan</button>
+                <!-- Footer -->
+                <div class="modal-footer border-0 justify-content-center gap-3 pb-3">
+                    <button type="button"
+                            class="btn"
+                            data-bs-dismiss="modal"
+                            style="background:#5b5b5b; border-radius:8px; padding:8px 30px; font-weight:600; color:#fff; border:none;">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="btn"
+                            style="background:#c18b4a; border-radius:8px; padding:8px 30px; font-weight:600; color:#fff; border:none;">
+                        Simpan
+                    </button>
                 </div>
 
             </form>
         </div>
     </div>
 </div>
+
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

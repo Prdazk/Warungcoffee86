@@ -1,12 +1,12 @@
 {{-- ================= Modal Edit Reservasi ================= --}}
 <div class="modal fade" id="editReservasiModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" style="max-width:500px;">
-    <div class="modal-content shadow-lg rounded-4" style="background:#4B3621; color:#FFF;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:#2b2b2b; border:1px solid #3a3a3a; border-radius:14px; color:#FFF;">
 
       <!-- Header -->
-      <div class="modal-header border-0">
-        <h5 class="modal-title"><i class="fas fa-edit me-2"></i> Edit Reservasi</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      <div class="modal-header border-0" style="justify-content:center; position:relative;">
+        <h5 class="modal-title" style="color:#c18b4a; font-weight:700; text-align:center; width:100%;">Edit Reservasi</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="position:absolute; right:15px; top:15px;"></button>
       </div>
 
       <!-- Form -->
@@ -14,76 +14,79 @@
         @csrf
         @method('PUT')
 
+        <!-- Body -->
         <div class="modal-body">
           <div class="row g-2">
 
             <div class="col-md-6">
-              <label class="form-label fw-semibold">Nama</label>
-              <input type="text" name="nama" id="editNama" class="form-control shadow-sm" required
-                     style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
+              <label class="form-label" style="color:#c18b4a;">Nama</label>
+              <input type="text" name="nama" id="editNama" class="form-control" placeholder="Masukkan nama" required 
+                     style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
             <div class="col-md-6">
-              <label class="form-label fw-semibold">Jumlah Orang</label>
-              <input type="number" name="jumlah_orang" id="editJumlah" class="form-control shadow-sm" required min="1" max="10"
-                     style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
+              <label class="form-label" style="color:#c18b4a;">Jumlah Orang</label>
+              <input type="number" name="jumlah_orang" id="editJumlah" class="form-control" placeholder="Jumlah orang" required min="1" max="10"
+                     style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
+                    <div class="col-md-6">
+            <label class="form-label" style="color:#c18b4a;">Meja</label>
+            <select name="meja_id" id="editMeja" class="form-select" required
+                    style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+              <option value="" style="color:#888;">-- Pilih Meja --</option>
+              @foreach(\App\Models\Meja::orderBy('id','asc')->get() as $meja)
+                <option value="{{ $meja->id }}" style="color:#fff;">{{ $meja->nama_meja }}</option>
+              @endforeach
+            </select>
+          </div>
+
+
             <div class="col-md-6">
-              <label class="form-label fw-semibold">Meja</label>
-              <select name="meja_id" id="editMeja" class="form-select shadow-sm" required
-                      style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
-                <option value="">-- Pilih Meja --</option>
-                @foreach(\App\Models\Meja::orderBy('id','asc')->get() as $meja)
-                  <option value="{{ $meja->id }}">{{ $meja->nama_meja }}</option>
-                @endforeach
+              <label class="form-label" style="color:#c18b4a;">Status Reservasi</label>
+              <select name="status" id="editStatus" class="form-select" required
+                      style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+                <option value="Dipesan" style="color:#fff;">Dipesan</option>
+                <option value="Batal" style="color:#fff;">Batal</option>
               </select>
             </div>
 
+
             <div class="col-md-6">
-              <label class="form-label fw-semibold">Status Reservasi</label>
-              <select name="status" id="editStatus" class="form-select shadow-sm"
-                      style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
-                <option value="Dipesan">Dipesan</option>
-                <option value="batal">Batal</option>
-              </select>
+              <label class="form-label" style="color:#c18b4a;">Tanggal</label>
+              <input type="date" name="tanggal" id="editTanggal" class="form-control" required
+                     style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
             <div class="col-md-6">
-              <label class="form-label fw-semibold">Tanggal</label>
-              <input type="date" name="tanggal" id="editTanggal" class="form-control shadow-sm" required
-                     style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label fw-semibold">Jam</label>
-              <input type="time" name="jam" id="editJam" class="form-control shadow-sm" required
-                     style="background:#815b3b; color:#FFF; border:none; border-radius:6px;">
+              <label class="form-label" style="color:#c18b4a;">Jam</label>
+              <input type="time" name="jam" id="editJam" class="form-control" required
+                     style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
             <div class="col-12">
-              <label class="form-label fw-semibold">Catatan</label>
-              <textarea name="catatan" id="editCatatan" class="form-control shadow-sm" rows="3"
-                        style="background:#815b3b; color:#FFF; border:none; border-radius:6px;"></textarea>
+              <label class="form-label" style="color:#c18b4a;">Catatan</label>
+              <textarea name="catatan" id="editCatatan" class="form-control" rows="3"
+                        style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;"></textarea>
             </div>
 
           </div>
         </div>
 
         <!-- Footer -->
-        <div class="modal-footer border-0 d-flex justify-content-center gap-3 pb-3">
-          <button type="button" class="btn px-4 py-2 rounded-3 fw-semibold"
-                  style="background:#D32F2F; color:#FFF; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:all 0.2s ease;"
-                  data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn px-4 py-2 rounded-3 fw-semibold"
-                  style="background:#8B5E3C; color:#FFF; box-shadow:0 4px 10px rgba(0,0,0,0.2); transition:all 0.2s ease;">Update</button>
+        <div class="modal-footer border-0 pb-3 w-100 d-flex justify-content-center gap-3">
+          <button type="button" class="btn" data-bs-dismiss="modal" style="background:#5b5b5b; color:#fff; padding:8px 30px; border:none;">
+            Batal
+          </button>
+          <button type="submit" class="btn" style="background:#c18b4a; color:#fff; padding:8px 30px; border:none;">
+            Update
+          </button>
         </div>
 
       </form>
     </div>
   </div>
 </div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -92,17 +95,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const editModal = new bootstrap.Modal(editModalEl);
     const editStatusSelect = document.getElementById('editStatus');
 
-    // Fungsi untuk ubah warna status otomatis
     function updateStatusColor() {
         const status = editStatusSelect.value;
-        if(status === 'Dipesan') editStatusSelect.style.background = '#FF9800';
-        else if(status === 'Batal') editStatusSelect.style.background = '#e53935';
-        else editStatusSelect.style.background = '#757575';
+        if(status === 'Dipesan') editStatusSelect.style.background = '#c18b4a';
+        else if(status === 'Batal') editStatusSelect.style.background = '#d32f2f';
+        else editStatusSelect.style.background = '#3a3a3a';
     }
 
     editStatusSelect.addEventListener('change', updateStatusColor);
 
-    // Tombol edit
     document.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', () => {
             const data = btn.dataset;
@@ -119,11 +120,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Submit form edit reservasi (AJAX)
     editForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
-        formData.append('_method', 'PUT'); // penting untuk Laravel
+        formData.append('_method', 'PUT');
 
         fetch(this.action, {
             method: 'POST',
@@ -146,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Reset modal saat ditutup
     editModalEl.addEventListener('hidden.bs.modal', () => {
         editForm.reset();
         editStatusSelect.value = 'Dipesan';
@@ -154,4 +153,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-

@@ -97,37 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // ===== Modal Lihat Reservasi =====
-  const lihatModal = document.getElementById('modalLihatReservasi');
-  const lihatContent = document.getElementById('modalContent');
-  const closeModalBtn = document.getElementById('closeModalBtn');
-
-  document.querySelectorAll('.btn-lihat').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.getElementById('detail-nama').textContent = btn.dataset.nama;
-      document.getElementById('detail-jumlah').textContent = btn.dataset.jumlah;
-      document.getElementById('detail-meja').textContent = btn.dataset.meja;
-      document.getElementById('detail-tanggal').textContent = btn.dataset.tanggal;
-      document.getElementById('detail-jam').textContent = btn.dataset.jam;
-      document.getElementById('detail-catatan').textContent = btn.dataset.catatan;
-
-      lihatModal.style.display = 'flex';
-      setTimeout(() => {
-        lihatContent.style.transform = 'scale(1)';
-        lihatContent.style.opacity = '1';
-      }, 10);
-    });
-  });
-
-  function closeLihatModal() {
-    lihatContent.style.transform = 'scale(0.8)';
-    lihatContent.style.opacity = '0';
-    setTimeout(() => lihatModal.style.display = 'none', 250);
-  }
-
-  closeModalBtn?.addEventListener('click', closeLihatModal);
-  lihatModal?.addEventListener('click', (e) => { if (e.target === lihatModal) closeLihatModal(); });
-
   // ===== Preview Status Meja =====
   const statusSelect = document.getElementById('statusSelect');
   const statusPreview = document.getElementById('statusPreview');

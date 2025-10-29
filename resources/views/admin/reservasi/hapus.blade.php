@@ -1,4 +1,4 @@
-<!-- ===== Modal Hapus Menu ===== -->
+<!-- ===== Modal Hapus Reservasi ===== -->
 <div class="modal fade" id="modalHapus" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:420px; margin-top:-40px;">
     <div class="modal-content" style="
@@ -19,7 +19,7 @@
         text-transform:uppercase;
         margin-bottom:18px;
       ">
-        Hapus Menu
+        Hapus Reservasi
       </h5>
 
       <!-- Pesan -->
@@ -29,7 +29,7 @@
         opacity:1;
         margin-bottom:25px;
       ">
-        Apakah Anda yakin ingin menghapus menu ini?
+        Apakah Anda yakin ingin menghapus reservasi <span id="namaReservasi" style="font-weight:600;"></span>?
       </p>
 
       <!-- Tombol Aksi -->
@@ -48,7 +48,8 @@
                 data-bs-dismiss="modal"
                 id="btnCancelDelete">Batal</button>
 
-        <button type="button"
+        <button type="submit"
+                form="deleteForm"
                 class="btn"
                 style="
                   background:#c18b4a;
@@ -71,3 +72,21 @@
   @csrf
   @method('DELETE')
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const modalHapus = document.getElementById('modalHapus');
+  modalHapus.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const id = button.getAttribute('data-id');
+    const nama = button.getAttribute('data-nama');
+    
+    // Set nama reservasi di teks modal
+    document.getElementById('namaReservasi').textContent = nama;
+
+    // Set action form sesuai id reservasi
+    const form = document.getElementById('deleteForm');
+    form.action = `/admin/reservasi/${id}`;
+  });
+});
+</script>

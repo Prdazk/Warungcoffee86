@@ -1,54 +1,68 @@
-/* =====================
-   About / Tentang Section
-===================== */
+/* ===== About Section Styling ===== */
 .about-section {
-  padding: 60px 20px;
-  background: none; /* tanpa kotak atau background */
-  width: 100%; /* pastikan penuh lebar */
-  box-sizing: border-box; /* reset box sizing */
+  padding: 80px 20px;
+  background: #f8f3f0; /* warna hangat kopi */
+  color: #3a2c2a;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
 }
 
 .about-wrapper {
-  text-align: center;
   max-width: 900px;
   margin: 0 auto;
-  display: block; /* ubah dari flex ke block supaya tidak mengganggu layout lain */
-  gap: normal; /* hapus gap karena block tidak mendukung gap */
-}
-
-.about-wrapper h2 {
-  font-size: 36px;
-  color: #ffffff;
-  font-weight: 700;
-  margin-bottom: 20px;
-  text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
-}
-
-.about-wrapper p {
-  font-size: 16px;
-  color: #ffffff;
-  line-height: 1.8;
   text-align: center;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-  margin-bottom: 15px;
 }
 
-/* Responsif */
-@media screen and (max-width: 768px) {
-  .about-wrapper h2 {
-    font-size: 30px;
-  }
-  .about-wrapper p {
-    font-size: 15px;
-    padding: 0 15px;
+/* Heading */
+.about-wrapper h2 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  position: relative;
+  display: inline-block;
+  color: #5a3e36;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 1s forwards 0.2s;
+}
+
+.about-wrapper h2::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #d19c6b;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* Paragraphs */
+.about-wrapper p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 1s forwards;
+}
+
+.about-wrapper p:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.about-wrapper p:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+.about-wrapper p:nth-child(4) {
+  animation-delay: 0.8s;
+}
+
+/* Animation Keyframes */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media screen and (max-width: 480px) {
-  .about-wrapper h2 {
-    font-size: 26px;
-  }
-  .about-wrapper p {
-    font-size: 14px;
-  }
-}
+/* Optional: Smooth scrolling when section in viewport (requires JS or scroll library for trigger) */

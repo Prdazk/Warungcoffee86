@@ -13,15 +13,21 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
       <form id="reservasiForm" action="{{ route('user.reservasi.store') }}" method="POST">
         @csrf
 
-        <div class="row" style="display:flex; gap:13px; margin-bottom:13px;">
-          <div class="col" style="flex:1;">
+            <div class="row" style="display:flex; gap:13px; margin-bottom:13px;">
+        <div class="col" style="flex:1;">
             <label style="font-size:12px;">Nama</label>
             <input type="text" name="nama" placeholder="Masukkan nama" required maxlength="255" class="input-field" style="padding:7px 10px; font-size:13px;">
-          </div>
-          <div class="col" style="flex:1;">
+        </div>
+        <div class="col" style="flex:1;">
             <label style="font-size:12px;">Jumlah Orang</label>
-            <input type="number" name="jumlah_orang" placeholder="Jumlah orang" required min="1" max="10" class="input-field" style="padding:7px 10px; font-size:13px;">
-          </div>
+            <select name="jumlah_orang" required class="input-field" style="padding:7px 10px; font-size:13px;">
+                <option value="" disabled selected>Pilih jumlah</option>
+                @for ($i = 1; $i <= 6; $i++)
+                    <option value="{{ $i }}">{{ $i }} orang</option>
+                @endfor
+            </select>
+        </div>
+
         </div>
 
         <div class="row" style="display:flex; gap:12px; margin-bottom:12px;">

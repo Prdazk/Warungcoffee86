@@ -6,11 +6,10 @@
   <div id="pesanSukses" data-message="{{ session('success') }}"></div>
 @endif
 
-<!-- Tombol Kelola Meja -->
+<!-- Tombol Kelola Meja (baru, flex) -->
 <div class="action-bar" style="margin-bottom:20px; display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:10px;">
-  <!-- Tombol Kelola Meja -->
-  <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#kelolaMejaModal">
-    <i class="fas fa-cog"></i> Kelola Meja
+  <button type="button" class="btn btn-warning" id="btnOpenTambahFlex">
+    <i class="fas fa-cog me-1"></i> Kelola Meja
   </button>
 </div>
 
@@ -56,35 +55,30 @@
           <td>
             <div class="aksi-group">
               <!-- Lihat -->
-              <button class="btn-lihat" data-bs-toggle="modal" data-bs-target="#lihatReservasiModal"
-                data-nama="{{ $r->nama }}" data-jumlah="{{ $r->jumlah_orang }}" data-meja="{{ $meja ? $meja->nama_meja : '-' }}"
-                data-tanggal="{{ \Carbon\Carbon::parse($r->tanggal)->format('d-m-Y') }}" data-jam="{{ $r->jam }}"
-                data-catatan="{{ $r->catatan ?? '-' }}">
+              <button class="btn-lihat" data-catatan="{{ $r->catatan ?? '-' }}">
                 <i class="fas fa-eye"></i> Lihat
               </button>
 
               <!-- Edit -->
               <button class="btn-edit" 
-                  data-bs-toggle="modal" data-bs-target="#editReservasiModal"
-                  data-id="{{ $r->id }}"
-                  data-nama="{{ $r->nama }}"
-                  data-jumlah="{{ $r->jumlah_orang }}"
-                  data-meja="{{ $meja ? $meja->id : '' }}"
-                  data-status="{{ $r->status ?? 'Dipesan' }}"
-                  data-tanggal="{{ $r->tanggal }}"
-                  data-jam="{{ $r->jam }}"
-                  data-catatan="{{ $r->catatan ?? '' }}">
-                  <i class="fas fa-edit"></i> Edit
+                      data-bs-toggle="modal" data-bs-target="#editReservasiModal"
+                      data-id="{{ $r->id }}"
+                      data-nama="{{ $r->nama }}"
+                      data-jumlah="{{ $r->jumlah_orang }}"
+                      data-meja="{{ $meja ? $meja->id : '' }}"
+                      data-status="{{ $r->status ?? 'Dipesan' }}"
+                      data-tanggal="{{ $r->tanggal }}"
+                      data-jam="{{ $r->jam }}"
+                      data-catatan="{{ $r->catatan ?? '' }}">
+                <i class="fas fa-edit"></i> Edit
               </button>
 
               <!-- Hapus -->
-              <form action="{{ route('admin.reservasi.destroy', $r->id) }}" method="POST" class="hapusForm">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn-hapus">
-                  <i class="fas fa-trash"></i> Hapus
-                </button>
-              </form>
+              <button type="button" class="btn-hapus" 
+                      data-bs-toggle="modal" data-bs-target="#modalHapus"
+                      data-id="{{ $r->id }}">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
             </div>
           </td>
         </tr>
@@ -96,7 +90,6 @@
     </tbody>
   </table>
 </div>
-
 <!-- Pagination -->
 <div class="pagination-wrapper">
   <button id="prevBtn">⬅ Kembali</button>
@@ -106,6 +99,7 @@
 @include('admin.reservasi.modal')
 @include('admin.reservasi.edit')
 @include('admin.reservasi.kelola')
+@include('admin.reservasi.hapus')
 
 <style>
 .table-wrapper { overflow-x:auto; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
@@ -131,47 +125,5 @@
 .pagination-wrapper button { padding:10px 18px; border-radius:8px; border:none; background:#8D6E63; color:white; cursor:pointer; font-size:14px; font-weight:500; box-shadow:0 3px 6px rgba(0,0,0,0.2); transition:all 0.25s ease; }
 .pagination-wrapper button:hover { background:#6F4E37; }
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Notifikasi sukses
-  const pesan = document.getElementById('pesanSukses');
-  if(pesan){
-    Swal.fire({
-      icon:'success',
-      title:'Berhasil ✨',
-      text: pesan.dataset.message,
-      background:'rgba(255,255,255,0.95)',
-      backdrop:`rgba(0,0,0,0.4) url("https://i.gifer.com/7efs.gif") center top no-repeat`,
-      showConfirmButton:false,
-      timer:2000,
-      timerProgressBar:true
-    });
-  }
-
-  // Konfirmasi Hapus
-  document.querySelectorAll('.hapusForm').forEach(form => {
-    const btn = form.querySelector('.btn-hapus');
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      Swal.fire({
-        title:'Yakin ingin menghapus?',
-        text:'Data ini akan dihapus permanen.',
-        icon:'warning',
-        showCancelButton:true,
-        confirmButtonColor:'#d33',
-        cancelButtonColor:'#aaa',
-        confirmButtonText:'Ya, hapus!',
-        cancelButtonText:'Batal',
-      }).then(result => {
-        if(result.isConfirmed){
-          form.submit();
-        }
-      });
-    });
-  });
-});
-</script>
 
 @endsection
