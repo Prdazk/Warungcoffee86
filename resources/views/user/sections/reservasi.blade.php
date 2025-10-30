@@ -6,7 +6,6 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
 <section id="reservasi">
   <div class="reservasi-container" style="gap:20px;">
 
-    <!-- Form -->
     <div class="form-side" style="padding:35px 35px; border-radius:12px;">
       <h2 class="form-title" style="text-align:center; margin-bottom:12px; font-size:17px;">Silakan Pilih Meja</h2>
 
@@ -71,15 +70,14 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
       </form>
     </div>
 
-    <!-- Syarat -->
     <div class="syarat-side" style="padding:16px 18px; border-radius:12px;">
       <h3 style="text-align:center; margin-bottom:10px; font-size:15px;">Syarat & Ketentuan</h3>
       <ul style="line-height:1.4; font-size:13px;">
-        <li>Reservasi minimal 45 menit sebelum kedatangan.</li>
+        <li>Reservasi minimal 10 menit sebelum kedatangan.</li>
         <li>Datang tepat waktu untuk memudahkan persiapan.</li>
-        <li>Reservasi maksimal untuk 10 orang.</li>
+        <li>Reservasi maksimal untuk 6 orang.</li>
         <li>Tulis alergi atau permintaan khusus di catatan.</li>
-        <li>Pembatalan bisa dilakukan 2 jam sebelumnya.</li>
+        <li>Pembatalan bisa dilakukan 1 jam sebelumnya.</li>
       </ul>
     </div>
 

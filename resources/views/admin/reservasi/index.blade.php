@@ -6,14 +6,12 @@
   <div id="pesanSukses" data-message="{{ session('success') }}"></div>
 @endif
 
-<!-- Tombol Kelola Meja (baru, flex) -->
 <div class="action-bar" style="margin-bottom:20px; display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:10px;">
   <button type="button" class="btn btn-warning" id="btnOpenTambahFlex">
     <i class="fas fa-cog me-1"></i> Kelola Meja
   </button>
 </div>
 
-<!-- Tabel Reservasi -->
 <div class="table-wrapper">
   <table id="reservasiTable">
     <thead>
@@ -54,12 +52,11 @@
           <td>@if($r->catatan) <span class="catatan-pesan-baru">Pesan Baru</span> @else - @endif</td>
           <td>
             <div class="aksi-group">
-              <!-- Lihat -->
+
               <button class="btn-lihat" data-catatan="{{ $r->catatan ?? '-' }}">
                 <i class="fas fa-eye"></i> Lihat
               </button>
 
-              <!-- Edit -->
               <button class="btn-edit" 
                       data-bs-toggle="modal" data-bs-target="#editReservasiModal"
                       data-id="{{ $r->id }}"
@@ -73,7 +70,6 @@
                 <i class="fas fa-edit"></i> Edit
               </button>
 
-              <!-- Hapus -->
               <button type="button" class="btn-hapus" 
                       data-bs-toggle="modal" data-bs-target="#modalHapus"
                       data-id="{{ $r->id }}">
@@ -90,10 +86,10 @@
     </tbody>
   </table>
 </div>
-<!-- Pagination -->
+
 <div class="pagination-wrapper">
-  <button id="prevBtn">⬅ Kembali</button>
-  <button id="nextBtn">Lanjut ➡</button>
+  <button id="prevBtn">Kembali</button>
+  <button id="nextBtn">LanjutFormat On Paste</button>
 </div>
 
 @include('admin.reservasi.modal')

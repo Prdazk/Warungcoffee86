@@ -1,0 +1,51 @@
+/* ===== Section About ===== */
+.about-section {
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+/* Fade-in + slide-up section About */
+.about-wrapper {
+    max-width: 900px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease-out;
+}
+.about-wrapper.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Klik-trigger animasi berulang */
+.about-wrapper.click-effect {
+    animation: clickAnim 0.6s ease;
+}
+
+@keyframes clickAnim {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(-15px); opacity: 0.8; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Typography About */
+.about-wrapper h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #b3885d;
+    margin-bottom: 30px;
+}
+
+.about-wrapper p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #f1f1f1;
+    margin-bottom: 15px;
+}
+.about-wrapper p:last-child {
+    margin-bottom: 0;
+}

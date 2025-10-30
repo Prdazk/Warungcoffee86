@@ -1,0 +1,166 @@
+/* ===== Grid Menu ===== */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 25px;
+  justify-content: center;
+  margin-top: 30px;
+  padding: 0 10px;
+}
+
+/* ===== Menu Item ===== */
+.menu-item {
+  background: linear-gradient(160deg, #111111, #3e2c1c, #6b4c34);
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.menu-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+}
+
+.menu-item img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 20px;
+  transition: transform 0.3s ease;
+}
+
+.menu-item:hover img {
+  transform: scale(1.05);
+}
+
+.menu-name {
+  margin: 12px 0 15px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+}
+
+/* ===== Tombol Lihat ===== */
+.btn-detail {
+  background: #ff9f43;
+  border: none;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-detail:hover {
+  transform: scale(1.05);
+  background: #ff7f23;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.btn-detail:active {
+  transform: scale(0.95);
+}
+
+/* ===== Popup Overlay ===== */
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* ===== Popup Box (slide-in dari kanan) ===== */
+.popup-box {
+  background: linear-gradient(160deg, #111111, #3e2c1c, #6b4c34);
+  color: #fff;
+  padding: 30px;
+  width: 420px;
+  max-width: 90%;
+  border-radius: 25px;
+  position: relative;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.popup-box.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.popup-box.hide {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* ===== Popup Header ===== */
+.popup-header h3 {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.popup-close-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transition: background 0.2s ease;
+}
+
+.popup-close-btn:hover {
+  background: #c0392b;
+}
+
+/* ===== Popup Table ===== */
+.popup-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.popup-table th,
+.popup-table td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+/* ===== Responsive Grid ===== */
+@media (max-width: 1200px) {
+  .menu-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 992px) {
+  .menu-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+  .menu-item img { height: 140px; }
+  .popup-box { width: 90%; }
+}
+
+@media (max-width: 480px) {
+  .menu-grid { grid-template-columns: 1fr; }
+  .menu-item img { height: 120px; }
+}
