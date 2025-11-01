@@ -32,7 +32,7 @@ class AdminController extends Controller
     /**
      * 💾 Simpan admin baru
      */
-    public function store(Request $request)
+        public function store(Request $request)
     {
         $request->validate([
             'nama'      => 'required|string|max:100',
@@ -46,9 +46,8 @@ class AdminController extends Controller
             'nama'      => $request->nama,
             'email'     => $request->email,
             'jabatan'   => $request->jabatan,
-            'role'      => $request->jabatan, // role sama dengan jabatan
             'no_hp'     => $request->no_hp,
-            'status'    => 0, // default nonaktif, akan aktif saat login
+            'status'    => 0, // ✅ default nonaktif (benar)
             'password'  => Hash::make($request->password),
         ]);
 

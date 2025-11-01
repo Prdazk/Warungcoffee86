@@ -9,15 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('admin_data', function (Blueprint $table) {
-            $table->tinyInteger('status')->default(0)->after('no_hp');
+            $table->tinyInteger('status')->default(0)->change();
         });
     }
 
     public function down(): void
     {
         Schema::table('admin_data', function (Blueprint $table) {
-            $table->dropColumn('status');
+            $table->tinyInteger('status')->default(1)->change();
         });
     }
+
 
 };

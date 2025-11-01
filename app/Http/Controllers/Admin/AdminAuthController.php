@@ -44,15 +44,17 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->login($admin, $request->boolean('remember'));
         $request->session()->regenerate();
 
+        // Set status admin ini aktif (1)
+        AdminData::where('id', $admin->id)->update(['status' => 1]);
+
         // Cek apakah harus ganti password pertama kali (opsional)
         if ($admin->must_change_password ?? false) {
             return redirect()->route('admin.change-password.form')
-                             ->with('success', 'Silakan ganti password pertama kali!');
+                ->with('success', 'Silakan ganti password pertama kali!');
         }
 
-        // Status admin otomatis di-handle AppServiceProvider
         return redirect()->route('admin.beranda')
-                         ->with('success', 'Selamat datang, ' . $admin->nama);
+            ->with('success', 'Selamat datang, ' . $admin->nama);
     }
 
     /**
@@ -60,13 +62,19 @@ class AdminAuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $admin = Auth::guard('admin')->user();
+
+        // Set status admin ini nonaktif (0)
+        if ($admin) {
+            AdminData::where('id', $admin->id)->update(['status' => 0]);
+        }
+
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Status admin otomatis di-handle AppServiceProvider
         return redirect()->route('admin.login.form')
-                         ->with('success', 'Anda telah logout.');
+            ->with('success', 'Anda telah logout.');
     }
 
     /**

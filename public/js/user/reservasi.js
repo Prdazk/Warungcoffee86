@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const jamInput = document.getElementById('jamInput');
     const mejaSelect = document.getElementById('mejaSelect');
 
-    // Fungsi untuk update daftar meja
+    // Fungsi update daftar meja
     async function updateAvailableMeja() {
         const tanggal = tanggalInput.value;
         const jam = jamInput.value;
@@ -64,15 +64,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await res.json();
 
             if (res.ok && result.status === 'success') {
+                // SweetAlert sukses
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
                     text: result.message,
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    // Reload halaman untuk menampilkan status meja terbaru
-                    window.location.reload();
+                    showConfirmButton: false,
+                    timer: 1500 // otomatis close
                 });
+
+                // Reset form & reload halaman
+                form.reset();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1600);
             } else {
                 Swal.fire('Gagal!', result.message || 'Terjadi kesalahan.', 'error');
             }

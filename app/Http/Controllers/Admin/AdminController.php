@@ -52,7 +52,7 @@ class AdminController extends Controller
             'jabatan' => $request->jabatan,
             'role' => $role,
             'no_hp' => $request->no_hp,
-            'status' => $status,
+            'status' => 0,
             'password' => Hash::make($request->password),
         ]);
 

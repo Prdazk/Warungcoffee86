@@ -16,7 +16,7 @@ class ReservasiController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'jumlah_orang' => 'required|integer|min:1|max:10',
+            'jumlah_orang' => 'required|integer|min:1|max:6',
             'tanggal' => 'required|date|after_or_equal:today',
             'jam' => 'required',
             'meja_id' => 'required|exists:mejas,id',
@@ -26,10 +26,7 @@ class ReservasiController extends Controller
         DB::beginTransaction();
         try {
             // Lock meja untuk mencegah double-booking
-            $meja = Meja::lockForUpdate()->find($validated['meja_id']);
-            if (!$meja) {
-                throw new \Exception('Meja tidak ditemukan!');
-            }
+            $meja = Meja::lockForUpdate()->findOrFail($validated['meja_id']);
 
             if ($meja->status_meja !== 'Kosong') {
                 throw new \Exception('Meja ini sedang tidak tersedia, silakan pilih meja lain.');
@@ -67,6 +64,7 @@ class ReservasiController extends Controller
 
     /**
      * 🔍 Ambil daftar meja yang tersedia untuk tanggal & jam tertentu
+     * Endpoint untuk AJAX refresh
      */
     public function availableMeja(Request $request)
     {
@@ -77,7 +75,7 @@ class ReservasiController extends Controller
             return response()->json(['error' => 'Tanggal dan jam wajib diisi.'], 400);
         }
 
-        // Semua meja
+        // Ambil semua meja dan cek status berdasarkan reservasi
         $mejas = Meja::all()->map(function ($meja) use ($tanggal, $jam) {
             $reservasiAktif = Reservasi::where('meja_id', $meja->id)
                 ->where('tanggal', $tanggal)
@@ -96,13 +94,13 @@ class ReservasiController extends Controller
     }
 
     /**
-     * 🔄 Update reservasi (misal user bisa ubah tanggal/jam/meja)
+     * 🔄 Update reservasi
      */
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'jumlah_orang' => 'required|integer|min:1|max:10',
+            'jumlah_orang' => 'required|integer|min:1|max:6',
             'tanggal' => 'required|date|after_or_equal:today',
             'jam' => 'required',
             'meja_id' => 'required|exists:mejas,id',
@@ -114,18 +112,17 @@ class ReservasiController extends Controller
         try {
             $reservasi = Reservasi::lockForUpdate()->findOrFail($id);
 
-            // Jika meja diganti, cek status baru
+            // Jika meja diganti
             if ($reservasi->meja_id != $validated['meja_id']) {
-                $mejaBaru = Meja::lockForUpdate()->find($validated['meja_id']);
-                if (!$mejaBaru) throw new \Exception('Meja baru tidak ditemukan!');
-                if ($mejaBaru->status_meja !== 'Kosong') throw new \Exception('Meja baru sedang tidak tersedia!');
-
-                // Update status meja lama menjadi Kosong
-                if ($reservasi->meja_id) {
-                    Meja::where('id', $reservasi->meja_id)->update(['status_meja' => 'Kosong']);
+                $mejaBaru = Meja::lockForUpdate()->findOrFail($validated['meja_id']);
+                if ($mejaBaru->status_meja !== 'Kosong') {
+                    throw new \Exception('Meja baru sedang tidak tersedia!');
                 }
 
-                // Update status meja baru jadi Dipesan
+                // Kembalikan status meja lama
+                Meja::where('id', $reservasi->meja_id)->update(['status_meja' => 'Kosong']);
+
+                // Update status meja baru
                 $mejaBaru->update(['status_meja' => 'Dipesan']);
             }
 
@@ -162,8 +159,7 @@ class ReservasiController extends Controller
     }
 
     /**
-     * 🗑️ Hapus reservasi oleh user
-     * Status meja kembali Kosong
+     * 🗑️ Hapus reservasi
      */
     public function destroy($id)
     {
@@ -171,7 +167,7 @@ class ReservasiController extends Controller
         try {
             $reservasi = Reservasi::findOrFail($id);
 
-            // Update status meja menjadi Kosong
+            // Kembalikan status meja
             if ($reservasi->meja_id) {
                 Meja::where('id', $reservasi->meja_id)->update(['status_meja' => 'Kosong']);
             }

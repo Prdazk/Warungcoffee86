@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // =======================
   // 👁️ Toggle Password View
   // =======================
-  document.querySelectorAll('.toggle-password').forEach(span => {
+  const toggleSpans = document.querySelectorAll('.toggle-password');
+  toggleSpans.forEach(span => {
     span.addEventListener('click', function () {
       const input = this.previousElementSibling;
       if (!input) return;
@@ -18,6 +19,31 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+
+  // =======================
+  // ✨ Modal Sukses (Animasi Masuk + Otomatis Hilang)
+  // =======================
+  const modalEl = document.getElementById('successModal');
+  if (modalEl) {
+    const modalContent = modalEl.querySelector('.modal-content');
+    const bsModal = new bootstrap.Modal(modalEl);
+
+    modalContent.style.transform = 'scale(0.8)';
+    modalContent.style.opacity = '0';
+    bsModal.show();
+
+    requestAnimationFrame(() => {
+      modalContent.style.transform = 'scale(1)';
+      modalContent.style.opacity = '1';
+      modalContent.style.transition = 'all 0.3s ease';
+    });
+
+    setTimeout(() => {
+      modalContent.style.transform = 'scale(0.8)';
+      modalContent.style.opacity = '0';
+      setTimeout(() => bsModal.hide(), 300);
+    }, 3000);
+  }
 
   // =======================
   // 🔄 Pagination (Next & Prev)
@@ -61,41 +87,40 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // =======================
-  // ✅ Notifikasi Berhasil / Gagal
+  // ✅ Notifikasi Setelah Tambah / Edit / Update
+  // (gunakan session()->has('success') di Blade)
   // =======================
-  if (window.LaravelSessionSuccess) {
-    Swal.fire({
-      icon: 'success',
-      title: 'Berhasil!',
-      text: window.LaravelSessionSuccess,
-      timer: 1500,
-      showConfirmButton: false
-    });
+  if (typeof Laravel !== 'undefined' && Laravel.session) {
+    if (Laravel.session.success) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: Laravel.session.success,
+        timer: 1500,
+        showConfirmButton: false
+      });
+    }
+
+    if (Laravel.session.error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: Laravel.session.error,
+      });
+    }
   }
 
-  if (window.LaravelSessionError) {
+  // =======================
+  // 🚫 Tampilkan Modal Ganti Password jika Ada Error Validasi
+  // =======================
+  const errorPasswordModal = document.querySelector('.password-error-modal');
+  if (errorPasswordModal) {
+    const bsModal = new bootstrap.Modal(errorPasswordModal);
+    bsModal.show();
     Swal.fire({
       icon: 'error',
-      title: 'Gagal!',
-      text: window.LaravelSessionError,
-    });
-  }
-
-  // =======================
-  // 🚫 Modal Password jika ada error validasi
-  // =======================
-  if (Array.isArray(window.LaravelPasswordErrors)) {
-    window.LaravelPasswordErrors.forEach(adminId => {
-      const modalEl = document.getElementById(`passwordAdminModal${adminId}`);
-      if (modalEl) {
-        const bsModal = new bootstrap.Modal(modalEl);
-        bsModal.show();
-        Swal.fire({
-          icon: 'error',
-          title: 'Kesalahan!',
-          text: 'Periksa kembali input password Anda.',
-        });
-      }
+      title: 'Kesalahan!',
+      text: 'Periksa kembali input password Anda.',
     });
   }
 
