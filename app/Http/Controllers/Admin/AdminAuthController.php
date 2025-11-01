@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Admin;
-use App\Models\Reservasi; // misal untuk notifikasi jumlah reservasi baru
+use App\Models\AdminData;
+use App\Models\Reservasi;
 
 class AdminAuthController extends Controller
 {
@@ -32,8 +32,8 @@ class AdminAuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Ambil data admin berdasarkan email
-        $admin = Admin::where('email', $request->email)->first();
+        // Ambil admin berdasarkan email
+        $admin = AdminData::where('email', $request->email)->first();
 
         // Jika email/password salah
         if (!$admin || !Hash::check($request->password, $admin->password)) {
@@ -44,12 +44,13 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->login($admin, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        // Cek apakah harus ganti password pertama kali
+        // Cek apakah harus ganti password pertama kali (opsional)
         if ($admin->must_change_password ?? false) {
             return redirect()->route('admin.change-password.form')
                              ->with('success', 'Silakan ganti password pertama kali!');
         }
 
+        // Status admin otomatis di-handle AppServiceProvider
         return redirect()->route('admin.beranda')
                          ->with('success', 'Selamat datang, ' . $admin->nama);
     }
@@ -63,6 +64,7 @@ class AdminAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        // Status admin otomatis di-handle AppServiceProvider
         return redirect()->route('admin.login.form')
                          ->with('success', 'Anda telah logout.');
     }
@@ -73,10 +75,8 @@ class AdminAuthController extends Controller
      */
     public function beranda()
     {
-        // Ambil jumlah reservasi baru (status = 'baru')
         $jumlahBaru = Reservasi::where('status', 'baru')->count();
 
-        // Tampilkan view beranda dengan data nama admin & notifikasi
         return view('admin.beranda', [
             'jumlahBaru' => $jumlahBaru,
             'adminNama'  => Auth::guard('admin')->check() ? Auth::guard('admin')->user()->nama : null,
