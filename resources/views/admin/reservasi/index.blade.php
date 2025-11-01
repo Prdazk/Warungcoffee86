@@ -89,7 +89,7 @@
 
 <div class="pagination-wrapper">
   <button id="prevBtn">Kembali</button>
-  <button id="nextBtn">LanjutFormat On Paste</button>
+  <button id="nextBtn">Lanjut</button>
 </div>
 
 @include('admin.reservasi.modal')

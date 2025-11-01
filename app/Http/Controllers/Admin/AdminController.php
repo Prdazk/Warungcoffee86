@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -14,23 +15,15 @@ class AdminController extends Controller
     // ===============================================================
 
     /**
-     * Tampilkan daftar admin
+     * Tampilkan semua admin (superadmin di atas)
      */
     public function index()
     {
         $admins = AdminData::orderByRaw("CASE WHEN role = 'superadmin' THEN 0 ELSE 1 END")
-                       ->orderBy('id', 'asc')
-                       ->paginate(5);
+                           ->orderBy('id', 'asc')
+                           ->paginate(5);
 
         return view('admin.dataAdmin.index', compact('admins'));
-    }
-
-    /**
-     * Form tambah admin
-     */
-    public function create()
-    {
-        return view('admin.dataAdmin.create');
     }
 
     /**
@@ -41,31 +34,30 @@ class AdminController extends Controller
         $request->validate([
             'nama' => 'required|string|max:100',
             'email' => 'required|email|unique:admin_data,email',
-            'jabatan' => 'required|string|max:100',
-            'no_hp' => 'required|string|max:20',
-            'role' => 'required|in:admin,superadmin',
+            'jabatan' => 'required|in:admin,superadmin', // hanya admin/superadmin
+            'no_hp' => 'nullable|string|max:20',
             'password' => 'required|string|confirmed|min:6',
         ]);
+
+        // Role otomatis sama dengan jabatan
+        $role = $request->jabatan;
+
+        // Status otomatis berdasarkan user yang login melalui guard admin
+        $loggedAdmin = Auth::guard('admin')->user();
+        $status = ($loggedAdmin && $loggedAdmin->role === 'superadmin') ? 1 : 0;
 
         AdminData::create([
             'nama' => $request->nama,
             'email' => $request->email,
             'jabatan' => $request->jabatan,
+            'role' => $role,
             'no_hp' => $request->no_hp,
-            'role' => $request->role,
+            'status' => $status,
             'password' => Hash::make($request->password),
         ]);
 
         return redirect()->route('admin.dataAdmin.index')
                          ->with('success', 'Admin berhasil ditambahkan!');
-    }
-
-    /**
-     * Form edit admin
-     */
-    public function edit(AdminData $admin)
-    {
-        return view('admin.dataAdmin.edit', compact('admin'));
     }
 
     /**
@@ -76,17 +68,19 @@ class AdminController extends Controller
         $request->validate([
             'nama' => 'required|string|max:100',
             'email' => 'required|email|unique:admin_data,email,' . $admin->id,
-            'jabatan' => 'required|string|max:100',
-            'no_hp' => 'required|string|max:20',
-            'role' => 'required|in:admin,superadmin',
+            'jabatan' => 'required|in:admin,superadmin',
+            'no_hp' => 'nullable|string|max:20',
         ]);
+
+        // Role otomatis sama dengan jabatan
+        $role = $request->jabatan;
 
         $admin->update([
             'nama' => $request->nama,
             'email' => $request->email,
             'jabatan' => $request->jabatan,
+            'role' => $role,
             'no_hp' => $request->no_hp,
-            'role' => $request->role,
         ]);
 
         return redirect()->route('admin.dataAdmin.index')
@@ -109,28 +103,13 @@ class AdminController extends Controller
     // ===============================================================
 
     /**
-     * Form edit password
-     */
-    public function editPassword(AdminData $admin)
-    {
-        return view('admin.dataAdmin.password', compact('admin'));
-    }
-
-    /**
      * Update password admin
      */
     public function updatePassword(Request $request, AdminData $admin)
     {
         $request->validate([
-            'current_password' => 'required',
             'password' => 'required|string|confirmed|min:6',
         ]);
-
-        if (!Hash::check($request->current_password, $admin->password)) {
-            return back()->withErrors([
-                'current_password' => 'Password lama salah',
-            ])->withInput();
-        }
 
         $admin->update([
             'password' => Hash::make($request->password),

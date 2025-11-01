@@ -14,10 +14,11 @@ class AdminData extends Authenticatable
     protected $fillable = [
         'nama',
         'email',
-        'jabatan',
-        'role',
+        'jabatan', // admin / superadmin
+        'role',    // otomatis sama dengan jabatan
         'no_hp',
         'password',
+        'status',  // 1 = aktif, 0 = nonaktif
     ];
 
     protected $hidden = [

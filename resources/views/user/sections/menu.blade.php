@@ -1,6 +1,6 @@
 <section id="popular-menu" class="menu-section">
   <div class="container">
-    <h2 class="menu-title text-center mb-4">MENU TERPOPULER</h2>
+    <h2 class="menu-title text-center mb-4" style="margin-top: -30px;">MENU TERPOPULER</h2>
 
     <div class="menu-grid">
       @foreach ($menus as $menu)

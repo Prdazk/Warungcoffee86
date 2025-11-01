@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -14,12 +15,14 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $admins = AdminData::orderBy('id', 'asc')->paginate(10);
+        $admins = AdminData::orderByRaw("CASE WHEN jabatan = 'superadmin' THEN 0 ELSE 1 END")
+                           ->orderBy('id', 'asc')
+                           ->paginate(10);
         return view('admin.dataAdmin.index', compact('admins'));
     }
 
     /**
-     * ➕ Form tambah admin baru
+     * ➕ Form tambah admin baru (opsional jika pakai modal)
      */
     public function create()
     {
@@ -33,10 +36,9 @@ class AdminController extends Controller
     {
         $request->validate([
             'nama'      => 'required|string|max:100',
-            'email'     => 'required|email|unique:admins_data,email',
-            'jabatan'   => 'required|string|max:100',
+            'email'     => 'required|email|unique:admin_data,email',
+            'jabatan'   => 'required|in:admin,superadmin',
             'no_hp'     => 'nullable|string|max:20',
-            'role'      => 'required|string|max:50',
             'password'  => 'required|string|min:6|confirmed',
         ]);
 
@@ -44,8 +46,9 @@ class AdminController extends Controller
             'nama'      => $request->nama,
             'email'     => $request->email,
             'jabatan'   => $request->jabatan,
+            'role'      => $request->jabatan, // role sama dengan jabatan
             'no_hp'     => $request->no_hp,
-            'role'      => $request->role,
+            'status'    => 0, // default nonaktif, akan aktif saat login
             'password'  => Hash::make($request->password),
         ]);
 
@@ -66,19 +69,18 @@ class AdminController extends Controller
     public function update(Request $request, AdminData $admin)
     {
         $request->validate([
-            'nama'      => 'required|string|max:100',
-            'email'     => 'required|email|unique:admins_data,email,' . $admin->id,
-            'jabatan'   => 'required|string|max:100',
-            'no_hp'     => 'nullable|string|max:20',
-            'role'      => 'required|string|max:50',
+            'nama'    => 'required|string|max:100',
+            'email'   => 'required|email|unique:admin_data,email,' . $admin->id,
+            'jabatan' => 'required|in:admin,superadmin',
+            'no_hp'   => 'nullable|string|max:20',
         ]);
 
         $admin->update([
             'nama'    => $request->nama,
             'email'   => $request->email,
             'jabatan' => $request->jabatan,
+            'role'    => $request->jabatan,
             'no_hp'   => $request->no_hp,
-            'role'    => $request->role,
         ]);
 
         return redirect()->route('admin.dataAdmin.index')->with('success', 'Data admin berhasil diperbarui.');
@@ -94,30 +96,14 @@ class AdminController extends Controller
     }
 
     /**
-     * 🔐 Form edit password (opsional, bisa digunakan jika ingin modal khusus)
-     */
-    public function editPassword(AdminData $admin)
-    {
-        return view('admin.dataAdmin.password', compact('admin'));
-    }
-
-    /**
      * 🔐 Update password admin
-     * ✅ Mengecek password lama sebelum update
      */
     public function updatePassword(Request $request, AdminData $admin)
     {
         $request->validate([
-            'current_password' => 'required|string',
-            'password'         => 'required|string|confirmed|min:6',
+            'password' => 'required|string|confirmed|min:6',
         ]);
 
-        // Cek password lama
-        if (!Hash::check($request->current_password, $admin->password)) {
-            return back()->withErrors(['current_password' => 'Password lama salah!'])->withInput();
-        }
-
-        // Update password baru
         $admin->update([
             'password' => Hash::make($request->password),
         ]);

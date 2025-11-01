@@ -1,4 +1,3 @@
-/* ===== Grid Menu ===== */
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -8,7 +7,6 @@
   padding: 0 10px;
 }
 
-/* ===== Menu Item ===== */
 .menu-item {
   background: linear-gradient(160deg, #111111, #3e2c1c, #6b4c34);
   color: #fff;
@@ -46,7 +44,6 @@
   text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
 }
 
-/* ===== Tombol Lihat ===== */
 .btn-detail {
   background: #ff9f43;
   border: none;
@@ -69,7 +66,6 @@
   transform: scale(0.95);
 }
 
-/* ===== Popup Overlay ===== */
 .popup-overlay {
   display: none;
   position: fixed;
@@ -81,7 +77,6 @@
   overflow: hidden;
 }
 
-/* ===== Popup Box (slide-in dari kanan) ===== */
 .popup-box {
   background: linear-gradient(160deg, #111111, #3e2c1c, #6b4c34);
   color: #fff;
@@ -106,7 +101,6 @@
   opacity: 0;
 }
 
-/* ===== Popup Header ===== */
 .popup-header h3 {
   text-align: center;
   color: #fff;
@@ -131,7 +125,6 @@
   background: #c0392b;
 }
 
-/* ===== Popup Table ===== */
 .popup-table {
   width: 100%;
   border-collapse: collapse;
@@ -145,7 +138,6 @@
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
-/* ===== Responsive Grid ===== */
 @media (max-width: 1200px) {
   .menu-grid { grid-template-columns: repeat(4, 1fr); }
 }

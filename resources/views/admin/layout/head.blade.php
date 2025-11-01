@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="{{ asset('css/admin/content.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin/menu.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin/nah.css') }}">
-<link rel="stylesheet" href="{{ asset('css/admin/statistik.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin/tambahae.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin/navbar.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin/form-menu.css') }}">

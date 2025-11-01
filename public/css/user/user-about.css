@@ -6,6 +6,7 @@
     justify-content: center;
     padding: 50px 20px;
     text-align: center;
+    background: linear-gradient(135deg, #1b1b1b, #2c2c2c); /* background gelap */
 }
 
 /* Fade-in + slide-up section About */
@@ -15,6 +16,11 @@
     opacity: 0;
     transform: translateY(50px);
     transition: all 0.8s ease-out;
+    background: rgba(30, 30, 30, 0.95); /* wrapper gelap + hampir solid */
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px); /* efek blur modern */
 }
 .about-wrapper.visible {
     opacity: 1;

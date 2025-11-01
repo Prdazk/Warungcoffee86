@@ -20,7 +20,7 @@
                     <th>Email</th>
                     <th>Jabatan</th>
                     <th>No HP</th>
-                    <th>Status</th> <!-- sebelumnya Role -->
+                    <th>Status</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -30,13 +30,21 @@
                     <td>{{ $admins->firstItem() + $index }}</td>
                     <td>{{ $admin->nama }}</td>
                     <td>{{ $admin->email }}</td>
-                    <td>{{ $admin->jabatan }}</td>
+                    <td>
+                        @if(strtolower($admin->jabatan) == 'superadmin')
+                            <span class="badge bg-danger">Superadmin</span>
+                        @elseif(strtolower($admin->jabatan) == 'admin')
+                            <span class="badge bg-primary">Admin</span>
+                        @else
+                            <span class="badge bg-secondary">{{ ucfirst($admin->jabatan) }}</span>
+                        @endif
+                    </td>
                     <td>{{ $admin->no_hp ?? '-' }}</td>
                     <td>
-                        @if($admin->role == 'superadmin')
-                            <span class="badge bg-success">Superadmin</span>
+                        @if($admin->status == 1)
+                            <span class="badge bg-success">Aktif</span>
                         @else
-                            <span class="badge bg-primary">Admin</span>
+                            <span class="badge bg-secondary">Nonaktif</span>
                         @endif
                     </td>
                     <td>
@@ -46,7 +54,7 @@
                     </td>
                 </tr>
                 
-         <!-- Modal Edit Admin -->
+       <!-- Modal Edit Admin -->
 <div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="margin-top:-10px;">
         <div class="modal-content"
@@ -96,7 +104,7 @@
                                    style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
-                      <!-- Jabatan -->
+                        <!-- Jabatan -->
                         <div class="col-md-6">
                             <label class="form-label" style="color:#c18b4a;">Jabatan</label>
                             <select name="jabatan" class="form-select shadow-sm" required
@@ -107,7 +115,6 @@
                             </select>
                         </div>
 
-
                         <!-- No HP -->
                         <div class="col-md-6">
                             <label class="form-label" style="color:#c18b4a;">No HP</label>
@@ -116,16 +123,8 @@
                                    style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
-                        <!-- Role -->
-                            <div class="col-md-6">
-                                <label class="form-label" style="color:#c18b4a;">Status</label>
-                                <select name="role" class="form-select shadow-sm" required
-                                        style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
-                                    <option value="admin" style="color:#fff;" {{ old('role', $admin->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                                    <option value="superadmin" style="color:#fff;" {{ old('role', $admin->role) == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
-                                </select>
-                            </div>
-
+                        <!-- Role otomatis berdasarkan jabatan, jadi tidak perlu input -->
+                        <input type="hidden" name="role" value="{{ old('jabatan', $admin->jabatan) }}">
 
                     </div>
                 </div>
@@ -150,7 +149,6 @@
         </div>
     </div>
 </div>
-
 
                     
    <!-- ===== Modal Hapus Admin ===== -->
@@ -248,16 +246,6 @@
 
                 <div class="modal-body d-flex flex-column gap-3" style="padding-top:0px;">
 
-                    <!-- Password Lama -->
-                    <div class="position-relative w-100">
-                        <label class="form-label" style="color:#c18b4a; font-weight:600;">Password Lama</label>
-                        <input type="password" name="current_password" placeholder="Masukkan password lama"
-                               required
-                               style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff; padding-right:2.3rem;">
-                        <span class="toggle-password"
-                              style="position:absolute; top:50%; right:12px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
-                    </div>
-
                     <!-- Password Baru -->
                     <div class="position-relative w-100">
                         <label class="form-label" style="color:#c18b4a; font-weight:600;">Password Baru</label>
@@ -268,10 +256,10 @@
                               style="position:absolute; top:50%; right:12px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                     </div>
 
-                    <!-- Konfirmasi -->
+                    <!-- Konfirmasi Password -->
                     <div class="position-relative w-100">
                         <label class="form-label" style="color:#c18b4a; font-weight:600;">Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" placeholder="Konfirmasi password anda"
+                        <input type="password" name="password_confirmation" placeholder="Konfirmasi password baru"
                                required
                                style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff; padding-right:2.3rem;">
                         <span class="toggle-password"
@@ -300,7 +288,6 @@
         </div>
     </div>
 </div>
-
 
                 @endforeach
             </tbody>
@@ -354,7 +341,6 @@
                     @endif
 
                     <div class="row g-3">
-
                         <!-- Nama -->
                         <div class="col-md-6">
                             <label class="form-label" style="color:#c18b4a;">Nama</label>
@@ -376,10 +362,12 @@
                         <!-- Jabatan -->
                         <div class="col-md-6">
                             <label class="form-label" style="color:#c18b4a;">Jabatan</label>
-                            <input type="text" name="jabatan" placeholder="Masukkan jabatan"
-                                   value="{{ old('jabatan') }}"
-                                   required
-                                   style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
+                            <select name="jabatan" class="form-select" required
+                                    style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
+                                <option value="">-- Pilih Jabatan --</option>
+                                <option value="admin" {{ old('jabatan')=='admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="superadmin" {{ old('jabatan')=='superadmin' ? 'selected' : '' }}>Superadmin</option>
+                            </select>
                         </div>
 
                         <!-- No HP -->
@@ -389,18 +377,6 @@
                                    value="{{ old('no_hp') }}"
                                    style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
-
-                       <!-- Status -->
-                        <div class="col-md-6">
-                            <label class="form-label" style="color:#c18b4a;">Status</label>
-                            <select name="role" class="form-select shadow-sm" required
-                                    style="background:rgba(30,30,30,0.9); border-radius:10px; border:1px solid #444; color:#fff;">
-                                <option value="" style="color:#888;">-- Pilih Status --</option>
-                                <option value="admin" style="color:#fff;" {{ old('role')=='admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="superadmin" style="color:#fff;" {{ old('role')=='superadmin' ? 'selected' : '' }}>Superadmin</option>
-                            </select>
-                        </div>
-
 
                         <!-- Password -->
                         <div class="col-md-6 position-relative">
@@ -565,7 +541,8 @@ nextBtn?.addEventListener('click', () => {
   // =======================
   // 🚫 Tampilkan Modal Ganti Password jika Ada Error Validasi
   // =======================
-  @if($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation'))
+// 🚫 Tampilkan Modal Ganti Password jika Ada Error Validasi
+@if($errors->has('password') || $errors->has('password_confirmation'))
     const errorModal = new bootstrap.Modal(document.getElementById('passwordAdminModal{{ $admin->id }}'));
     errorModal.show();
     Swal.fire({
@@ -573,7 +550,7 @@ nextBtn?.addEventListener('click', () => {
       title: 'Kesalahan!',
       text: 'Periksa kembali input password Anda.',
     });
-  @endif
+@endif
 
 });
 </script>

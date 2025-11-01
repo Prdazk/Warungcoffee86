@@ -4,7 +4,7 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
 @endphp
 
 <section id="reservasi">
-  <div class="reservasi-container" style="gap:20px;">
+ <div class="reservasi-container" style="gap:25px; margin-top:15px;">
 
     <div class="form-side" style="padding:35px 35px; border-radius:12px;">
       <h2 class="form-title" style="text-align:center; margin-bottom:12px; font-size:17px;">Silakan Pilih Meja</h2>
@@ -70,6 +70,7 @@ $availableMejas = Meja::orderBy('id', 'asc')->get();
       </form>
     </div>
 
+    <!-- Syarat -->
     <div class="syarat-side" style="padding:16px 18px; border-radius:12px;">
       <h3 style="text-align:center; margin-bottom:10px; font-size:15px;">Syarat & Ketentuan</h3>
       <ul style="line-height:1.4; font-size:13px;">
