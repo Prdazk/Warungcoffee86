@@ -30,27 +30,25 @@
                      style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
-                    <div class="col-md-6">
-            <label class="form-label" style="color:#c18b4a;">Meja</label>
-            <select name="meja_id" id="editMeja" class="form-select" required
-                    style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
-              <option value="" style="color:#888;">-- Pilih Meja --</option>
-              @foreach(\App\Models\Meja::orderBy('id','asc')->get() as $meja)
-                <option value="{{ $meja->id }}" style="color:#fff;">{{ $meja->nama_meja }}</option>
-              @endforeach
-            </select>
-          </div>
-
+            <div class="col-md-6">
+              <label class="form-label" style="color:#c18b4a;">Meja</label>
+              <select name="meja_id" id="editMeja" class="form-select" required
+                      style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+                <option value="" style="color:#888;">-- Pilih Meja --</option>
+                @foreach(\App\Models\Meja::orderBy('id','asc')->get() as $meja)
+                  <option value="{{ $meja->id }}" style="color:#fff;">{{ $meja->nama_meja }}</option>
+                @endforeach
+              </select>
+            </div>
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Status Reservasi</label>
               <select name="status" id="editStatus" class="form-select" required
                       style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
                 <option value="Dipesan" style="color:#fff;">Dipesan</option>
-                <option value="Batal" style="color:#fff;">Batal</option>
+                <option value="Dibatalkan" style="color:#fff;">Batal</option>
               </select>
             </div>
-
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Tanggal</label>
@@ -95,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const editModal = new bootstrap.Modal(editModalEl);
     const editStatusSelect = document.getElementById('editStatus');
 
+    // Fungsi update warna select status
     function updateStatusColor() {
         const status = editStatusSelect.value;
         if(status === 'Dipesan') editStatusSelect.style.background = '#c18b4a';
@@ -104,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     editStatusSelect.addEventListener('change', updateStatusColor);
 
+    // Saat tombol edit diklik
     document.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', () => {
             const data = btn.dataset;
@@ -120,6 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Submit AJAX update reservasi
     editForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -127,8 +128,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fetch(this.action, {
             method: 'POST',
-            body: formData,
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData,
         })
         .then(res => res.json())
         .then(data => {
@@ -142,10 +143,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 editModal.hide();
                 setTimeout(()=>window.location.reload(), 1500);
+            } else {
+                Swal.fire('Gagal!', data.message || 'Terjadi kesalahan', 'error');
             }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire('Gagal!', 'Terjadi kesalahan server', 'error');
         });
     });
 
+    // Reset form saat modal ditutup
     editModalEl.addEventListener('hidden.bs.modal', () => {
         editForm.reset();
         editStatusSelect.value = 'Dipesan';

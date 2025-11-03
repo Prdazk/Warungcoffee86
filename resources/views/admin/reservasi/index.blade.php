@@ -6,11 +6,12 @@
   <div id="pesanSukses" data-message="{{ session('success') }}"></div>
 @endif
 
-<div class="action-bar" style="margin-bottom:20px; display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:10px;">
+<div class="action-bar mb-3">
   <button type="button" class="btn btn-warning" id="btnOpenTambahFlex">
-    <i class="fas fa-cog me-1"></i> Kelola Meja
+    <i class="fas fa-cog me-1"></i> tambah Meja
   </button>
 </div>
+
 
 <div class="table-wrapper">
   <table id="reservasiTable">
@@ -94,7 +95,7 @@
 
 @include('admin.reservasi.modal')
 @include('admin.reservasi.edit')
-@include('admin.reservasi.kelola')
+@include('admin.reservasi.tambah')
 @include('admin.reservasi.hapus')
 
 <style>

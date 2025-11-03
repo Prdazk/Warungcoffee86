@@ -22,7 +22,7 @@ use App\Models\Meja;
                         <label style="font-size:12px;">Jumlah Orang</label>
                         <select name="jumlah_orang" required class="input-field" style="padding:7px 10px; font-size:13px;">
                             <option value="" disabled selected>Pilih jumlah</option>
-                            @for ($i = 1; $i <= 6; $i++)
+                            @for ($i = 1; $i <= 4; $i++)
                                 <option value="{{ $i }}">{{ $i }} orang</option>
                             @endfor
                         </select>
