@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');        // nama menu
-            $table->integer('harga');      // harga menu
-            $table->string('kategori');    // kategori menu
-            $table->string('status');      // status (tersedia/habis)
-            $table->string('gambar')->nullable(); // gambar menu
+            $table->string('nama');       
+            $table->integer('harga');    
+            $table->string('kategori');    
+            $table->string('status');      
+            $table->string('gambar')->nullable(); 
             $table->timestamps();
         });
     }

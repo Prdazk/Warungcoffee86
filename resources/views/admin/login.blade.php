@@ -9,7 +9,7 @@
 <body>
 
   <div class="login-box">
-    <h2>☕ Admin Coffee86</h2>
+    <h2>☕Login Admin</h2>
 
     <!-- Notifikasi error -->
     @if(session('error'))
