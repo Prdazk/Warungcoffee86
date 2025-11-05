@@ -7,5 +7,3 @@
 <script src="{{ asset('js/admin/user-menu.js') }}"></script>
 <script src="{{ asset('js/admin/user-reservasi.js') }}"></script>
 <script src="{{ asset('js/admin/tambahMeja.js') }}"></script>
-
-

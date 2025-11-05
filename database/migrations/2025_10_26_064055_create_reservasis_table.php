@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('nama');
             $table->integer('jumlah_orang');
 
-            // Foreign key ke meja
             $table->unsignedBigInteger('meja_id');
             $table->foreign('meja_id')->references('id')->on('mejas')->onDelete('cascade');
 

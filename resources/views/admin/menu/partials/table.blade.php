@@ -9,7 +9,6 @@
   </div>
 @endif
 
-<!-- Tombol Tambah Menu -->
 <div class="d-flex justify-content-start mb-3">
     <button class="btn" 
             style="background-color:#8B5E3C; color:white; border:none; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.2);" 
@@ -18,7 +17,6 @@
     </button>
 </div>
 
-<!-- Tabel Menu -->
 <div class="table-responsive">
     <table class="table table-striped table-bordered align-middle text-center">
         <thead class="table-dark">
@@ -52,14 +50,14 @@
                     @endif
                 </td>
                 <td class="d-flex justify-content-center gap-2">
-          <!-- Tombol Edit -->
+      
               <button type="button" class="btn btn-warning btn-sm"
                   onclick="showEditModal({{ $menu->id }},'{{ addslashes($menu->nama) }}','{{ $menu->harga }}','{{ addslashes($menu->kategori) }}','{{ addslashes($menu->status) }}')"
                   style="font-size:0.85rem; padding:0.35rem 0.6rem; border-radius:0.4rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
                   ✏️ Edit
               </button>
 
-              <!-- Tombol Hapus -->
+           
               <button type="button" class="btn btn-danger btn-sm"
                   onclick="confirmDelete('{{ route('admin.menu.destroy', $menu->id) }}')"
                   style="font-size:0.85rem; padding:0.35rem 0.6rem; border-radius:0.4rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
@@ -78,7 +76,6 @@
     </table>
 </div>
 
-<!-- Pagination -->
 <div class="d-flex justify-content-center mt-3 gap-2">
     <a href="{{ $menus->previousPageUrl() ?? '#' }}" 
        class="btn" 

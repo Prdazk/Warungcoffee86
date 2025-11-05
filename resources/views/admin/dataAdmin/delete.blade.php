@@ -1,6 +1,5 @@
 @props(['admin'])
 
-<!-- ===== Modal Hapus Admin ===== -->
 <div class="modal fade" id="deleteAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:420px; margin-top:-40px;">
     <div class="modal-content" style="

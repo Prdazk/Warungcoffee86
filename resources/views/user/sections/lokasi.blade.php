@@ -8,7 +8,7 @@
         <div class="info-item">
           <img src="{{ asset('images/email.png') }}" alt="Email">
           <h3>Email</h3>
-          <p>email@warung86.com</p>
+          <p>warung86@gmail.com</p>
         </div>
         <div class="info-item">
           <img src="{{ asset('images/wa.png') }}" alt="WhatsApp">

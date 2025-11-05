@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  // =======================
-  // 👁️ Toggle Password View
-  // =======================
   const toggleSpans = document.querySelectorAll('.toggle-password');
   toggleSpans.forEach(span => {
     span.addEventListener('click', function () {

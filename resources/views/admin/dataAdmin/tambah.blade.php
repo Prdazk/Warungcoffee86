@@ -1,4 +1,3 @@
-<!-- Modal Tambah Admin -->
 <div class="modal fade" id="tambahAdminModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="margin-top:-20px;">
         <div class="modal-content"

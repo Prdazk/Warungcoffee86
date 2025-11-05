@@ -10,10 +10,8 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        // Bersihkan tabel sebelum isi ulang
         AdminData::truncate();
 
-        // Superadmin utama
         AdminData::create([
             'nama' => 'Superadmin Utama',
             'email' => 'superadmin@gmail.com',
@@ -23,7 +21,6 @@ class AdminSeeder extends Seeder
             'password' => Hash::make('sehatselalu'),
         ]);
 
-        // Admin standar
         AdminData::create([
             'nama' => 'Admin Standar',
             'email' => 'admin@gmail.com',

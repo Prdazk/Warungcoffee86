@@ -1,12 +1,10 @@
 @props(['admin'])
 
-<!-- Modal Password Admin -->
 <div class="modal fade" id="passwordAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:430px; margin-top:-10px;">
         <div class="modal-content"
              style="background:#1b1b1b; color:#fff; border-radius:14px; border:1px solid #3a3a3a; box-shadow:0 0 20px rgba(0,0,0,0.7);">
 
-            <!-- Header -->
             <div class="modal-header border-0">
                 <h5 class="modal-title"
                     style="width:100%; text-align:center; font-size:18px; font-weight:700; letter-spacing:1px; color:#c18b4a;">
@@ -15,14 +13,12 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <!-- Form -->
             <form action="{{ route('admin.dataAdmin.updatePassword', $admin) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 <div class="modal-body d-flex flex-column gap-3" style="padding-top:0px;">
 
-                    <!-- Password Baru -->
                     <div class="position-relative w-100">
                         <label class="form-label" style="color:#c18b4a; font-weight:600;">Password Baru</label>
                         <input type="password" name="password" placeholder="Masukkan password baru"
@@ -32,7 +28,6 @@
                               style="position:absolute; top:50%; right:12px; transform:translateY(-50%); cursor:pointer; font-size:1.2rem;">🙈</span>
                     </div>
 
-                    <!-- Konfirmasi Password -->
                     <div class="position-relative w-100">
                         <label class="form-label" style="color:#c18b4a; font-weight:600;">Konfirmasi Password</label>
                         <input type="password" name="password_confirmation" placeholder="Konfirmasi password baru"
@@ -44,7 +39,6 @@
 
                 </div>
 
-                <!-- Buttons -->
                 <div class="modal-footer border-0 justify-content-center gap-3 pb-3">
                     <button type="button"
                             class="btn"

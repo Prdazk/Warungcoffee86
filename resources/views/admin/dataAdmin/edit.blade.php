@@ -1,12 +1,10 @@
 @props(['admin'])
 
-<!-- Modal Edit Admin -->
 <div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="margin-top:-10px;">
         <div class="modal-content"
              style="background:#1b1b1b; color:#fff; border-radius:14px; border:1px solid #3a3a3a; box-shadow:0 0 20px rgba(0,0,0,0.7); padding-bottom:10px;">
 
-            <!-- Header -->
             <div class="modal-header border-0">
                 <h5 class="modal-title"
                     style="width:100%; text-align:center; font-size:20px; font-weight:700; letter-spacing:1px; color:#c18b4a; text-transform:uppercase;">
@@ -15,7 +13,6 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <!-- Form -->
             <form action="{{ route('admin.dataAdmin.update', $admin->id) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -34,7 +31,6 @@
 
                     <div class="row g-3">
 
-                        <!-- Nama -->
                         <div class="col-md-6">
                             <label class="form-label" style="color:#c18b4a;">Nama</label>
                             <input type="text" name="nama" class="form-control shadow-sm"
@@ -42,7 +38,6 @@
                                    style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
-                        <!-- Email -->
                         <div class="col-md-6">
                             <label class="form-label" style="color:#c18b4a;">Email</label>
                             <input type="email" name="email" class="form-control shadow-sm"
@@ -50,7 +45,6 @@
                                    style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
-                        <!-- Jabatan -->
                         <div class="col-md-6">
                             <label class="form-label" style="color:#c18b4a;">Jabatan</label>
                             <select name="jabatan" class="form-select shadow-sm" required
@@ -61,7 +55,6 @@
                             </select>
                         </div>
 
-                        <!-- No HP -->
                         <div class="col-md-6">
                             <label class="form-label" style="color:#c18b4a;">No HP</label>
                             <input type="text" name="no_hp" class="form-control shadow-sm"
@@ -69,13 +62,11 @@
                                    style="background:#262626; border-radius:10px; border:1px solid #444; color:#fff;">
                         </div>
 
-                        <!-- Role otomatis berdasarkan jabatan -->
                         <input type="hidden" name="role" value="{{ old('jabatan', $admin->jabatan) }}">
 
                     </div>
                 </div>
 
-                <!-- Footer Tombol Tengah -->
                 <div class="modal-footer border-0 justify-content-center gap-3 pb-3">
                     <button type="button"
                             class="btn"
