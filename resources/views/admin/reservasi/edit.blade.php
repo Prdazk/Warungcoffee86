@@ -3,82 +3,67 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="background:#2b2b2b; border:1px solid #3a3a3a; border-radius:14px; color:#FFF;">
 
-      <!-- Header -->
       <div class="modal-header border-0" style="justify-content:center; position:relative;">
-        <h5 class="modal-title" style="color:#c18b4a; font-weight:700; text-align:center; width:100%;">Edit Reservasi</h5>
+        <h5 class="modal-title" style="color:#c18b4a; font-weight:700;">Edit Reservasi</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="position:absolute; right:15px; top:15px;"></button>
       </div>
 
-      <!-- Form -->
       <form id="editReservasiForm" method="POST">
         @csrf
         @method('PUT')
 
-        <!-- Body -->
         <div class="modal-body">
           <div class="row g-2">
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Nama</label>
-              <input type="text" name="nama" id="editNama" class="form-control" placeholder="Masukkan nama" required 
-                     style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+              <input type="text" name="nama" id="editNama" class="form-control" required style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Jumlah Orang</label>
-              <input type="number" name="jumlah_orang" id="editJumlah" class="form-control" placeholder="Jumlah orang" required min="1" max="10"
-                     style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+              <input type="number" name="jumlah_orang" id="editJumlah" class="form-control" min="1" max="10" required style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Meja</label>
-              <select name="meja_id" id="editMeja" class="form-select" required
-                      style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
-                <option value="" style="color:#888;">-- Pilih Meja --</option>
+              <select name="meja_id" id="editMeja" class="form-select" required style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+                <option value="">-- Pilih Meja --</option>
                 @foreach(\App\Models\Meja::orderBy('id','asc')->get() as $meja)
-                  <option value="{{ $meja->id }}" style="color:#fff;">{{ $meja->nama_meja }}</option>
+                  <option value="{{ $meja->id }}">{{ $meja->nama_meja }}</option>
                 @endforeach
               </select>
             </div>
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Status Reservasi</label>
-              <select name="status" id="editStatus" class="form-select" required
-                      style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
-                <option value="Dipesan" style="color:#fff;">Dipesan</option>
-                <option value="Dibatalkan" style="color:#fff;">Batal</option>
+              <select name="status" id="editStatus" class="form-select" required style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+                <option value="Dipesan">Dipesan</option>
+                <option value="Dibatalkan">Dibatalkan</option>
               </select>
             </div>
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Tanggal</label>
-              <input type="date" name="tanggal" id="editTanggal" class="form-control" required
-                     style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+              <input type="date" name="tanggal" id="editTanggal" class="form-control" required style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Jam</label>
-              <input type="time" name="jam" id="editJam" class="form-control" required
-                     style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+              <input type="time" name="jam" id="editJam" class="form-control" required style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
             </div>
 
             <div class="col-12">
               <label class="form-label" style="color:#c18b4a;">Catatan</label>
-              <textarea name="catatan" id="editCatatan" class="form-control" rows="3"
-                        style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;"></textarea>
+              <textarea name="catatan" id="editCatatan" class="form-control" rows="3" style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;"></textarea>
             </div>
 
           </div>
         </div>
 
-        <!-- Footer -->
-        <div class="modal-footer border-0 pb-3 w-100 d-flex justify-content-center gap-3">
-          <button type="button" class="btn" data-bs-dismiss="modal" style="background:#5b5b5b; color:#fff; padding:8px 30px; border:none;">
-            Batal
-          </button>
-          <button type="submit" class="btn" style="background:#c18b4a; color:#fff; padding:8px 30px; border:none;">
-            Update
-          </button>
+        <div class="modal-footer border-0 pb-3 d-flex justify-content-center gap-3">
+          <button type="button" class="btn" data-bs-dismiss="modal" style="background:#5b5b5b; color:#fff; padding:8px 30px;">Batal</button>
+          <button type="submit" class="btn" style="background:#c18b4a; color:#fff; padding:8px 30px;">Update</button>
         </div>
 
       </form>
@@ -86,78 +71,95 @@
   </div>
 </div>
 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const editForm = document.getElementById('editReservasiForm');
+document.addEventListener('DOMContentLoaded', () => {
+
+    const editForm   = document.getElementById('editReservasiForm');
     const editModalEl = document.getElementById('editReservasiModal');
-    const editModal = new bootstrap.Modal(editModalEl);
-    const editStatusSelect = document.getElementById('editStatus');
+    const editModal   = new bootstrap.Modal(editModalEl);
 
-    // Fungsi update warna select status
-    function updateStatusColor() {
-        const status = editStatusSelect.value;
-        if(status === 'Dipesan') editStatusSelect.style.background = '#c18b4a';
-        else if(status === 'Batal') editStatusSelect.style.background = '#d32f2f';
-        else editStatusSelect.style.background = '#3a3a3a';
-    }
-
-    editStatusSelect.addEventListener('change', updateStatusColor);
-
-    // Saat tombol edit diklik
+    // Ketika tombol Edit ditekan
     document.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', () => {
-            const data = btn.dataset;
-            editForm.action = `/admin/reservasi/${data.id}`;
-            document.getElementById('editNama').value = data.nama || '';
-            document.getElementById('editJumlah').value = data.jumlah || '';
-            document.getElementById('editMeja').value = data.meja || '';
-            document.getElementById('editTanggal').value = data.tanggal ? data.tanggal.split('T')[0] : '';
-            document.getElementById('editJam').value = data.jam || '';
-            document.getElementById('editCatatan').value = data.catatan || '';
-            editStatusSelect.value = data.status || 'Dipesan';
-            updateStatusColor();
+
+            // === CEK STATUS APA SUDAH DIBATALKAN ===
+            if (btn.dataset.status === 'Dibatalkan') {
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tidak Bisa Diedit',
+                    text: 'Reservasi ini sudah dibatalkan. Silakan buat reservasi baru.',
+                    confirmButtonText: 'Mengerti'
+                });
+
+                return; // stop, jangan buka modal
+            }
+
+            // === JIKA BUKAN DIBATALKAN LANJUT EDIT ===
+            editForm.action = `/admin/reservasi/${btn.dataset.id}`;
+
+            document.getElementById('editNama').value     = btn.dataset.nama;
+            document.getElementById('editJumlah').value   = btn.dataset.jumlah;
+            document.getElementById('editMeja').value     = btn.dataset.meja;
+            document.getElementById('editTanggal').value  = btn.dataset.tanggal;
+            document.getElementById('editJam').value      = btn.dataset.jam;
+            document.getElementById('editCatatan').value  = btn.dataset.catatan || '';
+            document.getElementById('editStatus').value   = btn.dataset.status;
+
             editModal.show();
         });
     });
 
-    // Submit AJAX update reservasi
-    editForm.addEventListener('submit', function (e) {
+    // Submit via AJAX
+    editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(this);
+
+        const submitBtn = editForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Memproses...';
+
+        const formData = new FormData(editForm);
         formData.append('_method', 'PUT');
 
-        fetch(this.action, {
-            method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            body: formData,
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === 'success'){
+        try {
+            const res = await fetch(editForm.action, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
+            const result = await res.json();
+
+            if (res.ok) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: data.message,
-                    timer: 1500,
-                    showConfirmButton: false
+                    text: result.message ?? 'Reservasi berhasil diperbarui.',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
-                editModal.hide();
-                setTimeout(()=>window.location.reload(), 1500);
+
+                editForm.reset();
+                setTimeout(() => window.location.reload(), 1600);
+
             } else {
-                Swal.fire('Gagal!', data.message || 'Terjadi kesalahan', 'error');
+                Swal.fire('Gagal!', result.message || 'Terjadi kesalahan.', 'error');
             }
-        })
-        .catch(err => {
-            console.error(err);
-            Swal.fire('Gagal!', 'Terjadi kesalahan server', 'error');
-        });
+
+        } catch (err) {
+            Swal.fire('Error!', 'Koneksi gagal. Silakan coba lagi.', 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Update';
+        }
     });
 
-    // Reset form saat modal ditutup
-    editModalEl.addEventListener('hidden.bs.modal', () => {
-        editForm.reset();
-        editStatusSelect.value = 'Dipesan';
-        updateStatusColor();
-    });
+    editModalEl.addEventListener('hidden.bs.modal', () => editForm.reset());
+
 });
 </script>

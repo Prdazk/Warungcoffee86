@@ -2,7 +2,7 @@
 <div class="modal fade" id="tambahMejaModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-md modal-dialog-centered">
     <div class="modal-content shadow-lg border-0 rounded-4 bg-dark text-white">
-      
+
       <div class="modal-header border-0 justify-content-center position-relative">
         <h5 class="modal-title text-warning fw-bold">
           <i class="fas fa-chair me-2"></i> Tambah Meja Baru
@@ -21,6 +21,11 @@
           <button type="button" class="btn btn-secondary btn-hover" data-bs-dismiss="modal">
             <i class="fas fa-times me-1"></i> Batal
           </button>
+
+          <button type="button" class="btn btn-info btn-hover" data-bs-toggle="modal" data-bs-target="#kelolaMejaModal">
+            <i class="fas fa-cog me-1"></i> Kelola Meja
+          </button>
+
           <button type="submit" class="btn btn-warning btn-hover">
             <i class="fas fa-save me-1"></i> Simpan
           </button>
@@ -31,78 +36,178 @@
   </div>
 </div>
 
+
+{{-- ================= Modal Kelola Meja ================= --}}
+<div class="modal fade" id="kelolaMejaModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0 rounded-4 bg-dark text-white">
+
+      <div class="modal-header border-0 justify-content-center position-relative">
+        <h5 class="modal-title text-info fw-bold">
+          <i class="fas fa-cog me-2"></i> Kelola Meja
+        </h5>
+        <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-3">
+
+        <!-- SCROLL HORIZONTAL -->
+        <div class="meja-scroll d-flex gap-3">
+          @foreach($mejas as $m)
+          <div id="rowMeja{{ $m->id }}" class="meja-card">
+              
+            <span class="meja-text">{{ $m->nama_meja }}</span>
+
+            <button class="btn btn-danger btn-sm btnHapusMeja" data-id="{{ $m->id }}">
+              <i class="fas fa-trash"></i>
+            </button>
+
+          </div>
+          @endforeach
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
+    // === AJAX Tambah Meja (tetap sesuai aslinya) ===
     const tambahModalEl = document.getElementById('tambahMejaModal');
     const tambahModal = new bootstrap.Modal(tambahModalEl);
-
-    // Tombol buka modal
     const btnOpen = document.getElementById('btnOpenTambahFlex');
-    if(btnOpen) btnOpen.addEventListener('click', () => {
-        tambahModal.show();
-        // Animate masuk
-        tambahModalEl.querySelector('.modal-content').classList.add('animate__animated','animate__fadeInDown');
-    });
 
-    // AJAX submit tambah meja
+    if(btnOpen){
+        btnOpen.addEventListener('click', () => {
+            tambahModal.show();
+            tambahModalEl.querySelector('.modal-content').classList.add('animate__animated','animate__fadeInDown');
+        });
+    }
+
     const form = document.getElementById('formTambahMeja');
     form.addEventListener('submit', function(e){
         e.preventDefault();
-        const formData = new FormData(this);
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const formData = new FormData(form);
 
-        fetch(this.action, {
+        fetch(form.action, {
             method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            },
-            body: formData
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+            ,body: formData
         })
-        .then(res => res.json())
-        .then(res => {
+        .then(r=>r.json())
+        .then(res=>{
             if(res.success){
-                tambahModal.hide();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: res.message,
-                    timer: 2000,
-                    showConfirmButton: false,
-                }).then(() => location.reload());
-            } else if(res.errors){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    html: Object.values(res.errors).join('<br>'),
-                });
+                form.reset();
+                Swal.fire({ icon:'success', title:'Berhasil!', text:res.message, timer:1500, showConfirmButton:false })
+                .then(()=>location.reload());
             }
-        })
-        .catch(err => {
-            console.error(err);
-            Swal.fire('Error', 'Gagal menambahkan meja. Cek console.', 'error');
         });
     });
+
+
+    // === Hapus Meja tanpa reload ===
+    document.querySelectorAll('.btnHapusMeja').forEach(btn=>{
+        btn.addEventListener('click', function(){
+            const id = this.dataset.id;
+
+            Swal.fire({ icon:'warning', title:'Hapus meja ini?', showCancelButton:true })
+            .then(result=>{
+                if(result.isConfirmed){
+                    fetch(`/admin/reservasi/meja/${id}`, {
+                        method:'DELETE',
+                        headers:{ 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                    })
+                    .then(r=>r.json())
+                    .then(res=>{
+                        if(res.success){
+                            document.getElementById('rowMeja'+id).remove();
+                            Swal.fire({ icon:'success', title:'Terhapus', timer:1200, showConfirmButton:false });
+                        }
+                    });
+                }
+            });
+        });
+    });
+
 });
 </script>
 
 <style>
-/* Hover animasi tombol */
-.btn-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    transition: all 0.2s ease-in-out;
-}
-
-/* Modal body input */
-.modal-body input:focus {
-    outline: none;
-    box-shadow: 0 0 8px #ffc107;
-    border: 1px solid #ffc107;
-    transition: all 0.3s ease;
-}
-
-/* Style tombol */
+/* Tetap pakai style tombolmu sebelumnya */
+.btn-hover:hover { transform: translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,0.3); transition:.2s; }
 .btn-warning { background:#c18b4a; border:none; }
 .btn-secondary { background:#5b5b5b; border:none; }
+.btn-info { background:#2779a7; border:none; }
+.btn-info:hover { background:#2d93c8; }
+.modal-body input:focus { outline:none; box-shadow:0 0 8px #ffc107; border:1px solid #ffc107; transition:.3s; }
+
+/* SCROLL KE KANAN */
+.meja-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 8px;
+  scrollbar-height: thin;
+}
+
+/* KOTAK MEJA */
+.meja-card {
+  display: inline-block;
+  background: linear-gradient(145deg, #1e1e1e, #2b2b2b);
+  border-radius: 14px;
+  padding: 18px 20px;
+  min-width: 200px;              /* Kotak diperbesar */
+  height: 120px;                 /* Tinggi seragam */
+  text-align: center;
+  border: 1px solid #3e3e3e;
+  position: relative;
+  transition: 0.25s ease;
+}
+
+/* Efek Hover Glow */
+.meja-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+  border-color: #ffc107;
+}
+
+/* Teks Meja */
+.meja-text {
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffffff;     /* Putih terang */
+  margin-top: 5px;
+}
+
+/* Tombol Hapus */
+.meja-card .btnHapusMeja {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 4px 8px;
+}
+
+/* Scrollbar Gelap & Elegan */
+.meja-scroll::-webkit-scrollbar {
+  height: 8px;                  /* Tinggi scroll bar */
+}
+
+.meja-scroll::-webkit-scrollbar-track {
+  background: #1a1a1a;          /* Track gelap */
+  border-radius: 10px;
+}
+
+.meja-scroll::-webkit-scrollbar-thumb {
+  background: #444;             /* Warna thumb */
+  border-radius: 10px;
+}
+
+.meja-scroll::-webkit-scrollbar-thumb:hover {
+  background: #666;             /* Saat hover lebih terang */
+}
+
 </style>

@@ -62,22 +62,33 @@ class ReservasiController extends Controller
      * ➕ Tambah meja baru via AJAX
      */
     public function storeMeja(Request $request)
-    {
+{
+    try {
         $request->validate([
             'nama_meja' => 'required|string|max:100|unique:mejas,nama_meja',
             'kapasitas' => 'nullable|integer|min:1|max:20',
         ]);
-
-        $meja = Meja::create([
-            'nama_meja' => ucfirst($request->nama_meja),
-            'kapasitas' => $request->kapasitas ?? 4,
-            'status_meja' => 'Kosong',
-        ]);
-
-        return $request->ajax() 
-            ? response()->json(['success' => true, 'message' => 'Meja berhasil ditambahkan!', 'data' => $meja])
-            : back()->with('success', 'Meja berhasil ditambahkan.');
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
+        throw $e;
     }
+
+    $meja = Meja::create([
+        'nama_meja' => ucfirst($request->nama_meja),
+        'kapasitas' => $request->kapasitas ?? 4,
+        'status_meja' => 'Kosong',
+    ]);
+
+    return $request->ajax()
+        ? response()->json(['success' => true, 'message' => 'Meja berhasil ditambahkan!', 'data' => $meja])
+        : back()->with('success', 'Meja berhasil ditambahkan.');
+}
+
 
     /**
      * ✏️ Update data meja
@@ -145,7 +156,7 @@ class ReservasiController extends Controller
             'tanggal' => 'required|date|after_or_equal:' . now()->format('Y-m-d'),
             'jam' => 'required',
             'catatan' => 'nullable|string|max:500',
-            'status' => 'required|in:baru,Dipesan,selesai,Dibatalkan',
+            'status' => 'required|in:Dipesan,Dibatalkan', 
         ]);
 
         DB::transaction(function () use ($request, $reservasi) {
@@ -154,11 +165,12 @@ class ReservasiController extends Controller
             $status = $request->status;
 
             if ($oldMejaId != $newMejaId) {
-                if ($oldMejaId) Meja::where('id', $oldMejaId)->update(['status_meja' => 'Kosong']);
-                Meja::where('id', $newMejaId)->update(['status_meja' => $status === 'Dipesan' ? 'Terpakai' : 'Kosong']);
-            } else {
-                Meja::where('id', $newMejaId)->update(['status_meja' => $status === 'Dipesan' ? 'Terpakai' : 'Kosong']);
+                Meja::where('id', $oldMejaId)->update(['status_meja' => 'Kosong']);
             }
+
+            Meja::where('id', $newMejaId)->update([
+                'status_meja' => $status === 'Dipesan' ? 'Terpakai' : 'Kosong'
+            ]);
 
             $reservasi->update($request->only(['nama','jumlah_orang','meja_id','tanggal','jam','catatan','status']));
         });
@@ -169,6 +181,7 @@ class ReservasiController extends Controller
             'data' => $reservasi->load('meja')
         ]);
     }
+
 
     /**
      * ➕ Tambah reservasi baru via admin
