@@ -37,7 +37,7 @@ class ReservasiController extends Controller
         }
         $reservasis = $reservasis->get();
 
-        // Update status meja berdasarkan reservasi untuk tanggal & jam tertentu
+        // Update status meja berdasarkan reservasi pada tanggal & jam tertentu
         foreach ($mejas as $meja) {
             $aktif = $meja->reservasis()
                 ->where('tanggal', $tanggal)
@@ -59,36 +59,50 @@ class ReservasiController extends Controller
     }
 
     /**
+     * 🔄 Ambil data terbaru untuk auto-refresh (AJAX)
+     */
+    public function latest()
+    {
+        $reservasis = Reservasi::with('meja')
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $reservasis
+        ]);
+    }
+
+    /**
      * ➕ Tambah meja baru via AJAX
      */
     public function storeMeja(Request $request)
-{
-    try {
-        $request->validate([
-            'nama_meja' => 'required|string|max:100|unique:mejas,nama_meja',
-            'kapasitas' => 'nullable|integer|min:1|max:20',
-        ]);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $e->errors()
-            ], 422);
+    {
+        try {
+            $request->validate([
+                'nama_meja' => 'required|string|max:100|unique:mejas,nama_meja',
+                'kapasitas' => 'nullable|integer|min:1|max:20',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e;
         }
-        throw $e;
+
+        $meja = Meja::create([
+            'nama_meja' => ucfirst($request->nama_meja),
+            'kapasitas' => $request->kapasitas ?? 4,
+            'status_meja' => 'Kosong',
+        ]);
+
+        return $request->ajax()
+            ? response()->json(['success' => true, 'message' => 'Meja berhasil ditambahkan!', 'data' => $meja])
+            : back()->with('success', 'Meja berhasil ditambahkan.');
     }
-
-    $meja = Meja::create([
-        'nama_meja' => ucfirst($request->nama_meja),
-        'kapasitas' => $request->kapasitas ?? 4,
-        'status_meja' => 'Kosong',
-    ]);
-
-    return $request->ajax()
-        ? response()->json(['success' => true, 'message' => 'Meja berhasil ditambahkan!', 'data' => $meja])
-        : back()->with('success', 'Meja berhasil ditambahkan.');
-}
-
 
     /**
      * ✏️ Update data meja
@@ -151,12 +165,12 @@ class ReservasiController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'jumlah_orang' => 'required|integer|min:1|max:'.$reservasi->meja->kapasitas,
+            'jumlah_orang' => 'required|integer|min:1|max:' . $reservasi->meja->kapasitas,
             'meja_id' => 'required|exists:mejas,id',
             'tanggal' => 'required|date|after_or_equal:' . now()->format('Y-m-d'),
             'jam' => 'required',
             'catatan' => 'nullable|string|max:500',
-            'status' => 'required|in:Dipesan,Dibatalkan', 
+            'status' => 'required|in:Dipesan,Dibatalkan',
         ]);
 
         DB::transaction(function () use ($request, $reservasi) {
@@ -181,7 +195,6 @@ class ReservasiController extends Controller
             'data' => $reservasi->load('meja')
         ]);
     }
-
 
     /**
      * ➕ Tambah reservasi baru via admin
@@ -219,7 +232,7 @@ class ReservasiController extends Controller
     }
 
     /**
-     * 🔍 Endpoint untuk AJAX: daftar meja tersedia (Kosong/Terpakai)
+     * 🔍 Endpoint untuk AJAX: daftar meja tersedia
      */
     public function availableMeja(Request $request)
     {

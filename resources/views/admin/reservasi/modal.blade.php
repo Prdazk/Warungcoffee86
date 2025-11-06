@@ -1,4 +1,3 @@
-{{-- ================= Modal Lihat Catatan ================= --}}
 <div class="modal fade" id="modalLihatReservasi" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:450px;">
     <div class="modal-content" style="background:#2b2b2b; border:1px solid #3a3a3a; border-radius:14px; color:#FFF; padding:20px;">

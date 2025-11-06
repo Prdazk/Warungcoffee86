@@ -11,7 +11,6 @@
   <div class="login-box">
     <h2>☕Login Admin</h2>
 
-    <!-- Notifikasi error -->
     @if(session('error'))
       <div class="login-error">{{ session('error') }}</div>
     @endif

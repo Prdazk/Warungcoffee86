@@ -8,7 +8,7 @@
 
 <div class="action-bar mb-3">
   <button type="button" class="btn btn-warning" id="btnOpenTambahFlex">
-    <i class="fas fa-cog me-1"></i> tambah Meja
+    <i class="fas fa-cog me-1"></i> Kelola Meja
   </button>
 </div>
 
@@ -124,3 +124,78 @@
 </style>
 
 @endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  function loadReservasi() {
+    fetch("{{ url('/admin/reservasi/latest') }}")
+      .then(r => r.json())
+      .then(res => {
+
+        const tbody = document.querySelector("#reservasiTable tbody");
+        tbody.innerHTML = "";
+
+        if(res.data.length === 0){
+          tbody.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada reservasi masuk</td></tr>`;
+          return;
+        }
+
+        res.data.forEach((r, i) => {
+          const meja = r.meja ? r.meja.nama_meja : '-';
+          const status = r.status ?? 'Dipesan';
+          const warna = status === "Dipesan" ? "#f44336" : "#4CAF50";
+          const catatan = r.catatan ? `<span class="catatan-pesan-baru">Pesan Baru</span>` : "-";
+
+          tbody.insertAdjacentHTML("beforeend", `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${r.nama}</td>
+              <td>${r.jumlah_orang}</td>
+              <td>
+                ${meja}
+                <span class="status-label" style="background:${warna};">${status}</span>
+              </td>
+              <td>${new Date(r.tanggal).toLocaleDateString("id-ID")}</td>
+              <td>${r.jam}</td>
+              <td>${catatan}</td>
+              <td>
+                <div class="aksi-group">
+
+                  <button class="btn-lihat" data-catatan="${r.catatan ?? '-'}">
+                    <i class="fas fa-eye"></i> Lihat
+                  </button>
+
+                  <button class="btn-edit"
+                    data-bs-toggle="modal" data-bs-target="#editReservasiModal"
+                    data-id="${r.id}"
+                    data-nama="${r.nama}"
+                    data-jumlah="${r.jumlah_orang}"
+                    data-meja="${r.meja ? r.meja.id : ''}"
+                    data-status="${status}"
+                    data-tanggal="${r.tanggal}"
+                    data-jam="${r.jam}"
+                    data-catatan="${r.catatan ?? ''}">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+
+                  <button type="button" class="btn-hapus"
+                    data-bs-toggle="modal" data-bs-target="#modalHapus"
+                    data-id="${r.id}">
+                    <i class="fas fa-trash"></i> Hapus
+                  </button>
+
+                </div>
+              </td>
+            </tr>
+          `);
+        });
+      });
+  }
+
+  loadReservasi();             // load awal
+  setInterval(loadReservasi, 5000); // auto refresh tiap 5 detik
+
+});
+</script>
+@endpush

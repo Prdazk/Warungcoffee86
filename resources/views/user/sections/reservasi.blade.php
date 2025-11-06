@@ -8,7 +8,6 @@ use App\Models\Meja;
         <div class="form-side" style="padding:35px 35px; border-radius:12px;">
             <h2 class="form-title" style="text-align:center; margin-bottom:12px; font-size:17px;">Silakan Pilih Meja</h2>
 
-            <!-- Form action diarahkan ke route POST yang benar -->
             <form id="reservasiForm" method="POST" action="{{ route('user.reservasi.store') }}">
                 @csrf
 
