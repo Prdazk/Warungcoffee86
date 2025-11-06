@@ -80,42 +80,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModalEl = document.getElementById('editReservasiModal');
     const editModal   = new bootstrap.Modal(editModalEl);
 
-    // Ketika tombol Edit ditekan
-    document.querySelectorAll('.btn-edit').forEach(btn => {
-        btn.addEventListener('click', () => {
+    // ===== EVENT DELEGATION untuk tombol edit =====
+    document.querySelector('#reservasiTable tbody').addEventListener('click', function(e) {
+        const btn = e.target.closest('.btn-edit');
+        if (!btn) return;
 
-            // === CEK STATUS APA SUDAH DIBATALKAN ===
-            if (btn.dataset.status === 'Dibatalkan') {
+        // === CEK STATUS APA SUDAH DIBATALKAN ===
+        if (btn.dataset.status === 'Dibatalkan') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tidak Bisa Diedit',
+                text: 'Reservasi ini sudah dibatalkan. Silakan buat reservasi baru.',
+                confirmButtonText: 'Mengerti'
+            });
+            return;
+        }
 
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Tidak Bisa Diedit',
-                    text: 'Reservasi ini sudah dibatalkan. Silakan buat reservasi baru.',
-                    confirmButtonText: 'Mengerti'
-                });
+        // Set action form
+        editForm.action = `/admin/reservasi/${btn.dataset.id}`;
 
-                return; // stop, jangan buka modal
-            }
+        // === Mapping Data ===
+        editForm.querySelector('#editNama').value     = btn.dataset.nama ?? '';
+        editForm.querySelector('#editJumlah').value   = btn.dataset.jumlah ?? '';
+        editForm.querySelector('#editMeja').value     = btn.dataset.meja ?? '';
+        editForm.querySelector('#editTanggal').value  = btn.dataset.tanggal ?? '';
+        editForm.querySelector('#editJam').value      = btn.dataset.jam ?? '';
+        editForm.querySelector('#editCatatan').value  = btn.dataset.catatan ?? '';
+        editForm.querySelector('#editStatus').value   = btn.dataset.status ?? 'Dipesan';
 
-            // === JIKA BUKAN DIBATALKAN LANJUT EDIT ===
-            editForm.action = `/admin/reservasi/${btn.dataset.id}`;
-
-            document.getElementById('editNama').value     = btn.dataset.nama;
-            document.getElementById('editJumlah').value   = btn.dataset.jumlah;
-            document.getElementById('editMeja').value     = btn.dataset.meja;
-            document.getElementById('editTanggal').value  = btn.dataset.tanggal;
-            document.getElementById('editJam').value      = btn.dataset.jam;
-            document.getElementById('editCatatan').value  = btn.dataset.catatan || '';
-            document.getElementById('editStatus').value   = btn.dataset.status;
-
-            editModal.show();
-        });
+        editModal.show();
     });
 
-    // Submit via AJAX
+    // ===== Submit via AJAX =====
     editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const submitBtn = editForm.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Memproses...';
@@ -143,14 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     showConfirmButton: false,
                     timer: 1500
                 });
-
                 editForm.reset();
                 setTimeout(() => window.location.reload(), 1600);
-
             } else {
                 Swal.fire('Gagal!', result.message || 'Terjadi kesalahan.', 'error');
             }
-
         } catch (err) {
             Swal.fire('Error!', 'Koneksi gagal. Silakan coba lagi.', 'error');
         } finally {
@@ -162,4 +157,5 @@ document.addEventListener('DOMContentLoaded', () => {
     editModalEl.addEventListener('hidden.bs.modal', () => editForm.reset());
 
 });
+
 </script>

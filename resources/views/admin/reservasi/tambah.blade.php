@@ -35,24 +35,29 @@
   </div>
 </div>
 
+
 <div class="modal fade" id="kelolaMejaModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content shadow-lg border-0 rounded-4 bg-dark text-white">
 
+      {{-- Header Modal --}}
       <div class="modal-header border-0 justify-content-center position-relative">
 
         <h5 class="modal-title text-info fw-bold">Kelola Meja</h5>
 
+        <!-- Tombol Kembali di kiri → membuka modal Tambah Meja -->
         <button type="button" class="btn btn-outline-light btn-sm position-absolute start-0 ms-3"
                 data-bs-toggle="modal" data-bs-target="#tambahMejaModal"
                 data-bs-dismiss="modal">
           Kembali
         </button>
 
+        <!-- Tombol X di kanan -->
         <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal"></button>
 
       </div>
 
+      {{-- Body Modal --}}
       <div class="modal-body px-4 pb-3">
         <div class="meja-scroll d-flex gap-3">
           @foreach($mejas as $m)
@@ -73,18 +78,19 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    // === AJAX Tambah Meja (tetap sesuai aslinya) ===
+    // === Modal Tambah Meja ===
     const tambahModalEl = document.getElementById('tambahMejaModal');
     const tambahModal = new bootstrap.Modal(tambahModalEl);
     const btnOpen = document.getElementById('btnOpenTambahFlex');
 
-    if(btnOpen){
+    if (btnOpen) {
         btnOpen.addEventListener('click', () => {
             tambahModal.show();
             tambahModalEl.querySelector('.modal-content').classList.add('animate__animated','animate__fadeInDown');
         });
     }
 
+    // === AJAX Simpan Meja Baru ===
     const form = document.getElementById('formTambahMeja');
     form.addEventListener('submit', function(e){
         e.preventDefault();
@@ -92,34 +98,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fetch(form.action, {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
-            ,body: formData
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
         })
-        .then(r=>r.json())
-        .then(res=>{
-            if(res.success){
-                form.reset();
-                Swal.fire({ icon:'success', title:'Berhasil!', text:res.message, timer:1500, showConfirmButton:false })
-                .then(()=>location.reload());
+        .then(async response => {
+            let res;
+            try {
+                res = await response.json();
+            } catch (err) {
+                Swal.fire('Error', 'Server tidak merespon JSON', 'error');
+                return;
             }
+
+            if(response.ok && res.success){
+                form.reset();
+                Swal.fire({
+                    icon:'success',
+                    title:'Berhasil!',
+                    text: res.message ?? 'Meja baru berhasil ditambahkan',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    tambahModal.hide(); // tutup modal
+                    location.reload();
+                });
+            } else {
+                // validasi gagal
+                let msg = res.message ?? 'Terjadi kesalahan';
+                if(res.errors){
+                    msg = Object.values(res.errors).flat().join('\n');
+                }
+                Swal.fire('Gagal', msg, 'error');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire('Error', 'Koneksi gagal. Silakan coba lagi', 'error');
         });
     });
 
 
     // === Hapus Meja tanpa reload ===
-    document.querySelectorAll('.btnHapusMeja').forEach(btn=>{
+    document.querySelectorAll('.btnHapusMeja').forEach(btn => {
         btn.addEventListener('click', function(){
             const id = this.dataset.id;
 
-            Swal.fire({ icon:'warning', title:'Hapus meja ini?', showCancelButton:true })
-            .then(result=>{
+            Swal.fire({
+                icon:'warning',
+                title:'Hapus meja ini?',
+                showCancelButton:true
+            }).then(result => {
                 if(result.isConfirmed){
                     fetch(`/admin/reservasi/meja/${id}`, {
                         method:'DELETE',
-                        headers:{ 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+                        headers:{
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
                     })
-                    .then(r=>r.json())
-                    .then(res=>{
+                    .then(r => r.json())
+                    .then(res => {
                         if(res.success){
                             document.getElementById('rowMeja'+id).remove();
                             Swal.fire({ icon:'success', title:'Terhapus', timer:1200, showConfirmButton:false });
@@ -132,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 </script>
+
 
 {{-- ================= Style Modal & Meja ================= --}}
 <style>
