@@ -21,7 +21,7 @@ class ReservasiController extends Controller
 
         $mejas = Meja::orderBy('id')->get();
 
-        // Buat dummy meja jika kosong
+        // Jika belum ada meja, buat default
         if ($mejas->isEmpty()) {
             Meja::create([
                 'nama_meja' => 'Meja 1',
@@ -31,28 +31,28 @@ class ReservasiController extends Controller
             $mejas = Meja::orderBy('id')->get();
         }
 
+        // Data reservasi (search opsional)
         $reservasis = Reservasi::with('meja')->latest();
         if ($search) {
             $reservasis->where('nama', 'like', "%{$search}%");
         }
         $reservasis = $reservasis->get();
 
-        // Update status meja berdasarkan reservasi pada tanggal & jam tertentu
+        // Penentuan status meja berdasarkan data real di tabel reservasi
         foreach ($mejas as $meja) {
-            $aktif = $meja->reservasis()
-                ->where('tanggal', $tanggal)
-                ->where('jam', $jam)
-                ->where('status', 'Dipesan')
-                ->exists();
 
-            $meja->status_meja = $aktif ? 'Terpakai' : 'Kosong';
-
-            $reservasi = $meja->reservasis()
-                ->where('tanggal', $tanggal)
-                ->where('jam', $jam)
+            // Ambil reservasi aktif untuk meja ini
+            $reservasiAktif = $meja->reservasis()
                 ->where('status', 'Dipesan')
                 ->first();
-            $meja->nama_pemesan = $reservasi->nama ?? '-';
+
+            if ($reservasiAktif) {
+                $meja->status_meja = 'Terpakai';
+                $meja->nama_pemesan = $reservasiAktif->nama;
+            } else {
+                $meja->status_meja = 'Kosong';
+                $meja->nama_pemesan = '-';
+            }
         }
 
         return view('admin.reservasi.index', compact('reservasis', 'mejas', 'search', 'tanggal', 'jam'));

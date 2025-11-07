@@ -92,86 +92,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === AJAX Simpan Meja Baru ===
     const form = document.getElementById('formTambahMeja');
-    form.addEventListener('submit', function(e){
+    form.addEventListener('submit', async function(e){
         e.preventDefault();
         const formData = new FormData(form);
 
-        fetch(form.action, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: formData
-        })
-        .then(async response => {
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
             let res;
-            try {
-                res = await response.json();
-            } catch (err) {
-                Swal.fire('Error', 'Server tidak merespon JSON', 'error');
-                return;
-            }
+            try { res = await response.json(); } 
+            catch(err) { Swal.fire('Error', 'Server tidak merespon JSON', 'error'); return; }
 
             if(response.ok && res.success){
                 form.reset();
                 Swal.fire({
-                    icon:'success',
-                    title:'Berhasil!',
+                    icon: 'success',
+                    title: 'Berhasil!',
                     text: res.message ?? 'Meja baru berhasil ditambahkan',
                     timer: 1500,
                     showConfirmButton: false
                 }).then(() => {
-                    tambahModal.hide(); // tutup modal
-                    location.reload();
+                    tambahModal.hide();
+
+                    // --- Tambahkan meja baru ke daftar kelola meja tanpa reload ---
+                    const m = res.data;
+                    const container = document.querySelector('.meja-scroll');
+                    const div = document.createElement('div');
+                    div.id = `rowMeja${m.id}`;
+                    div.className = 'meja-card';
+                    div.innerHTML = `
+                        <span class="meja-text">${m.nama_meja}</span>
+                        <button type="button" class="btn btn-danger btn-sm btnHapusMeja" data-id="${m.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    container.appendChild(div);
+
+                    // --- Bind event hapus meja untuk element baru ---
+                    const btnHapus = div.querySelector('.btnHapusMeja');
+                    btnHapus.addEventListener('click', hapusMejaHandler);
+
+                    // --- Trigger event global agar user/reservasi bisa update ---
+                    document.dispatchEvent(new CustomEvent('meja:added', { detail: m }));
                 });
             } else {
-                // validasi gagal
                 let msg = res.message ?? 'Terjadi kesalahan';
-                if(res.errors){
-                    msg = Object.values(res.errors).flat().join('\n');
-                }
+                if(res.errors) msg = Object.values(res.errors).flat().join('\n');
                 Swal.fire('Gagal', msg, 'error');
             }
-        })
-        .catch(err => {
+        } catch(err) {
             console.error(err);
             Swal.fire('Error', 'Koneksi gagal. Silakan coba lagi', 'error');
-        });
+        }
     });
 
-
     // === Hapus Meja tanpa reload ===
-    document.querySelectorAll('.btnHapusMeja').forEach(btn => {
-        btn.addEventListener('click', function(){
-            const id = this.dataset.id;
-
-            Swal.fire({
-                icon:'warning',
-                title:'Hapus meja ini?',
-                showCancelButton:true
-            }).then(result => {
-                if(result.isConfirmed){
-                    fetch(`/admin/reservasi/meja/${id}`, {
+    function hapusMejaHandler() {
+        const id = this.dataset.id;
+        Swal.fire({
+            icon:'warning',
+            title:'Hapus meja ini?',
+            showCancelButton:true
+        }).then(async result => {
+            if(result.isConfirmed){
+                try {
+                    const res = await fetch(`/admin/reservasi/meja/${id}`, {
                         method:'DELETE',
                         headers:{
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                             'Accept': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest'
                         }
-                    })
-                    .then(r => r.json())
-                    .then(res => {
-                        if(res.success){
-                            document.getElementById('rowMeja'+id).remove();
-                            Swal.fire({ icon:'success', title:'Terhapus', timer:1200, showConfirmButton:false });
-                        }
                     });
+                    const data = await res.json();
+                    if(data.success){
+                        document.getElementById('rowMeja'+id).remove();
+                        Swal.fire({ icon:'success', title:'Terhapus', timer:1200, showConfirmButton:false });
+                    } else {
+                        Swal.fire('Gagal','Gagal menghapus meja','error');
+                    }
+                } catch(err){
+                    console.error(err);
+                    Swal.fire('Error','Koneksi gagal','error');
                 }
-            });
+            }
         });
-    });
+    }
+
+    // Bind event hapus meja untuk semua tombol awal
+    document.querySelectorAll('.btnHapusMeja').forEach(btn => btn.addEventListener('click', hapusMejaHandler));
 
 });
 </script>

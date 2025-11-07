@@ -27,7 +27,7 @@ Route::post('/user/reservasi/store', [UserReservasiController::class, 'store'])
     ->name('user.reservasi.store');
 
 // Ambil daftar meja tersedia untuk AJAX refresh
-Route::get('/user/reservasi/available-meja', [UserReservasiController::class, 'availableMeja'])
+Route::get('/user/reservasi/available-meja', [UserReservasiController::class, 'availableMeja']) 
     ->name('user.reservasi.availableMeja');
 
 /*

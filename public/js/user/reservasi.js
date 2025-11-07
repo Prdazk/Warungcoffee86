@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const jamInput = document.getElementById('jamInput');
     const mejaSelect = document.getElementById('mejaSelect');
 
-    // Fungsi update daftar meja
+    // === Fungsi update daftar meja berdasarkan tanggal & jam ===
     async function updateAvailableMeja() {
         const tanggal = tanggalInput.value;
         const jam = jamInput.value;
@@ -39,23 +39,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event change tanggal/jam langsung refresh meja
+    // === Event change tanggal/jam langsung refresh meja ===
     tanggalInput.addEventListener('change', updateAvailableMeja);
     jamInput.addEventListener('change', updateAvailableMeja);
 
-    // Submit form via AJAX
+    // === Submit form via AJAX ===
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
         submitBtn.textContent = 'Mengirim...';
 
         const formData = new FormData(form);
+        const tanggal = formData.get('tanggal');
+        const jam = formData.get('jam');
+        const meja = formData.get('meja_id');
+
+        if (!tanggal || !jam || !meja) {
+            Swal.fire('Peringatan!', 'Mohon lengkapi semua data reservasi.', 'warning');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Pesan Sekarang';
+            return;
+        }
 
         try {
             const res = await fetch(form.action, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector('input[name="_token"]')?.value,
                     'Accept': 'application/json'
                 },
                 body: formData
@@ -64,19 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await res.json();
 
             if (res.ok && result.status === 'success') {
-                // SweetAlert sukses
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
                     text: result.message,
                     showConfirmButton: false,
-                    timer: 1500 // otomatis close
+                    timer: 1500
                 });
 
-                // Reset form & reload halaman
                 form.reset();
                 setTimeout(() => {
-                    window.location.reload();
+                    window.location.reload(); // reload otomatis setelah reservasi
                 }, 1600);
             } else {
                 Swal.fire('Gagal!', result.message || 'Terjadi kesalahan.', 'error');
@@ -90,6 +98,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Inisialisasi saat page load
+    // === Realtime update meja saat admin tambah/hapus/edit reservasi ===
+    document.addEventListener('reservasi:changed', () => {
+        updateAvailableMeja(); // langsung fetch dan update tanpa reload
+    });
+
+    document.addEventListener('meja:added', () => {
+        updateAvailableMeja(); // update ketika admin tambah meja
+    });
+
+    document.addEventListener('reservasi:deleted', () => {
+        updateAvailableMeja(); // update ketika admin hapus reservasi
+    });
+
+    // === Inisialisasi daftar meja saat page load ===
     updateAvailableMeja();
 });
