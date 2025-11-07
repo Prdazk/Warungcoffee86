@@ -119,7 +119,7 @@
 .search-input:focus { border-color:#4CAF50; box-shadow:0 3px 8px rgba(76,175,80,0.3); }
 
 .pagination-wrapper { margin-top:25px; display:flex; justify-content:center; align-items:center; gap:15px; }
-.pagination-wrapper button { padding:10px 18px; border-radius:8px; border:none; background:#8D6E63; color:white; cursor:pointer; font-size:14px; font-weight:500; box-shadow:0 3px 6px rgba(0,0,0,0.2); transition:all 0.25s ease; }
+.pagination-wrapper button { padding:10px 18px; border-radius:8px; border:none; background:#6F4E37; color:white; cursor:pointer; font-size:14px; font-weight:500; box-shadow:0 3px 6px rgba(0,0,0,0.2); transition:all 0.25s ease; }
 .pagination-wrapper button:hover { background:#6F4E37; }
 
 </style>
