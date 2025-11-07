@@ -121,6 +121,7 @@
 .pagination-wrapper { margin-top:25px; display:flex; justify-content:center; align-items:center; gap:15px; }
 .pagination-wrapper button { padding:10px 18px; border-radius:8px; border:none; background:#8D6E63; color:white; cursor:pointer; font-size:14px; font-weight:500; box-shadow:0 3px 6px rgba(0,0,0,0.2); transition:all 0.25s ease; }
 .pagination-wrapper button:hover { background:#6F4E37; }
+
 </style>
 
 @endsection
@@ -139,6 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
       tbody.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada reservasi masuk</td></tr>`;
       return;
     }
+
+    // Hitung total halaman
+    const totalPages = Math.ceil(reservasiData.length / pageSize);
+
+    // Validasi currentPage supaya tidak out of bounds
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
 
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
@@ -189,6 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr>
       `);
     });
+
+    // Update state tombol
+    document.getElementById("prevBtn").disabled = currentPage === 1;
+    document.getElementById("nextBtn").disabled = currentPage === totalPages;
   }
 
   function loadReservasi() {
@@ -209,7 +221,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById("nextBtn").addEventListener("click", () => {
-    if (currentPage * pageSize < reservasiData.length) {
+    const totalPages = Math.ceil(reservasiData.length / pageSize);
+    if (currentPage < totalPages) {
       currentPage++;
       renderTable();
     }
@@ -218,5 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
   loadReservasi();             
   setInterval(loadReservasi, 5000); // auto refresh tiap 5 detik
 });
+
 </script>
 @endpush
