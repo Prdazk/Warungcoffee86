@@ -52,4 +52,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(() => alert('Gagal menyalin.'));
         });
     }
+
+    // ---------------------------------
+    // Smooth horizontal scroll menu
+    // ---------------------------------
+    const wrapper = document.querySelector('.menu-grid-wrapper');
+    let isDown = false, startX, scrollLeft;
+
+    if(wrapper){
+        wrapper.style.scrollBehavior = 'smooth'; // scroll smooth
+        wrapper.addEventListener('mousedown', (e) => {
+            isDown = true;
+            wrapper.classList.add('active-grab');
+            startX = e.pageX - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+        });
+        wrapper.addEventListener('mouseleave', () => {
+            isDown = false;
+            wrapper.classList.remove('active-grab');
+        });
+        wrapper.addEventListener('mouseup', () => {
+            isDown = false;
+            wrapper.classList.remove('active-grab');
+        });
+        wrapper.addEventListener('mousemove', (e) => {
+            if(!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 1.5; // scroll kecepatan santai
+            wrapper.scrollLeft = scrollLeft - walk;
+        });
+
+        // Optional: touch support untuk HP
+        wrapper.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].pageX - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+        });
+        wrapper.addEventListener('touchmove', (e) => {
+            const x = e.touches[0].pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            wrapper.scrollLeft = scrollLeft - walk;
+        });
+    }
 });

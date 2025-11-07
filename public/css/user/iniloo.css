@@ -1,0 +1,61 @@
+/* Wrapper scroll horizontal */
+.menu-grid-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  cursor: grab;
+}
+
+/* Sembunyikan scrollbar */
+.menu-grid-wrapper::-webkit-scrollbar { display: none; }
+.menu-grid-wrapper { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Grid horizontal */
+.menu-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 1fr);
+  gap: 25px;
+  margin-top: 30px;
+  padding: 0 10px;
+  transition: transform 0.2s ease;
+}
+
+/* Scale item saat pointer dekat */
+.menu-item {
+  background: linear-gradient(160deg, #111111, #3e2c1c, #6b4c34);
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.menu-item:hover {
+  transform: scale(1.05) translateY(-5px);
+  z-index: 2;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+}
+
+/* Responsif */
+@media (max-width: 1200px) { .menu-grid { grid-auto-columns: minmax(200px, 1fr); } }
+@media (max-width: 992px)  { .menu-grid { grid-auto-columns: minmax(180px, 1fr); } }
+@media (max-width: 768px)  { .menu-grid { grid-auto-columns: minmax(160px, 1fr); gap: 15px; } }
+@media (max-width: 480px)  { .menu-grid { grid-auto-columns: minmax(140px, 1fr); } }
+
+/* Modal popup tetap sesuai yang lama */
+.popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 9999; overflow: hidden; }
+.popup-box { background: linear-gradient(160deg, #111111, #3e2c1c, #6b4c34); color: #fff; padding: 30px; width: 420px; max-width: 90%; border-radius: 25px; position: relative; box-shadow: 0 12px 30px rgba(0,0,0,0.6); transform: translateX(100%); opacity: 0; transition: transform 0.5s ease, opacity 0.5s ease; }
+.popup-box.show { transform: translateX(0); opacity: 1; }
+.popup-box.hide { transform: translateX(100%); opacity: 0; }
+.popup-header h3 { text-align: center; color: #fff; margin-bottom: 15px; }
+.popup-close-btn { background: #e74c3c; color: #fff; border: none; padding: 7px 14px; border-radius: 12px; cursor: pointer; font-weight: 600; position: absolute; top: 15px; right: 15px; transition: background 0.2s ease; }
+.popup-close-btn:hover { background: #c0392b; }
+.popup-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+.popup-table th, .popup-table td { text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); }

@@ -79,15 +79,16 @@
 <div class="d-flex justify-content-center mt-3 gap-2">
     <a href="{{ $menus->previousPageUrl() ?? '#' }}" 
        class="btn" 
-       style="background-color:#8B5E3C; color:#FFF; border:none; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+       style="background-color:#8B5E3C; color:#FFF; border:none; border-radius:5px;">
        Kembali
     </a>
     <a href="{{ $menus->nextPageUrl() ?? '#' }}" 
        class="btn" 
-       style="background-color:#8B5E3C; color:#FFF; border:none; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+       style="background-color:#8B5E3C; color:#FFF; border:none; border-radius:5px;">
        Lanjut
     </a>
 </div>
+
 
 @include('admin.menu.partials.tambah')
 @include('admin.menu.partials.edit')

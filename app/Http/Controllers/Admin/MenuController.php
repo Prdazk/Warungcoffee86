@@ -11,14 +11,9 @@ class MenuController extends Controller
     /** 🟩 Tampilkan semua menu (dengan pagination terbaru) */
     public function index()
     {
-        $menus = Menu::latest()->paginate(5); // pagination aktif
+        $perPage = 5; // Sesuaikan jumlah menu per halaman
+        $menus = Menu::latest()->paginate($perPage);
         return view('admin.menu.index', compact('menus'));
-    }
-
-    /** 🟦 Tampilkan form tambah menu (opsional jika modal di index) */
-    public function create()
-    {
-        return view('admin.menu.create');
     }
 
     /** 🟨 Simpan menu baru */
@@ -32,12 +27,11 @@ class MenuController extends Controller
             'gambar'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // Proses upload gambar jika ada
+        // Upload gambar jika ada
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
-            // Pastikan folder images ada dan writable
             if (!is_dir(public_path('images'))) {
                 mkdir(public_path('images'), 0755, true);
             }
@@ -49,8 +43,12 @@ class MenuController extends Controller
         // Simpan ke database
         Menu::create($validated);
 
+        // Redirect ke halaman terakhir supaya menu baru terlihat
+        $perPage = 5;
+        $lastPage = ceil(Menu::count() / $perPage);
+
         return redirect()
-            ->route('admin.menu.index')
+            ->route('admin.menu.index', ['page' => $lastPage])
             ->with('success', '✅ Menu berhasil ditambahkan');
     }
 
