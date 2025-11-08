@@ -1,35 +1,48 @@
-// --- Modal Tambah Menu ---
-// Ambil elemen yang dibutuhkan
-const modal = document.getElementById('menuModal');
-const openBtn = document.getElementById('openModalBtn');
-const closeBtns = [
-  document.getElementById('closeModalBtn'),
-  document.getElementById('closeModalBtn2')
-];
+document.addEventListener('DOMContentLoaded', () => {
+    // Ambil modal menggunakan Bootstrap Modal API
+    const modalEl = document.getElementById('modalTambah');
+    if (!modalEl) return;
 
-// Buka modal saat tombol "Tambah Menu" diklik
-openBtn?.addEventListener('click', () => {
-  modal.classList.add('show');
-});
+    const modal = new bootstrap.Modal(modalEl, {
+        backdrop: 'static', // klik di luar modal tidak menutup otomatis
+        keyboard: false     // tekan Esc tidak menutup modal
+    });
 
-// Tutup modal jika tombol "×" atau "Batal" diklik
-closeBtns.forEach(btn => {
-  btn?.addEventListener('click', () => {
-    modal.classList.remove('show');
-  });
-});
+    // Tombol "Tambah Menu"
+    const openBtn = document.querySelector('[data-bs-target="#modalTambah"]');
+    openBtn?.addEventListener('click', () => {
+        modal.show();
+    });
 
-// Tutup modal saat klik area luar konten
-modal?.addEventListener('click', (e) => {
-  if (e.target === modal) {
-    modal.classList.remove('show');
-  }
-});
+    // Reset form dan preview gambar saat modal ditutup
+    modalEl.addEventListener('hidden.bs.modal', () => {
+        const form = modalEl.querySelector('form');
+        if (form) form.reset();
 
-// --- Efek tambahan (opsional) ---
-// Tambahkan animasi halus saat muncul
-document.addEventListener('animationend', (e) => {
-  if (e.animationName === 'modalIn') {
-    modal.querySelector('.modal-content')?.classList.add('ready');
-  }
+        // Hapus preview gambar jika ada
+        const imgPreview = modalEl.querySelector('.img-preview');
+        if (imgPreview) imgPreview.src = '';
+    });
+
+    // Preview gambar sebelum upload (opsional)
+    const fileInput = modalEl.querySelector('input[name="gambar"]');
+    const imgPreview = modalEl.querySelector('.img-preview');
+
+    if (fileInput && imgPreview) {
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) {
+                imgPreview.src = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                imgPreview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Tombol submit tetap bekerja normal, tidak ada preventDefault
+    // Jika ingin AJAX, bisa ditambahkan di sini
 });
