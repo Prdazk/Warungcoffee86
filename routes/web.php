@@ -97,7 +97,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
         });
 
-
         /*
         |--------------------------------------------------------------------------
         | DATA ADMIN (KHUSUS SUPERADMIN)

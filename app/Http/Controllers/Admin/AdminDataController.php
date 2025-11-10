@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
     /**
-     * 🧾 Tampilkan daftar semua admin dengan pagination
+     * Tampilkan daftar semua admin dengan pagination
      */
     public function index()
     {
@@ -30,7 +30,7 @@ class AdminController extends Controller
     }
 
     /**
-     * 💾 Simpan admin baru
+     * Simpan admin baru
      */
         public function store(Request $request)
     {
@@ -47,7 +47,7 @@ class AdminController extends Controller
             'email'     => $request->email,
             'jabatan'   => $request->jabatan,
             'no_hp'     => $request->no_hp,
-            'status'    => 0, // ✅ default nonaktif (benar)
+            'status'    => 0,
             'password'  => Hash::make($request->password),
         ]);
 
@@ -55,7 +55,7 @@ class AdminController extends Controller
     }
 
     /**
-     * ✏️ Form edit admin
+     * Form edit admin
      */
     public function edit(AdminData $admin)
     {
@@ -63,7 +63,7 @@ class AdminController extends Controller
     }
 
     /**
-     * 🔁 Update data admin
+     * Update data admin
      */
     public function update(Request $request, AdminData $admin)
     {
