@@ -24,7 +24,7 @@ class MenuController extends Controller
             'harga'    => 'required|numeric|min:0',
             'kategori' => 'required|string|max:100',
             'status'   => 'required|string|max:50',
-            'gambar'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar'   => 'nullable|mimes:jpeg,png,jpg,gif,webp|max:8192',
         ]);
 
         // Upload gambar jika ada
@@ -69,7 +69,7 @@ class MenuController extends Controller
             'harga'    => 'required|numeric|min:0',
             'kategori' => 'required|string|max:100',
             'status'   => 'required|string|max:50',
-            'gambar'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar'   => 'nullable|mimes:jpeg,png,jpg,gif,webp|max:8192',
         ]);
 
         // Upload gambar baru jika ada
