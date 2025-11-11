@@ -1,4 +1,3 @@
-<!-- ===== Modal Hapus Reservasi ===== -->
 <div class="modal fade" id="modalHapus" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:420px; margin-top:-40px;">
     <div class="modal-content" style="
@@ -11,7 +10,6 @@
       text-align:center;
     ">
 
-      <!-- Judul -->
       <h5 style="
         font-weight:700;
         color:#c18b4a;
@@ -22,7 +20,6 @@
         Hapus Reservasi
       </h5>
 
-      <!-- Pesan -->
       <p style="
         font-size:14px;
         color:#e9e9e9;
@@ -32,7 +29,6 @@
         Apakah Anda yakin ingin menghapus reservasi <span id="namaReservasi" style="font-weight:600;"></span>?
       </p>
 
-      <!-- Tombol Aksi -->
       <div class="d-flex justify-content-center gap-3">
         <button type="button"
                 class="btn"
@@ -67,7 +63,6 @@
   </div>
 </div>
 
-<!-- Form Hapus (Hidden for Submit) -->
 <form id="deleteForm" method="POST" style="display:none;">
   @csrf
   @method('DELETE')
@@ -80,11 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const button = event.relatedTarget;
     const id = button.getAttribute('data-id');
     const nama = button.getAttribute('data-nama');
-    
-    // Set nama reservasi di teks modal
+
     document.getElementById('namaReservasi').textContent = nama;
 
-    // Set action form sesuai id reservasi
     const form = document.getElementById('deleteForm');
     form.action = `/admin/reservasi/${id}`;
   });

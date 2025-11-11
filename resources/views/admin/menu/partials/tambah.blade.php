@@ -1,5 +1,4 @@
 <style>
-/* ===== MODAL WRAPPER ===== */
 .custom-modal {
     background: #1b1b1b;
     color: #fff;
@@ -10,12 +9,10 @@
     padding-bottom: 10px;
 }
 
-/* Perkecil ukuran modal */
 #modalTambah .modal-dialog {
     max-width: 650px;
 }
 
-/* ===== TITLE ===== */
 #modalTambah .modal-title {
     font-size: 20px;
     font-weight: 700;
@@ -26,14 +23,12 @@
     text-transform: uppercase;
 }
 
-/* ===== LABEL ===== */
 #modalTambah .form-label {
     color: #c18b4a;
     font-size: 13px;
     margin-bottom: 4px;
 }
 
-/* ===== INPUT, SELECT ===== */
 #modalTambah .custom-input {
     background: rgba(30,30,30,0.9) !important;
     border-radius: 10px;
@@ -55,17 +50,14 @@
     border-color: #c18b4a;
 }
 
-/* Placeholder */
 #modalTambah .custom-input::placeholder {
     color: rgba(255,255,255,0.65) !important;
 }
 
-/* Input file */
 #modalTambah input[type=file] {
     padding: 7px;
 }
 
-/* ===== BUTTON SAVE ===== */
 #modalTambah .custom-btn-save {
     background: #c18b4a;
     border-radius: 8px;
@@ -80,7 +72,6 @@
     background: #996d39;
 }
 
-/* ===== BUTTON CANCEL ===== */
 #modalTambah .custom-btn-cancel {
     background: #5b5b5b;
     border-radius: 8px;
@@ -95,7 +86,6 @@
     background: #3b3b3b;
 }
 
-/* ===== CLOSE BUTTON ===== */
 #modalTambah .btn-close {
     filter: invert(100%);
     opacity: .7;
@@ -104,12 +94,10 @@
     opacity: 1;
 }
 
-/* Perkecil spacing antar form */
 #modalTambah .row.g-4 {
     row-gap: 15px !important;
 }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 576px) {
     #modalTambah .custom-btn-save,
     #modalTambah .custom-btn-cancel {
@@ -123,7 +111,6 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content custom-modal">
 
-      <!-- Header -->
       <div class="modal-header border-0">
         <h5 class="modal-title">Tambah Menu Baru</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -155,7 +142,6 @@
               </select>
             </div>
 
-            <!-- Status -->
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Status</label>
               <select name="status" class="form-select shadow-sm" required

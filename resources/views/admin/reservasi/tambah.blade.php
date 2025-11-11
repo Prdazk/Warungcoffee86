@@ -154,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === Hapus Meja tanpa reload ===
     function hapusMejaHandler() {
         const id = this.dataset.id;
         Swal.fire({

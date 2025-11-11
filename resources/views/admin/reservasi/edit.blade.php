@@ -1,4 +1,3 @@
-{{-- ================= Modal Edit Reservasi ================= --}}
 <div class="modal fade" id="editReservasiModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="background:#2b2b2b; border:1px solid #3a3a3a; border-radius:14px; color:#FFF;">
@@ -80,12 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModalEl = document.getElementById('editReservasiModal');
     const editModal   = new bootstrap.Modal(editModalEl);
 
-    // ===== EVENT DELEGATION untuk tombol edit =====
     document.querySelector('#reservasiTable tbody').addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-edit');
         if (!btn) return;
 
-        // === CEK STATUS APA SUDAH DIBATALKAN ===
         if (btn.dataset.status === 'Dibatalkan') {
             Swal.fire({
                 icon: 'warning',
@@ -96,10 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Set action form
         editForm.action = `/admin/reservasi/${btn.dataset.id}`;
 
-        // === Mapping Data ===
         editForm.querySelector('#editNama').value     = btn.dataset.nama ?? '';
         editForm.querySelector('#editJumlah').value   = btn.dataset.jumlah ?? '';
         editForm.querySelector('#editMeja').value     = btn.dataset.meja ?? '';
@@ -111,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
         editModal.show();
     });
 
-    // ===== Submit via AJAX =====
     editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = editForm.querySelector('button[type="submit"]');

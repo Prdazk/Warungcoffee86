@@ -2,7 +2,6 @@
   <div class="modal-dialog modal-dialog-centered" style="max-width:450px;">
     <div class="modal-content" style="background:#2b2b2b; border:1px solid #3a3a3a; border-radius:14px; color:#FFF; padding:20px;">
 
-      <!-- Header -->
       <div class="modal-header border-0" style="justify-content:center; position:relative;">
         <h5 class="modal-title" style="color:#c18b4a; font-weight:700; text-align:center; width:100%;">Catatan Reservasi</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="position:absolute; right:15px; top:15px;"></button>
@@ -24,14 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalEl = document.getElementById('modalLihatReservasi');
     const detailCatatan = document.getElementById('detail-catatan');
 
-    // Event delegation untuk tombol lihat catatan
     document.addEventListener('click', e => {
         const btn = e.target.closest('.btn-lihat');
         if (!btn) return;
         const catatan = btn.getAttribute('data-catatan');
         detailCatatan.textContent = catatan || '-';
 
-        // Tampilkan modal Bootstrap
         const modal = new bootstrap.Modal(modalEl);
         modal.show();
     });
