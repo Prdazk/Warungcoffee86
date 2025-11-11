@@ -129,27 +129,22 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <!-- Form -->
       <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        <!-- Body -->
         <div class="modal-body">
           <div class="row g-4">
 
-            <!-- Nama Menu -->
             <div class="col-md-6">
               <label class="form-label">Nama Menu</label>
               <input type="text" name="nama" class="form-control custom-input" placeholder="Masukkan nama" required>
             </div>
 
-            <!-- Harga -->
             <div class="col-md-6">
               <label class="form-label">Harga</label>
               <input type="number" name="harga" class="form-control custom-input" placeholder="Masukkan harga" required>
             </div>
 
-            <!-- Kategori -->
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Kategori</label>
               <select name="kategori" class="form-select shadow-sm" required
@@ -170,7 +165,6 @@
               </select>
             </div>
 
-            <!-- Gambar -->
             <div class="col-12">
               <label class="form-label">Gambar</label>
               <input type="file" name="gambar" class="form-control custom-input">
@@ -179,7 +173,6 @@
           </div>
         </div>
 
-        <!-- Footer -->
         <div class="modal-footer border-0 pb-3 w-100 d-flex justify-content-center gap-3">
           <button type="button" class="btn custom-btn-cancel" data-bs-dismiss="modal">Batal</button>
           <button type="submit" class="btn custom-btn-save">Simpan</button>

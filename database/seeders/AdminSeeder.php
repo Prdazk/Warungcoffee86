@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
             'jabatan' => 'Superadmin',
             'no_hp' => '081234567890',
             'role' => 'superadmin',
-            'password' => Hash::make('super123'),
+            'password' => Hash::make('semangatku'),
         ]);
 
         AdminData::create([
