@@ -7,12 +7,10 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\ReservasiController as UserReservasiController;
+use App\Http\Controllers\User\ReservasiController as UserReservasiController;
 
 /*
-|-------------------------------------------------------------------------- 
 | ROUTE USER
-|-------------------------------------------------------------------------- 
 */
 
 // Halaman utama user
@@ -31,24 +29,18 @@ Route::get('/user/reservasi/available-meja', [UserReservasiController::class, 'a
     ->name('user.reservasi.availableMeja');
 
 /*
-|--------------------------------------------------------------------------
 | ROUTE ADMIN & SUPERADMIN
-|--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->group(function () {
 
     /*
-    |--------------------------------------------------------------------------
     | 🔐 LOGIN TANPA MIDDLEWARE
-    |--------------------------------------------------------------------------
     */
     Route::get('/', [AdminAuthController::class, 'showLoginForm'])->name('login.form');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
 
     /*
-    |--------------------------------------------------------------------------
     | 🔒 HANYA ADMIN YANG SUDAH LOGIN
-    |--------------------------------------------------------------------------
     */
     Route::middleware('admin.auth')->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
@@ -57,9 +49,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/beranda', [DashboardController::class, 'index'])->name('beranda');
 
         /*
-        |--------------------------------------------------------------------------
         | MENU
-        |--------------------------------------------------------------------------
         */
         Route::prefix('menu')->name('menu.')->group(function () {
             Route::get('/', [MenuController::class, 'index'])->name('index');
@@ -70,26 +60,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy');
         });
 
-            /*
-        |--------------------------------------------------------------------------
+        /*
         | RESERVASI + KELOLA MEJA
-        |--------------------------------------------------------------------------
         */
         Route::prefix('reservasi')->name('reservasi.')->group(function () {
 
-            // Halaman utama reservasi
             Route::get('/', [AdminReservasiController::class, 'index'])->name('index');
 
-            // Hapus reservasi
             Route::delete('/{id}', [AdminReservasiController::class, 'destroy'])->name('destroy');
 
-            // Edit / Update reservasi
             Route::put('/{id}', [AdminReservasiController::class, 'update'])->name('update');
 
-            // Ambil data reservasi terbaru (AJAX polling)
             Route::get('/latest', [AdminReservasiController::class, 'latest'])->name('latest');
 
-            // KELOLA MEJA
             Route::prefix('meja')->name('meja.')->group(function () {
                 Route::post('/store', [AdminReservasiController::class, 'storeMeja'])->name('store');
                 Route::put('/{id}', [AdminReservasiController::class, 'updateMeja'])->name('update');
@@ -98,9 +81,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         /*
-        |--------------------------------------------------------------------------
         | DATA ADMIN (KHUSUS SUPERADMIN)
-        |--------------------------------------------------------------------------
         */
         Route::middleware('checkRole:superadmin')
             ->prefix('data-admin')

@@ -11,10 +11,10 @@ return new class extends Migration {
             $table->id();
             $table->string('nama');
             $table->string('email')->unique();
-            $table->string('jabatan')->nullable(); // admin / superadmin
-            $table->string('role')->default('admin'); // otomatis sama dengan jabatan
+            $table->string('jabatan')->nullable();
+            $table->string('role')->default('admin'); 
             $table->string('no_hp', 20)->nullable();
-            $table->tinyInteger('status')->default(0); // 1 = aktif, 0 = nonaktif
+            $table->tinyInteger('status')->default(0);
             $table->string('password');
             $table->timestamps();
         });
