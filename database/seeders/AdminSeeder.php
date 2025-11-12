@@ -15,18 +15,16 @@ class AdminSeeder extends Seeder
         AdminData::create([
             'nama' => 'Superadmin Utama',
             'email' => 'superadmin@gmail.com',
-            'jabatan' => 'Superadmin',
-            'no_hp' => '081234567890',
             'role' => 'superadmin',
+            'no_hp' => '081234567890',
             'password' => Hash::make('semangatku'),
         ]);
 
         AdminData::create([
             'nama' => 'Admin Standar',
             'email' => 'admin@gmail.com',
-            'jabatan' => 'Admin',
-            'no_hp' => '089876543210',
             'role' => 'admin',
+            'no_hp' => '089876543210',
             'password' => Hash::make('admin123'),
         ]);
     }

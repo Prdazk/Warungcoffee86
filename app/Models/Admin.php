@@ -10,7 +10,7 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'admin_data'; // ⬅️ ubah ini!
+    protected $table = 'admin_data'; 
 
     protected $guard = 'admin';
 

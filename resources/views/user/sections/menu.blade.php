@@ -8,17 +8,16 @@
         @foreach ($menus->where('kategori', 'Makanan') as $menu)
         <div class="menu-item">
           <img src="{{ $menu->gambar ? asset('images/'.$menu->gambar) : asset('images/kopi2.jpg') }}" alt="{{ $menu->nama }}">
-          <h3 class="menu-name">{{ $menu->nama }}</h3>
-          <div class="menu-buttons">
-           <button 
-            class="btn-detail"
-            data-nama="{{ $menu->nama }}"
-            data-harga="{{ $menu->harga }}"
-            data-status="{{ $menu->status }}"
-            style="background-color:#587a20; color:white; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.2); transition:0.3s;">
-            Lihat
-          </button>
+          <h3 class="menu-name" style="font-family:'Playfair Display','Times New Roman',serif;font-weight:700;font-style:italic;font-size:1.4rem;letter-spacing:0.8px;color:#fff;text-shadow:1px 1px 3px rgba(0,0,0,0.6);">{{ $menu->nama }}</h3>
 
+          <!-- Detail langsung -->
+          <div class="menu-detail">
+            <p>{{ number_format($menu->harga,0,',','.') }}K</p>
+            <p>Status: 
+              <span style="color: {{ $menu->status == 'Tersedia' ? '#c9ff70' : '#ff6b6b' }}">
+                {{ $menu->status }}
+              </span>
+            </p>
           </div>
         </div>
         @endforeach
@@ -31,45 +30,20 @@
         @foreach ($menus->where('kategori', 'Minuman') as $menu)
         <div class="menu-item">
           <img src="{{ $menu->gambar ? asset('images/'.$menu->gambar) : asset('images/kopi2.jpg') }}" alt="{{ $menu->nama }}">
-          <h3 class="menu-name">{{ $menu->nama }}</h3>
-          <div class="menu-buttons">
-            <button 
-            class="btn-detail"
-            data-nama="{{ $menu->nama }}"
-            data-harga="{{ $menu->harga }}"
-            data-status="{{ $menu->status }}"
-            style="background:#587a20; color:#fff; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.2); transition:0.3s;">
-            Lihat
-        </button>
+        <h3 class="menu-name" style="font-family:'Playfair Display','Times New Roman',serif;font-weight:700;font-style:italic;font-size:1.4rem;letter-spacing:0.8px;color:#fff;text-shadow:1px 1px 3px rgba(0,0,0,0.6);">{{ $menu->nama }}</h3>
 
+          <!-- Detail langsung -->
+          <div class="menu-detail">
+            <p>{{ number_format($menu->harga,0,',','.') }}K</p>
+            <p>Status: 
+              <span style="color: {{ $menu->status == 'Tersedia' ? '#c9ff70' : '#ff6b6b' }}">
+                {{ $menu->status }}
+              </span>
+            </p>
           </div>
         </div>
         @endforeach
       </div>
     </div>
-
   </div>
 </section>
-
-<div id="menuPopup2" class="popup-overlay">
-  <div class="popup-box">
-    <div class="popup-header">
-      <h3>Detail Menu</h3>
-      <button class="popup-close-btn">Tutup</button>
-    </div>
-    <table class="popup-table">
-      <tr>
-        <th>Nama</th>
-        <td id="popupName2"></td>
-      </tr>
-      <tr>
-        <th>Harga</th>
-        <td>Rp <span id="popupPrice2"></span></td>
-      </tr>
-      <tr>
-        <th>Status</th>
-        <td id="popupStatus2"></td>
-      </tr>
-    </table>
-  </div>
-</div>

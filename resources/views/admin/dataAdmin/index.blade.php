@@ -29,12 +29,12 @@
                     <td>{{ $admin->nama }}</td>
                     <td>{{ $admin->email }}</td>
                     <td>
-                        @if(strtolower($admin->jabatan) == 'superadmin')
+                        @if(strtolower($admin->role) == 'superadmin')
                             <span class="badge bg-danger">Superadmin</span>
-                        @elseif(strtolower($admin->jabatan) == 'admin')
+                        @elseif(strtolower($admin->role) == 'admin')
                             <span class="badge bg-primary">Admin</span>
                         @else
-                            <span class="badge bg-secondary">{{ ucfirst($admin->jabatan) }}</span>
+                            <span class="badge bg-secondary">{{ ucfirst($admin->role) }}</span>
                         @endif
                     </td>
                     <td>{{ $admin->no_hp ?? '-' }}</td>

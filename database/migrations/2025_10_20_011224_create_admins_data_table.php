@@ -11,10 +11,9 @@ return new class extends Migration {
             $table->id();
             $table->string('nama');
             $table->string('email')->unique();
-            $table->string('jabatan')->nullable();
-            $table->string('role')->default('admin'); 
+            $table->string('role')->default('admin'); // admin atau superadmin
             $table->string('no_hp', 20)->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(0); // 1 aktif, 0 nonaktif
             $table->string('password');
             $table->timestamps();
         });
