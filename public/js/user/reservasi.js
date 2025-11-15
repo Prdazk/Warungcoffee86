@@ -103,6 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAvailableMeja(); // langsung fetch dan update tanpa reload
     });
 
+        window.addEventListener('reservasi:changed', () => {
+        updateAvailableMeja();
+    });
+
     document.addEventListener('meja:added', () => {
         updateAvailableMeja(); // update ketika admin tambah meja
     });
@@ -113,4 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === Inisialisasi daftar meja saat page load ===
     updateAvailableMeja();
+
+        setInterval(() => {
+        if (tanggalInput.value && jamInput.value) {
+            updateAvailableMeja();
+        }
+    }, 1000);
+
 });

@@ -23,15 +23,15 @@ class Reservasi extends Model
 
     protected $casts = [
         'tanggal' => 'date',
-        'jam' => 'string', // agar jam bisa manual
+        'jam' => 'string', // tidak di-cast ke time agar format tetap utuh
     ];
 
     protected $attributes = [
-        'status' => 'baru', // default reservasi baru
+        'status' => 'baru', // default status awal reservasi
     ];
 
     /**
-     * Relasi ke meja
+     * Relasi ke tabel mejas
      */
     public function meja()
     {
@@ -39,11 +39,11 @@ class Reservasi extends Model
     }
 
     /**
-     * Scope: reservasi aktif hari ini
+     * Scope: Ambil reservasi aktif hari ini
      */
     public function scopeAktif($query)
     {
-        return $query->whereDate('tanggal', now()->format('Y-m-d'))
+        return $query->whereDate('tanggal', now()->toDateString())
                      ->where('status', 'Dipesan');
     }
 }

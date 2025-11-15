@@ -151,5 +151,4 @@ document.addEventListener('DOMContentLoaded', () => {
     editModalEl.addEventListener('hidden.bs.modal', () => editForm.reset());
 
 });
-
 </script>

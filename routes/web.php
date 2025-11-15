@@ -13,7 +13,6 @@ use App\Http\Controllers\User\ReservasiController as UserReservasiController;
 | ROUTE USER
 */
 
-// Halaman utama user
 Route::get('/', function () {
     return view('user.dashboard', [
         'menus' => \App\Models\Menu::all(),
@@ -64,15 +63,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         | RESERVASI + KELOLA MEJA
         */
         Route::prefix('reservasi')->name('reservasi.')->group(function () {
-
             Route::get('/', [AdminReservasiController::class, 'index'])->name('index');
-
             Route::delete('/{id}', [AdminReservasiController::class, 'destroy'])->name('destroy');
-
             Route::put('/{id}', [AdminReservasiController::class, 'update'])->name('update');
-
             Route::get('/latest', [AdminReservasiController::class, 'latest'])->name('latest');
-
             Route::prefix('meja')->name('meja.')->group(function () {
                 Route::post('/store', [AdminReservasiController::class, 'storeMeja'])->name('store');
                 Route::put('/{id}', [AdminReservasiController::class, 'updateMeja'])->name('update');

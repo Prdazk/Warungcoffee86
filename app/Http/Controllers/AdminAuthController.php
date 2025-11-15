@@ -16,7 +16,6 @@ class AdminAuthController extends Controller
     // Proses login
     public function login(Request $request)
     {
-        // Validasi ketat hanya email & password
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',

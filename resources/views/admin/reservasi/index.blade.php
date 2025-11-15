@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   loadReservasi();             
-  setInterval(loadReservasi, 5000); // auto refresh tiap 5 detik
+  setInterval(loadReservasi, 1000); // auto refresh tiap 5 detik
 });
 
 </script>
