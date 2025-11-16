@@ -12,7 +12,6 @@
   </button>
 </div>
 
-
 <div class="table-wrapper">
   <table id="reservasiTable">
     <thead>
@@ -20,7 +19,8 @@
         <th>No</th>
         <th>Nama</th>
         <th>Jumlah</th>
-        <th>Status Meja</th>
+        <th>Meja</th>
+        <th>Status</th>
         <th>Tanggal</th>
         <th>Jam</th>
         <th>Catatan</th>
@@ -38,22 +38,23 @@
           <td>{{ $index + 1 }}</td>
           <td>{{ $r->nama }}</td>
           <td>{{ $r->jumlah_orang }}</td>
+          <td>{{ $meja ? $meja->nama_meja : '-' }}</td>
           <td>
-            @if($meja)
-              {{ $meja->nama_meja }}
-              <span class="status-label" style="background:{{ $warna }};">
-                {{ $status }}
-              </span>
-            @else
-              -
-            @endif
+            <span class="status-label" style="background:{{ $warna }};">
+              {{ $status }}
+            </span>
           </td>
           <td>{{ \Carbon\Carbon::parse($r->tanggal)->format('d-m-Y') }}</td>
           <td>{{ $r->jam }}</td>
-          <td>@if($r->catatan) <span class="catatan-pesan-baru">Pesan Baru</span> @else - @endif</td>
+          <td>
+            @if($r->catatan) 
+              <span class="catatan-pesan-baru">Pesan Baru</span> 
+            @else 
+              - 
+            @endif
+          </td>
           <td>
             <div class="aksi-group">
-
               <button class="btn-lihat" data-catatan="{{ $r->catatan ?? '-' }}">
                 <i class="fas fa-eye"></i> Lihat
               </button>
@@ -64,7 +65,7 @@
                       data-nama="{{ $r->nama }}"
                       data-jumlah="{{ $r->jumlah_orang }}"
                       data-meja="{{ $meja ? $meja->id : '' }}"
-                      data-status="{{ $r->status ?? 'Dipesan' }}"
+                      data-status="{{ $status }}"
                       data-tanggal="{{ $r->tanggal }}"
                       data-jam="{{ $r->jam }}"
                       data-catatan="{{ $r->catatan ?? '' }}">
@@ -81,7 +82,7 @@
         </tr>
       @empty
         <tr>
-          <td colspan="8" class="text-center">Belum ada reservasi masuk</td>
+          <td colspan="9" class="text-center">Belum ada reservasi masuk</td>
         </tr>
       @endforelse
     </tbody>
@@ -93,12 +94,14 @@
   <button id="nextBtn">Lanjut</button>
 </div>
 
+{{-- Include modal dan form --}}
 @include('admin.reservasi.modal')
 @include('admin.reservasi.edit')
 @include('admin.reservasi.tambah')
 @include('admin.reservasi.hapus')
 
 <style>
+/* --- Table --- */
 .table-wrapper { overflow-x:auto; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 #reservasiTable { width:100%; border-collapse:collapse; font-size:14px; }
 #reservasiTable th { background:#6F4E37; color:white; padding:10px; }
@@ -121,11 +124,10 @@
 .pagination-wrapper { margin-top:25px; display:flex; justify-content:center; align-items:center; gap:15px; }
 .pagination-wrapper button { padding:10px 18px; border-radius:8px; border:none; background:#6F4E37 !important; color:white !important; cursor:pointer; font-size:14px; font-weight:500; box-shadow:0 3px 6px rgba(0,0,0,0.2); }
 .pagination-wrapper button:hover, .pagination-wrapper button:focus, .pagination-wrapper button:active, .pagination-wrapper button:disabled { background:#6F4E37 !important; color:white !important; opacity:1 !important; box-shadow:0 3px 6px rgba(0,0,0,0.2) !important; }
-
-
 </style>
 
 @endsection
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -138,14 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
     tbody.innerHTML = "";
 
     if (reservasiData.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada reservasi masuk</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center">Belum ada reservasi masuk</td></tr>`;
       return;
     }
 
-    // Hitung total halaman
     const totalPages = Math.ceil(reservasiData.length / pageSize);
-
-    // Validasi currentPage supaya tidak out of bounds
     if (currentPage > totalPages) currentPage = totalPages;
     if (currentPage < 1) currentPage = 1;
 
@@ -164,10 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${start + i + 1}</td>
           <td>${r.nama}</td>
           <td>${r.jumlah_orang}</td>
-          <td>
-            ${meja}
-            <span class="status-label" style="background:${warna};">${status}</span>
-          </td>
+          <td>${meja}</td>
+          <td><span class="status-label" style="background:${warna};">${status}</span></td>
           <td>${new Date(r.tanggal).toLocaleDateString("id-ID")}</td>
           <td>${r.jam}</td>
           <td>${catatan}</td>
@@ -199,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `);
     });
 
-    // Update state tombol
     document.getElementById("prevBtn").disabled = currentPage === 1;
     document.getElementById("nextBtn").disabled = currentPage === totalPages;
   }
@@ -213,25 +209,17 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // Tombol pagination
   document.getElementById("prevBtn").addEventListener("click", () => {
-    if (currentPage > 1) {
-      currentPage--;
-      renderTable();
-    }
+    if (currentPage > 1) { currentPage--; renderTable(); }
   });
 
   document.getElementById("nextBtn").addEventListener("click", () => {
     const totalPages = Math.ceil(reservasiData.length / pageSize);
-    if (currentPage < totalPages) {
-      currentPage++;
-      renderTable();
-    }
+    if (currentPage < totalPages) { currentPage++; renderTable(); }
   });
 
-  loadReservasi();             
-  setInterval(loadReservasi, 1000); // auto refresh tiap 5 detik
+  loadReservasi();
+  setInterval(loadReservasi, 1000);
 });
-
 </script>
 @endpush
