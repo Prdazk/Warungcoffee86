@@ -9,7 +9,13 @@ use App\Http\Controllers\Admin\ReservasiController as AdminReservasiController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\User\ReservasiController as UserReservasiController;
 
+
 /*
+| ROUTE API UNTUK REALTIME MENU USER
+*/
+Route::get('/api/menus', [MenuController::class, 'apiMenus'])->name('api.menus');
+/*
+
 | ROUTE USER
 */
 

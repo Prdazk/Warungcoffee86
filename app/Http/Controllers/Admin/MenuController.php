@@ -11,7 +11,7 @@ class MenuController extends Controller
     /** 🟩 Tampilkan semua menu (dengan pagination terbaru) */
     public function index()
     {
-        $perPage = 5; // Sesuaikan jumlah menu per halaman
+        $perPage = 5;
         $menus = Menu::latest()->paginate($perPage);
         return view('admin.menu.index', compact('menus'));
     }
@@ -40,16 +40,16 @@ class MenuController extends Controller
             $validated['gambar'] = $filename;
         }
 
-        // Simpan ke database
+        // Simpan ke DB
         Menu::create($validated);
 
-        // Redirect ke halaman terakhir supaya menu baru terlihat
+        // Redirect ke halaman terakhir agar menu baru langsung terlihat
         $perPage = 5;
         $lastPage = ceil(Menu::count() / $perPage);
 
         return redirect()
             ->route('admin.menu.index', ['page' => $lastPage])
-            ->with('success', '✅ Menu berhasil ditambahkan');
+            ->with('success', 'Menu berhasil ditambahkan');
     }
 
     /** 🟧 Tampilkan form edit menu */
@@ -72,16 +72,20 @@ class MenuController extends Controller
             'gambar'   => 'nullable|mimes:jpeg,png,jpg,gif,webp|max:8192',
         ]);
 
-        // Upload gambar baru jika ada
+        // Jika upload gambar baru
         if ($request->hasFile('gambar')) {
+            // Hapus gambar lama
             if ($menu->gambar && file_exists(public_path('images/' . $menu->gambar))) {
                 @unlink(public_path('images/' . $menu->gambar));
             }
+
             $file = $request->file('gambar');
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
             $file->move(public_path('images'), $filename);
             $validated['gambar'] = $filename;
         } else {
+            // Simpan gambar lama
             $validated['gambar'] = $menu->gambar;
         }
 
@@ -89,7 +93,7 @@ class MenuController extends Controller
 
         return redirect()
             ->route('admin.menu.index')
-            ->with('success', '✅ Menu berhasil diperbarui');
+            ->with('success', 'Menu berhasil diperbarui');
     }
 
     /** ⛔ Hapus menu */
@@ -105,6 +109,16 @@ class MenuController extends Controller
 
         return redirect()
             ->route('admin.menu.index')
-            ->with('success', '🗑️ Menu berhasil dihapus');
+            ->with('success', 'Menu berhasil dihapus');
+    }
+
+    /** 🔵 API untuk realtime menu di User/Menu */
+    public function apiMenus()
+    {
+        return response()->json(
+            Menu::select('id','nama','harga','kategori','status','gambar')
+                ->latest()
+                ->get()
+        );
     }
 }

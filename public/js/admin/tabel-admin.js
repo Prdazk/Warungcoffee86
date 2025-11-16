@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const deleteForm = document.getElementById('deleteForm');
 
     btnConfirmDelete.addEventListener('click', function() {
-        if(!deleteUrl) return;
+        if (!deleteUrl) return;
         deleteForm.action = deleteUrl;
         modalHapus.hide();
         setTimeout(() => deleteForm.submit(), 200);
@@ -59,4 +59,28 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('editStatus').value = status;
         new bootstrap.Modal(document.getElementById('modalEdit')).show();
     }
+
+
+    // ============================================================
+    // =============== AJAX POLLING SETIAP 3 DETIK ================
+    // ============================================================
+    function reloadMenuTable() {
+        fetch('/admin/menu/poll')
+            .then(response => response.text())
+            .then(html => {
+                const tbody = document.querySelector('#menuTableBody');
+                if (!tbody) return;
+
+                tbody.innerHTML = html;
+
+                // rebind button event for view menu
+                document.querySelectorAll('.view-menu').forEach(btn => {
+                    btn.addEventListener('click', function() { showMenuModal(this); });
+                });
+            })
+            .catch(err => console.error('Polling error:', err));
+    }
+
+    // polling setiap 3 detik
+    setInterval(reloadMenuTable, 3000);
 });

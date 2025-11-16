@@ -1,112 +1,85 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // ======== POPUP MENU ========
-    const popup = document.getElementById('menuPopup2');
-    const popupBox = popup.querySelector('.popup-box');
-    const popupName = document.getElementById('popupName2');
-    const popupPrice = document.getElementById('popupPrice2');
-    const popupStatus = document.getElementById('popupStatus2');
-    const copyBtn = document.getElementById('copyPriceBtn');
+document.addEventListener('DOMContentLoaded', () => {
+    loadMenu();        // Ambil data menu saat halaman dibuka
+    initRealtimeMenu(); // Aktifkan realtime update
+});
 
-    // Tampilkan popup dengan animasi slide
-    const showPopup = () => {
-        popup.style.display = 'flex';
-        popupBox.classList.add('slide-in');
-        popupBox.classList.remove('hide');
-    };
+/* ============================================================
+   LOAD DATA MENU DARI SERVER
+============================================================ */
+function loadMenu() {
+    fetch('/api/menu')
+        .then(res => res.json())
+        .then(data => renderMenu(data))
+        .catch(err => console.error('Error load menu:', err));
+}
 
-    // Tutup popup
-    const hidePopup = () => {
-        popupBox.classList.add('hide');
-        popupBox.classList.remove('slide-in');
-        setTimeout(() => popup.style.display = 'none', 300); // delay sesuai animasi
-    };
+/* ============================================================
+   RENDER LIST MENU KE HALAMAN
+============================================================ */
+function renderMenu(menuList) {
+    const container = document.getElementById('menuContainer');
+    if (!container) return;
 
-    // Event tombol "Lihat"
-    document.querySelectorAll('.btn-detail').forEach(button => {
-        button.addEventListener('click', function() {
-            popupName.innerText = this.dataset.nama;
-            popupPrice.innerText = this.dataset.harga + 'K';
-            popupStatus.innerText = this.dataset.status;
+    container.innerHTML = '';
 
-            // Animasi tombol klik
-            button.classList.add('btn-click');
-            setTimeout(() => button.classList.remove('btn-click'), 200);
-
-            showPopup();
-        });
-    });
-
-    // Tombol tutup
-    const closeBtn = popup.querySelector('.popup-close-btn');
-    closeBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        hidePopup();
-    });
-
-    // Tutup popup jika klik di luar box
-    popup.addEventListener('click', e => {
-        if(e.target === popup) hidePopup();
-    });
-
-    // Tombol salin harga (opsional)
-    if(copyBtn){
-        copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(popupPrice.innerText)
-                .then(() => alert('Harga disalin ke clipboard!'))
-                .catch(() => alert('Gagal menyalin.'));
-        });
+    if (menuList.length === 0) {
+        container.innerHTML = `<p class="text-center text-muted">Tidak ada menu tersedia.</p>`;
+        return;
     }
 
-    // ======== SMOOTH HORIZONTAL SCROLL ========
-    const wrappers = document.querySelectorAll('.menu-grid-wrapper');
+    menuList.forEach(item => {
+        const card = document.createElement('div');
+        card.classList.add('col-md-4', 'mb-3');
 
-    wrappers.forEach(wrapper => {
-        let isDown = false, startX, scrollLeft;
+        card.innerHTML = `
+            <div class="card shadow-sm">
+                <img src="/storage/${item.foto}" class="card-img-top" alt="${item.nama}">
+                <div class="card-body">
+                    <h5 class="card-title">${item.nama}</h5>
+                    <p class="card-text text-muted">${item.deskripsi ?? '-'}</p>
+                    <p class="fw-bold">Rp ${Number(item.harga).toLocaleString()}</p>
 
-        // Mouse events
-        wrapper.addEventListener('mousedown', e => {
-            isDown = true;
-            wrapper.classList.add('active-grab');
-            startX = e.pageX - wrapper.offsetLeft;
-            scrollLeft = wrapper.scrollLeft;
-        });
+                    <button class="btn btn-primary btn-sm w-100 mt-2" 
+                        onclick="openDetail(${item.id})">
+                        Detail
+                    </button>
 
-        wrapper.addEventListener('mouseleave', () => { isDown = false; wrapper.classList.remove('active-grab'); });
-        wrapper.addEventListener('mouseup', () => { isDown = false; wrapper.classList.remove('active-grab'); });
-        wrapper.addEventListener('mousemove', e => {
-            if(!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - wrapper.offsetLeft;
-            const walk = (x - startX) * 1.8; // kecepatan santai tapi responsive
-            wrapper.scrollLeft = scrollLeft - walk;
-        });
+                    <button class="btn btn-success btn-sm w-100 mt-2" 
+                        onclick="pesanMenu(${item.id})">
+                        Pesan
+                    </button>
+                </div>
+            </div>
+        `;
 
-        // Touch events (mobile)
-        wrapper.addEventListener('touchstart', e => {
-            startX = e.touches[0].pageX - wrapper.offsetLeft;
-            scrollLeft = wrapper.scrollLeft;
-        });
-
-        wrapper.addEventListener('touchmove', e => {
-            const x = e.touches[0].pageX - wrapper.offsetLeft;
-            const walk = (x - startX) * 1.8;
-            wrapper.scrollLeft = scrollLeft - walk;
-        });
+        container.appendChild(card);
     });
+}
 
-    // ======== POINTER HOVER SCALE EFEK ========
-    const allItems = document.querySelectorAll('.menu-item');
-    allItems.forEach(item => {
-        item.addEventListener('mousemove', e => {
-            const rect = item.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const moveX = (x - rect.width/2) / 15; // geser horizontal
-            const moveY = (y - rect.height/2) / 15; // geser vertikal
-            item.style.transform = `scale(1.07) translate(${moveX}px, ${moveY}px)`;
+/* ============================================================
+   REALTIME UPDATE (OTOMATIS TANPA RELOAD)
+   Trigger otomatis ketika admin menambah/mengedit/menghapus menu
+============================================================ */
+function initRealtimeMenu() {
+    if (typeof Echo === 'undefined') return;
+
+    Echo.channel('menu-update')
+        .listen('MenuUpdated', () => {
+            console.log('Menu diupdate oleh admin → refresh list');
+            loadMenu();
         });
-        item.addEventListener('mouseleave', () => {
-            item.style.transform = 'scale(1.0) translate(0,0)';
-        });
-    });
-});
+}
+
+/* ============================================================
+   BUTTON DETAIL
+============================================================ */
+function openDetail(id) {
+    window.location.href = `/user/menu/${id}`;
+}
+
+/* ============================================================
+   BUTTON PESAN
+============================================================ */
+function pesanMenu(id) {
+    window.location.href = `/user/reservasi?menu_id=${id}`;
+}
