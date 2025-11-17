@@ -11,9 +11,6 @@ use App\Models\Reservasi;
 
 class AdminAuthController extends Controller
 {
-    /**
-     * Tampilkan form login admin.
-     */
     public function showLoginForm()
     {
         if (Auth::guard('admin')->check()) {
@@ -22,9 +19,6 @@ class AdminAuthController extends Controller
         return view('admin.login');
     }
 
-    /**
-     * Proses login admin.
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -32,22 +26,17 @@ class AdminAuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Ambil admin berdasarkan email
         $admin = AdminData::where('email', $request->email)->first();
 
-        // Jika email/password salah
         if (!$admin || !Hash::check($request->password, $admin->password)) {
             return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
         }
 
-        // Login menggunakan guard admin
         Auth::guard('admin')->login($admin, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        // Set status admin ini aktif (1)
         AdminData::where('id', $admin->id)->update(['status' => 1]);
 
-        // Cek apakah harus ganti password pertama kali (opsional)
         if ($admin->must_change_password ?? false) {
             return redirect()->route('admin.change-password.form')
                 ->with('success', 'Silakan ganti password pertama kali!');
@@ -57,14 +46,10 @@ class AdminAuthController extends Controller
             ->with('success', 'Selamat datang, ' . $admin->nama);
     }
 
-    /**
-     * Logout admin.
-     */
     public function logout(Request $request)
     {
         $admin = Auth::guard('admin')->user();
 
-        // Set status admin ini nonaktif (0)
         if ($admin) {
             AdminData::where('id', $admin->id)->update(['status' => 0]);
         }
@@ -77,10 +62,6 @@ class AdminAuthController extends Controller
             ->with('success', 'Anda telah logout.');
     }
 
-    /**
-     * Halaman beranda admin.
-     * Bisa menampilkan jumlah reservasi baru untuk notifikasi.
-     */
     public function beranda()
     {
         $jumlahBaru = Reservasi::where('status', 'baru')->count();

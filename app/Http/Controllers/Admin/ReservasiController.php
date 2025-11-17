@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class ReservasiController extends Controller
 {
-    /**
-     * Tampilkan daftar reservasi & status meja
-     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -21,7 +18,6 @@ class ReservasiController extends Controller
 
         $mejas = Meja::orderBy('id')->get();
 
-        // Jika belum ada satu meja pun, buat default
         if ($mejas->isEmpty()) {
             Meja::create([
                 'nama_meja' => 'Meja 1',
@@ -39,7 +35,6 @@ class ReservasiController extends Controller
 
         $reservasis = $reservasis->get();
 
-        // Hitung status meja realtime
         foreach ($mejas as $meja) {
 
             $reservasiAktif = $meja->reservasis()
@@ -63,9 +58,6 @@ class ReservasiController extends Controller
         );
     }
 
-    /**
-     * Ambil data terbaru untuk auto-refresh (AJAX)
-     */
     public function latest()
     {
         $reservasis = Reservasi::with('meja')
@@ -77,10 +69,6 @@ class ReservasiController extends Controller
             'data' => $reservasis
         ]);
     }
-
-    /**
-     * Tambah meja baru via AJAX
-     */
     public function storeMeja(Request $request)
     {
         $request->validate([
@@ -100,10 +88,6 @@ class ReservasiController extends Controller
             'data' => $meja
         ]);
     }
-
-    /**
-     * Update data meja
-     */
     public function updateMeja(Request $request, $id)
     {
         $request->validate([
@@ -120,10 +104,6 @@ class ReservasiController extends Controller
 
         return back()->with('success', 'Meja berhasil diperbarui.');
     }
-
-    /**
-     * Hapus meja + semua reservasinya
-     */
     public function destroyMeja($id)
     {
         $meja = Meja::findOrFail($id);
@@ -138,10 +118,6 @@ class ReservasiController extends Controller
             'message' => 'Meja berhasil dihapus.'
         ]);
     }
-
-    /**
-     * Hapus reservasi
-     */
     public function destroy($id)
     {
         $reservasi = Reservasi::findOrFail($id);
@@ -157,9 +133,6 @@ class ReservasiController extends Controller
             ->with('success', 'Reservasi berhasil dihapus.');
     }
 
-    /**
-     * Update reservasi via AJAX
-     */
     public function update(Request $request, $id)
     {
         $reservasi = Reservasi::findOrFail($id);
@@ -180,24 +153,20 @@ class ReservasiController extends Controller
             $newMejaId  = $request->meja_id;
             $newStatus  = $request->status;
 
-            // Kosongkan meja lama jika berpindah
             if ($oldMejaId != $newMejaId && $oldMejaId) {
                 Meja::where('id', $oldMejaId)->update([
                     'status_meja' => 'Kosong'
                 ]);
             }
 
-            // Update meja baru sesuai status
             Meja::where('id', $newMejaId)->update([
                 'status_meja' => $newStatus === 'Dipesan' ? 'Terpakai' : 'Kosong'
             ]);
 
-            // Update reservasi utama
             $reservasi->update(
                 $request->only(['nama', 'jumlah_orang', 'meja_id', 'tanggal', 'jam', 'catatan', 'status'])
             );
 
-            // Jika status dibatalkan, pastikan meja dikosongkan walau tidak pindah meja
             if ($newStatus === 'Dibatalkan') {
                 Meja::where('id', $newMejaId)->update([
                     'status_meja' => 'Kosong'
@@ -211,10 +180,6 @@ class ReservasiController extends Controller
             'data' => $reservasi->load('meja')
         ]);
     }
-
-    /**
-     * Tambah reservasi baru via admin
-     */
     public function storeReservasi(Request $request)
     {
         $request->validate([
@@ -266,9 +231,6 @@ class ReservasiController extends Controller
         }
     }
 
-    /**
-     * Daftar meja tersedia berdasarkan tanggal & jam
-     */
     public function availableMeja(Request $request)
     {
         $tanggal = $request->query('tanggal');
@@ -296,9 +258,6 @@ class ReservasiController extends Controller
         return response()->json($mejas);
     }
 
-            /**
-         * Hitung reservasi terbaru (untuk realtime admin)
-         */
         public function notifCount()
         {
             $count = Reservasi::whereDate('created_at', today())->count();

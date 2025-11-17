@@ -4,7 +4,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-// import middleware kustom
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\AdminAuthMiddleware;
 
@@ -15,10 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // 🟩 Tambahkan alias middleware kustom
+        
         $middleware->alias([
             'role'       => RoleMiddleware::class,
-            'admin.auth' => AdminAuthMiddleware::class, // ✅ middleware login check
+            'admin.auth' => AdminAuthMiddleware::class, 
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -94,14 +94,13 @@
   <button id="nextBtn">Lanjut</button>
 </div>
 
-{{-- Include modal dan form --}}
 @include('admin.reservasi.modal')
 @include('admin.reservasi.edit')
 @include('admin.reservasi.tambah')
 @include('admin.reservasi.hapus')
 
 <style>
-/* --- Table --- */
+
 .table-wrapper { overflow-x:auto; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 #reservasiTable { width:100%; border-collapse:collapse; font-size:14px; }
 #reservasiTable th { background:#6F4E37; color:white; padding:10px; }

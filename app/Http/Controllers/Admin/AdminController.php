@@ -10,13 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    // ===============================================================
-    // 📋 CRUD DATA ADMIN
-    // ===============================================================
-
-    /**
-     * Tampilkan semua admin (superadmin di atas)
-     */
     public function index()
     {
         $admins = AdminData::orderByRaw("CASE WHEN role = 'superadmin' THEN 0 ELSE 1 END")
@@ -26,23 +19,18 @@ class AdminController extends Controller
         return view('admin.dataAdmin.index', compact('admins'));
     }
 
-    /**
-     * Simpan admin baru
-     */
     public function store(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|max:100',
             'email' => 'required|email|unique:admin_data,email',
-            'jabatan' => 'required|in:admin,superadmin', // hanya admin/superadmin
+            'jabatan' => 'required|in:admin,superadmin', 
             'no_hp' => 'nullable|string|max:20',
             'password' => 'required|string|confirmed|min:6',
         ]);
 
-        // Role otomatis sama dengan jabatan
         $role = $request->jabatan;
 
-        // Status otomatis berdasarkan user yang login melalui guard admin
         $loggedAdmin = Auth::guard('admin')->user();
         $status = ($loggedAdmin && $loggedAdmin->role === 'superadmin') ? 1 : 0;
 
@@ -60,9 +48,6 @@ class AdminController extends Controller
                          ->with('success', 'Admin berhasil ditambahkan!');
     }
 
-    /**
-     * Update data admin
-     */
     public function update(Request $request, AdminData $admin)
     {
         $request->validate([
@@ -72,7 +57,6 @@ class AdminController extends Controller
             'no_hp' => 'nullable|string|max:20',
         ]);
 
-        // Role otomatis sama dengan jabatan
         $role = $request->jabatan;
 
         $admin->update([
@@ -87,9 +71,6 @@ class AdminController extends Controller
                          ->with('success', 'Data admin berhasil diperbarui!');
     }
 
-    /**
-     * Hapus admin
-     */
     public function destroy(AdminData $admin)
     {
         $admin->delete();
@@ -98,13 +79,6 @@ class AdminController extends Controller
                          ->with('success', 'Admin berhasil dihapus!');
     }
 
-    // ===============================================================
-    // 🔒 KELOLA PASSWORD
-    // ===============================================================
-
-    /**
-     * Update password admin
-     */
     public function updatePassword(Request $request, AdminData $admin)
     {
         $request->validate([

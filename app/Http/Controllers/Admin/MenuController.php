@@ -8,7 +8,6 @@ use App\Models\Menu;
 
 class MenuController extends Controller
 {
-    /** 🟩 Tampilkan semua menu (dengan pagination terbaru) */
     public function index()
     {
         $perPage = 5;
@@ -16,7 +15,6 @@ class MenuController extends Controller
         return view('admin.menu.index', compact('menus'));
     }
 
-    /** 🟨 Simpan menu baru */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -27,7 +25,6 @@ class MenuController extends Controller
             'gambar'   => 'nullable|mimes:jpeg,png,jpg,gif,webp|max:8192',
         ]);
 
-        // Upload gambar jika ada
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
@@ -40,10 +37,8 @@ class MenuController extends Controller
             $validated['gambar'] = $filename;
         }
 
-        // Simpan ke DB
         Menu::create($validated);
 
-        // Redirect ke halaman terakhir agar menu baru langsung terlihat
         $perPage = 5;
         $lastPage = ceil(Menu::count() / $perPage);
 
@@ -52,14 +47,12 @@ class MenuController extends Controller
             ->with('success', 'Menu berhasil ditambahkan');
     }
 
-    /** 🟧 Tampilkan form edit menu */
     public function edit($id)
     {
         $menu = Menu::findOrFail($id);
         return view('admin.menu.edit', compact('menu'));
     }
 
-    /** 🟥 Update menu */
     public function update(Request $request, $id)
     {
         $menu = Menu::findOrFail($id);
@@ -72,9 +65,7 @@ class MenuController extends Controller
             'gambar'   => 'nullable|mimes:jpeg,png,jpg,gif,webp|max:8192',
         ]);
 
-        // Jika upload gambar baru
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama
             if ($menu->gambar && file_exists(public_path('images/' . $menu->gambar))) {
                 @unlink(public_path('images/' . $menu->gambar));
             }
@@ -85,7 +76,6 @@ class MenuController extends Controller
             $file->move(public_path('images'), $filename);
             $validated['gambar'] = $filename;
         } else {
-            // Simpan gambar lama
             $validated['gambar'] = $menu->gambar;
         }
 
@@ -96,7 +86,6 @@ class MenuController extends Controller
             ->with('success', 'Menu berhasil diperbarui');
     }
 
-    /** ⛔ Hapus menu */
     public function destroy($id)
     {
         $menu = Menu::findOrFail($id);
@@ -110,15 +99,5 @@ class MenuController extends Controller
         return redirect()
             ->route('admin.menu.index')
             ->with('success', 'Menu berhasil dihapus');
-    }
-
-    /** 🔵 API untuk realtime menu di User/Menu */
-    public function apiMenus()
-    {
-        return response()->json(
-            Menu::select('id','nama','harga','kategori','status','gambar')
-                ->latest()
-                ->get()
-        );
     }
 }

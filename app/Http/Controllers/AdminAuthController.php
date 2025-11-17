@@ -7,13 +7,11 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminAuthController extends Controller
 {
-    // Tampilkan halaman login
     public function showLogin()
     {
-        return view('admin.login'); // view login admin
+        return view('admin.login'); 
     }
 
-    // Proses login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -21,19 +19,16 @@ class AdminAuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Cek login pakai guard 'admin_user'
         if (Auth::guard('admin_user')->attempt($credentials)) {
-            $request->session()->regenerate(); // cegah session fixation
+            $request->session()->regenerate(); 
             return redirect()->route('admin.dashboard');
         }
 
-        // Jika gagal, tampilkan error
         return back()->withErrors([
             'email' => 'Email atau password salah!'
         ])->onlyInput('email');
     }
 
-    // Logout admin
     public function logout(Request $request)
     {
         Auth::guard('admin_user')->logout();

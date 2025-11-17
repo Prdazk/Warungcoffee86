@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    /**
-     * Tampilkan daftar semua admin dengan pagination
-     */
     public function index()
     {
         $admins = AdminData::orderByRaw("CASE WHEN jabatan = 'superadmin' THEN 0 ELSE 1 END")
@@ -21,17 +18,11 @@ class AdminController extends Controller
         return view('admin.dataAdmin.index', compact('admins'));
     }
 
-    /**
-     * ➕ Form tambah admin baru (opsional jika pakai modal)
-     */
     public function create()
     {
         return view('admin.dataAdmin.create');
     }
 
-    /**
-     * Simpan admin baru
-     */
         public function store(Request $request)
     {
         $request->validate([
@@ -54,17 +45,11 @@ class AdminController extends Controller
         return redirect()->route('admin.dataAdmin.index')->with('success', 'Admin berhasil ditambahkan.');
     }
 
-    /**
-     * Form edit admin
-     */
     public function edit(AdminData $admin)
     {
         return view('admin.dataAdmin.edit', compact('admin'));
     }
 
-    /**
-     * Update data admin
-     */
     public function update(Request $request, AdminData $admin)
     {
         $request->validate([
@@ -85,18 +70,12 @@ class AdminController extends Controller
         return redirect()->route('admin.dataAdmin.index')->with('success', 'Data admin berhasil diperbarui.');
     }
 
-    /**
-     * 🗑️ Hapus admin
-     */
     public function destroy(AdminData $admin)
     {
         $admin->delete();
         return redirect()->route('admin.dataAdmin.index')->with('success', 'Data admin berhasil dihapus.');
     }
 
-    /**
-     * 🔐 Update password admin
-     */
     public function updatePassword(Request $request, AdminData $admin)
     {
         $request->validate([

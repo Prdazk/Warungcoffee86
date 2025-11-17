@@ -15,10 +15,10 @@ class AdminData extends Authenticatable
     protected $fillable = [
         'nama',
         'email',
-        'role', // admin / superadmin
+        'role', 
         'no_hp',
         'password',
-        'status',  // 1 = aktif, 0 = nonaktif
+        'status',
     ];
 
     protected $hidden = [

@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class ReservasiController extends Controller
 {
-    /**
-     * Simpan reservasi (User)
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -28,7 +25,6 @@ class ReservasiController extends Controller
         try {
             $meja = Meja::lockForUpdate()->findOrFail($validated['meja_id']);
 
-            // Cek ketersediaan berdasarkan reservasi aktif
             $sudahDipesan = Reservasi::where('meja_id', $meja->id)
                 ->where('tanggal', $validated['tanggal'])
                 ->where('jam', $validated['jam'])
@@ -67,9 +63,6 @@ class ReservasiController extends Controller
         }
     }
 
-    /**
-     * Ambil daftar meja yang tersedia (AJAX)
-     */
     public function availableMeja(Request $request)
     {
         $tanggal = $request->query('tanggal');
@@ -96,9 +89,6 @@ class ReservasiController extends Controller
         return response()->json($mejas);
     }
 
-    /**
-     * Update reservasi
-     */
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -115,7 +105,6 @@ class ReservasiController extends Controller
         try {
             $reservasi = Reservasi::lockForUpdate()->findOrFail($id);
 
-            // Jika meja diganti
             if ($reservasi->meja_id != $validated['meja_id']) {
                 $mejaBaru = Meja::lockForUpdate()->findOrFail($validated['meja_id']);
 
@@ -149,9 +138,6 @@ class ReservasiController extends Controller
         }
     }
 
-    /**
-     * Hapus reservasi
-     */
     public function destroy($id)
     {
         DB::beginTransaction();

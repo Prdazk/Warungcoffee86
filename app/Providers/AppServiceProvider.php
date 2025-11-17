@@ -20,27 +20,21 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Alias middleware
         Route::aliasMiddleware('checkRole', \App\Http\Middleware\CheckRole::class);
         Route::aliasMiddleware('admin.auth', \App\Http\Middleware\AdminAuthMiddleware::class);
 
-        // View composer untuk admin.*
         View::composer('admin.*', function ($view) {
             $reservasiBaru = Reservasi::where('status', 'Dipesan')->latest()->get();
             $jumlahBaru = $reservasiBaru->count();
             $view->with(compact('reservasiBaru', 'jumlahBaru'));
         });
 
-        // =================================================
-        // Event login/logout untuk update status admin
-        // =================================================
-
         Event::listen(Login::class, function ($event) {
             $user = $event->user;
             if ($user instanceof AdminData) {
-                // Aktifkan user yang login
+
                 $user->update(['status' => 1]);
-                // Nonaktifkan user lain
+
                 AdminData::where('id', '!=', $user->id)->update(['status' => 0]);
             }
         });
@@ -48,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(Logout::class, function ($event) {
             $user = $event->user;
             if ($user instanceof AdminData) {
-                // Nonaktifkan user saat logout
+
                 $user->update(['status' => 0]);
             }
         });

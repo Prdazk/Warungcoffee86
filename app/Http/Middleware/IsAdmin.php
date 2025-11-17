@@ -10,9 +10,8 @@ class IsAdmin
 {
     public function handle(Request $request, Closure $next)
     {
-        // cek apakah admin sudah login
         if (!Auth::guard('admin')->check()) {
-            return redirect()->route('admin.login.form'); // arahkan ke halaman login
+            return redirect()->route('admin.login.form'); 
         }
 
         return $next($request);

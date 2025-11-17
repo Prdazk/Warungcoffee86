@@ -15,16 +15,12 @@ class CheckRole
         if (!$user) {
             return redirect()->route('admin.login.form');
         }
-
-        // Ambil dari kolom 'role', bukan 'jabatan'
         $role = strtolower($user->role);
 
-        // Superadmin bisa akses semua
         if ($role === 'superadmin') {
             return $next($request);
         }
 
-        // Jika role cocok
         if (in_array($role, $roles)) {
             return $next($request);
         }
