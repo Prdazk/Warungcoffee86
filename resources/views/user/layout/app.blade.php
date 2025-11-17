@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="{{ asset('css/user/user-lokasi.css') }}">
   <link rel="stylesheet" href="{{ asset('css/user/about.css') }}">
   <link rel="stylesheet" href="{{ asset('css/user/popupmenu.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/user/iniloo.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/user/menu-user.css') }}">
   <link rel="stylesheet" href="{{ asset('css/user/user-about.css') }}">
 
 

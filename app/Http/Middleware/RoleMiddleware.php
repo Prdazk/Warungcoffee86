@@ -15,7 +15,6 @@ class RoleMiddleware
         if (! $user || $user->role !== $role) {
             abort(403, 'Akses ditolak.');
         }
-
         return $next($request);
     }
 }

@@ -1,0 +1,153 @@
+/* === CONTAINER FULL === */
+.container {
+  max-width: 100%;
+  padding: 0 40px;
+}
+
+/* === GRID MENU 6 KOTAK === */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 28px;
+  margin-top: 30px;
+  width: 100%;
+}
+
+/* === CARD === */
+/* === CARD === */
+.menu-item {
+  background: linear-gradient(170deg, #111111, #2b1e13, #3c2b1d);
+  color: #fff;
+  text-align: center;
+  padding: 10px; /* ↓ lebih pendek */
+  border-radius: 20px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.55);
+  transition: .25s ease;
+  cursor: pointer;
+}
+
+.menu-item img {
+  width: 100%;
+  height: 145px; /* ↑ gambar lebih besar */
+  object-fit: cover;
+  border-radius: 18px;
+  transition: .3s;
+}
+
+.menu-name {
+  margin: 6px 0 4px; /* ↓ lebih pendek */
+  font-size: 0.95rem; /* ↓ lebih kecil */
+  font-weight: 700;
+}
+
+.menu-detail p {
+  margin: 1px 0; /* ↓ sangat pendek */
+  font-size: 0.86rem; /* ↓ lebih kecil */
+  opacity: 0.9;
+}
+
+.menu-item {
+  padding: 7px; /* ↓ ini yang membuat card jauh lebih pendek */
+}
+
+.menu-item:hover img {
+  transform: scale(1.05);
+}
+
+.menu-name {
+  margin: 4px 0 2px; /* ↓ lebih pendek dari 8px tadi */
+  font-size: 1.05rem; 
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(0,0,0,0.4);
+}
+
+
+/* === POPUP === */
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.popup-box {
+  background: linear-gradient(170deg, #111111, #2b1e13, #3c2b1d);
+  padding: 26px; /* sedikit dirapikan */
+  width: 420px;
+  max-width: 92%;
+  border-radius: 22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+  transition: .4s;
+  transform: translateY(70px);
+  opacity: 0;
+}
+
+.popup-box.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #e74c3c;
+  border: none;
+  padding: 7px 13px;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* === TABLE POPUP === */
+.popup-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px; /* sedikit dipendekin */
+}
+
+.popup-table th,
+.popup-table td {
+  padding: 8px; /* diperkecil */
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+/* ========================================= */
+/* ==== RESPONSIVE ==== */
+/* ========================================= */
+
+/* Laptop kecil (4 kolom) */
+@media (max-width: 1200px) {
+  .menu-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tablet (3 kolom) */
+@media (max-width: 992px) {
+  .container { padding: 0 25px; }
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* HP besar (2 kolom) */
+@media (max-width: 600px) {
+  .container { padding: 0 18px; }
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .menu-item img { height: 120px; } /* tetap proporsional */
+}
+
+/* HP kecil (1 kolom) */
+@media (max-width: 420px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+  .menu-item img { height: 115px; }
+}
