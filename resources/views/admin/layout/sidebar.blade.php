@@ -9,13 +9,13 @@
 
         <li class="menu-item">
             <a href="{{ route('admin.menu.index') }}">
-                <i class="fas fa-utensils"></i> Menu
+                <i class="fas fa-utensils"></i> kelola Menu
             </a>
         </li>
 
         <li class="menu-item">
             <a href="{{ route('admin.reservasi.index') }}">
-                <i class="fas fa-calendar-check"></i> Reservasi
+                <i class="fas fa-calendar-check"></i> Riwayat Reservasi
             </a>
         </li>
 
