@@ -1,4 +1,14 @@
 /* === CONTAINER FULL === */
+/* === CATEGORY TITLE (Makanan / Minuman) === */
+.category-title {
+  text-align: center;
+  width: 100%;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
 .container {
   max-width: 100%;
   padding: 0 40px;
