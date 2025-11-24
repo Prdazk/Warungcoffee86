@@ -36,21 +36,15 @@ class ReservasiController extends Controller
         $reservasis = $reservasis->get();
 
         foreach ($mejas as $meja) {
-
             $reservasiAktif = $meja->reservasis()
                 ->where('status', 'Dipesan')
                 ->where('tanggal', $tanggal)
                 ->where('jam', $jam)
-                ->first();
+                ->exists();
 
-            if ($reservasiAktif) {
-                $meja->status_meja = 'Terpakai';
-                $meja->nama_pemesan = $reservasiAktif->nama;
-            } else {
-                $meja->status_meja = 'Kosong';
-                $meja->nama_pemesan = '-';
-            }
+            $meja->status_sekarang = $reservasiAktif ? 'Terpakai' : $meja->status_meja;
         }
+
 
         return view(
             'admin.reservasi.index',
@@ -231,7 +225,7 @@ class ReservasiController extends Controller
         }
     }
 
-    public function availableMeja(Request $request)
+        public function availableMeja(Request $request)
     {
         $tanggal = $request->query('tanggal');
         $jam = $request->query('jam');
@@ -240,23 +234,18 @@ class ReservasiController extends Controller
             return response()->json(['error' => 'Tanggal dan jam wajib diisi.'], 400);
         }
 
-        $mejas = Meja::all()->map(function ($meja) use ($tanggal, $jam) {
+        // Ambil ID meja yang sudah terpakai pada waktu yang sama
+        $usedMeja = Reservasi::where('tanggal', $tanggal)
+            ->where('jam', $jam)
+            ->where('status', 'Dipesan')
+            ->pluck('meja_id');
 
-            $terpakai = Reservasi::where('meja_id', $meja->id)
-                ->where('tanggal', $tanggal)
-                ->where('jam', $jam)
-                ->where('status', 'Dipesan')
-                ->exists();
-
-            return [
-                'id' => $meja->id,
-                'nama_meja' => $meja->nama_meja,
-                'status_meja' => $terpakai ? 'Terpakai' : 'Kosong',
-            ];
-        });
+        // Ambil meja yang statusnya tidak terpakai
+        $mejas = Meja::whereNotIn('id', $usedMeja)->get(['id', 'nama_meja']);
 
         return response()->json($mejas);
     }
+
 
         public function notifCount()
         {

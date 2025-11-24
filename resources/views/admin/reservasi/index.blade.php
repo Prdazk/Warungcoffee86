@@ -191,8 +191,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentPage < totalPages) { currentPage++; renderTable(); }
   });
 
+  // === Buat fungsi global agar user JS bisa update tabel ===
+  window.updateAdminTable = function(data) {
+    reservasiData = data;
+    renderTable();
+  };
+  // ==========================================================
+
   loadReservasi();
-  setInterval(loadReservasi, 1000);
+  setInterval(loadReservasi, 1000); // opsional polling
 });
 </script>
 @endpush

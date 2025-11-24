@@ -16,20 +16,24 @@ use App\Http\Controllers\User\ReservasiController as UserReservasiController;
 Route::get('/api/menus', [MenuController::class, 'apiMenus'])->name('api.menus');
 /*
 
+/*
 | ROUTE USER
 */
-
 Route::get('/', function () {
     return view('user.dashboard', [
         'menus' => \App\Models\Menu::all(),
     ]);
 })->name('user.dashboard');
 
-// Simpan reservasi dari user (POST)
+// Halaman reservasi
+Route::get('/reservasi', [UserReservasiController::class, 'index'])
+    ->name('user.reservasi.index');
+
+// Simpan reservasi dari user
 Route::post('/user/reservasi/store', [UserReservasiController::class, 'store'])
     ->name('user.reservasi.store');
 
-// Ambil daftar meja tersedia untuk AJAX refresh
+// Ambil daftar meja tersedia (AJAX)
 Route::get('/user/reservasi/available-meja', [UserReservasiController::class, 'availableMeja']) 
     ->name('user.reservasi.availableMeja');
 

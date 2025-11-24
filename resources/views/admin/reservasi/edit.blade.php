@@ -75,10 +75,11 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    const editForm   = document.getElementById('editReservasiForm');
+    const editForm    = document.getElementById('editReservasiForm');
     const editModalEl = document.getElementById('editReservasiModal');
     const editModal   = new bootstrap.Modal(editModalEl);
 
+    // Event klik tombol edit di tabel admin
     document.querySelector('#reservasiTable tbody').addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-edit');
         if (!btn) return;
@@ -106,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editModal.show();
     });
 
+    // Submit form edit reservasi
     editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = editForm.querySelector('button[type="submit"]');
@@ -135,8 +137,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     showConfirmButton: false,
                     timer: 1500
                 });
+
                 editForm.reset();
-                setTimeout(() => window.location.reload(), 1600);
+                editModal.hide();
+
+                // --- Update tabel admin realtime ---
+                if (window.updateAdminTable) {
+                    fetch("{{ url('/admin/reservasi/latest') }}")
+                        .then(r => r.json())
+                        .then(res2 => {
+                            window.updateAdminTable(res2.data);
+                        });
+                }
+
+                // --- Update meja user realtime ---
+                if (window.reloadUserMeja) {
+                    window.reloadUserMeja(); // panggil user JS untuk reload meja dropdown
+                }
+
             } else {
                 Swal.fire('Gagal!', result.message || 'Terjadi kesalahan.', 'error');
             }
@@ -148,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Reset form ketika modal ditutup
     editModalEl.addEventListener('hidden.bs.modal', () => editForm.reset());
 
 });

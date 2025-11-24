@@ -13,13 +13,18 @@ return new class extends Migration
             $table->string('nama');
             $table->integer('jumlah_orang');
 
-            $table->unsignedBigInteger('meja_id');
-            $table->foreign('meja_id')->references('id')->on('mejas')->onDelete('cascade');
+            $table->foreignId('meja_id')
+                  ->constrained('mejas')
+                  ->cascadeOnDelete();
 
             $table->date('tanggal');
             $table->time('jam');
             $table->text('catatan')->nullable();
-            $table->enum('status', ['baru','Dipesan','selesai','Dibatalkan'])->default('baru');
+
+            // Status hanya 2 opsi: dipesan dan dibatalkan
+            $table->enum('status', ['dipesan', 'dibatalkan'])
+                  ->default('dipesan');
+
             $table->timestamps();
 
             $table->engine = 'InnoDB';
