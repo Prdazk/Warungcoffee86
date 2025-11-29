@@ -11,9 +11,5 @@
       WarungCoffee86 bukan hanya tempat ngopi, tapi juga ruang berkumpul dan berbagi cerita.
     </p>
 
-    <p>
-      Dengan desain interior hangat dan pelayanan profesional,
-      kami berkomitmen memberikan pengalaman yang tak terlupakan untuk setiap tamu.
-    </p>
   </div>
 </section>

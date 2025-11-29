@@ -103,7 +103,10 @@ class ReservasiController extends Controller
         $meja = Meja::findOrFail($id);
 
         DB::transaction(function () use ($meja) {
+            // Hapus semua reservasi terkait
             $meja->reservasis()->delete();
+
+            // Baru hapus meja
             $meja->delete();
         });
 
@@ -112,20 +115,28 @@ class ReservasiController extends Controller
             'message' => 'Meja berhasil dihapus.'
         ]);
     }
-    public function destroy($id)
+
+        public function destroy($id)
     {
         $reservasi = Reservasi::findOrFail($id);
 
+        $meja = null;
         if ($reservasi->meja_id) {
-            Meja::where('id', $reservasi->meja_id)
-                ->update(['status_meja' => 'Kosong']);
+            $meja = Meja::find($reservasi->meja_id);
+            $meja->status_meja = 'Kosong';
+            $meja->save();
         }
 
         $reservasi->delete();
 
-        return redirect()->route('admin.reservasi.index')
-            ->with('success', 'Reservasi berhasil dihapus.');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Reservasi berhasil dihapus.',
+            'meja_id' => $meja?->id,
+            'meja_nama' => $meja?->nama_meja
+        ]);
     }
+
 
     public function update(Request $request, $id)
     {

@@ -4,7 +4,7 @@ $mejaKosong = $mejaKosong ?? Meja::where('status_meja', 'Kosong')->orderBy('id')
 @endphp
 
 <section id="reservasi">
-    <div class="reservasi-container" style="gap:25px; margin-top:15px;">
+    <div class="reservasi-container" style="gap:40px; margin-top:40px;">
 
         <div class="form-side" style="padding:35px 35px; border-radius:12px;">
             <h2 class="form-title" style="text-align:center; margin-bottom:12px; font-size:17px;">Silakan Pilih Meja</h2>
@@ -61,7 +61,7 @@ $mejaKosong = $mejaKosong ?? Meja::where('status_meja', 'Kosong')->orderBy('id')
                 </div>
 
                 <div class="full-width" style="margin-bottom:14px;">
-                    <label style="font-size:12px;">Catatan</label>
+                    <label style="font-size:12px;">Pesan</label>
                     <textarea name="catatan" placeholder="Tulis catatan di sini..." rows="3" class="input-field"
                               style="padding:7px 10px; font-size:13px;"></textarea>
                 </div>
@@ -125,10 +125,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // FORM AJAX SUBMIT
     // ================================
     form.addEventListener('submit', function(e) {
-        e.preventDefault(); // cegah reload halaman
+        e.preventDefault();
 
         const formData = new FormData(form);
-        const selectedMeja = mejaSelect.value; // simpan meja yang dipilih
+        const selectedMeja = mejaSelect.value;
 
         fetch("{{ route('user.reservasi.store') }}", {
             method: "POST",
@@ -145,28 +145,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     timer: 1800,
                     showConfirmButton: false
                 }).then(() => {
-                    // scroll ke section reservasi
                     const reservasiSection = document.getElementById('reservasi');
                     reservasiSection.scrollIntoView({ behavior: 'smooth' });
 
-                    // Hapus meja yang baru dipesan dari dropdown
                     if (selectedMeja) {
                         const optionToRemove = mejaSelect.querySelector(`option[value="${selectedMeja}"]`);
                         if (optionToRemove) optionToRemove.remove();
                     }
 
-                    // reload meja kosong
                     loadMejaKosong();
 
-                    // ================================
-                    // Update tabel admin secara realtime
-                    // ================================
                     if (window.reloadAdminTable) {
-                        window.reloadAdminTable(); // panggil fungsi global admin untuk render tabel terbaru
+                        window.reloadAdminTable();
                     }
                 });
 
-                form.reset(); // reset form
+                form.reset();
             }
         })
         .catch(err => {
@@ -185,7 +179,60 @@ document.addEventListener('DOMContentLoaded', function () {
         loadMejaKosong();
     };
 
-    // Load initial meja kosong saat halaman dibuka
+    // Load initial meja kosong
     loadMejaKosong();
+
+
+
+    // ==================================================
+   // === RESPONSIVE (DITAMBAHKAN — TIDAK MERUBAH YANG ADA)
+// ==================================================
+const container = document.querySelector('.reservasi-container');
+const formSide = document.querySelector('.form-side');
+const syaratSide = document.querySelector('.syarat-side');
+
+function responsiveReservasi() {
+    if (!container || !formSide || !syaratSide) return;
+
+   if (window.innerWidth <= 600) {
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.gap = '16px';
+
+    // Form-side: geser ke kiri banyak
+    formSide.style.width = '100%';
+    formSide.style.maxWidth = '92%';
+    formSide.style.margin = '20px 0 0 -8%'; // margin-left negatif untuk geser ke kiri
+    formSide.style.padding = '18px';
+
+   syaratSide.style.width = '100%';
+    syaratSide.style.maxWidth = '92%';
+    syaratSide.style.margin = '0 auto';
+    syaratSide.style.marginLeft = '-2%'; // geser sedikit ke kiri
+    syaratSide.style.padding = '15px';
+}
+
+    else {
+        container.style.display = 'flex';
+        container.style.flexDirection = 'row';
+        container.style.gap = '25px';
+
+        formSide.style.width = '60%';
+        formSide.style.maxWidth = '100%';
+        formSide.style.margin = '0';
+        formSide.style.padding = '35px';
+
+        syaratSide.style.width = '35%';
+        syaratSide.style.maxWidth = '100%';
+        syaratSide.style.margin = '0';
+        syaratSide.style.padding = '16px 18px';
+    }
+}
+
+// panggil saat load & resize
+responsiveReservasi();
+window.addEventListener('resize', responsiveReservasi);
+
+
 });
 </script>
