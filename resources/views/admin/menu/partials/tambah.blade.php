@@ -1,9 +1,10 @@
 <style>
+/* 1. CONTAINER MODAL */
 .custom-modal {
-    background: #1b1b1b;
-    color: #fff;
+    background: #1b1b1b;       /* Latar belakang gelap */
+    color: #fff;               /* Teks putih */
     border-radius: 14px;
-    border: 1px solid #3a3a3a;
+    border: 1px solid #3a3a3a; /* Garis tepi halus */
     box-shadow: 0 0 20px rgba(0,0,0,0.6);
     overflow: hidden;
     padding-bottom: 10px;
@@ -13,99 +14,133 @@
     max-width: 650px;
 }
 
+/* 2. JUDUL MODAL */
 #modalTambah .modal-title {
     font-size: 20px;
     font-weight: 700;
-    color: #c18b4a;
+    color: #c18b4a;            /* Warna Emas */
     width: 100%;
     text-align: center;
     letter-spacing: 1px;
     text-transform: uppercase;
 }
 
+/* 3. LABEL INPUT */
 #modalTambah .form-label {
-    color: #c18b4a;
+    color: #c18b4a;            /* Label Emas */
     font-size: 13px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    font-weight: 600;
 }
 
+/* 4. INPUT TEKS BIASA */
 #modalTambah .custom-input {
     background: rgba(30,30,30,0.9) !important;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid #444;
     color: #fff !important;
-    padding: 8px 10px;
+    padding: 8px 12px;
     font-size: 14px;
     transition: .3s ease;
-    height: 38px;
+    height: 40px;
 }
 
+/* Efek Fokus pada Input */
 #modalTambah .custom-input:focus {
-    border-color: #c18b4a;
-    box-shadow: 0 0 6px rgba(193,139,74,0.7);
-    background: rgba(45,45,45,0.9) !important;
+    border-color: #c18b4a;     /* Border jadi Emas saat diketik */
+    box-shadow: 0 0 8px rgba(193,139,74,0.4);
+    background: rgba(40,40,40,1) !important;
+    outline: none;
 }
 
-#modalTambah .custom-input:hover {
-    border-color: #c18b4a;
-}
-
+/* Placeholder warna redup */
 #modalTambah .custom-input::placeholder {
-    color: rgba(255,255,255,0.65) !important;
+    color: rgba(255,255,255,0.5) !important;
 }
 
-#modalTambah input[type=file] {
-    padding: 7px;
+/* 5. KHUSUS INPUT FILE (CHOOSE FILE) - Diperbaiki */
+#modalTambah input[type="file"].custom-input {
+    padding: 5px;   /* Padding lebih kecil agar tombol muat */
+    height: auto;   /* Tinggi menyesuaikan isi */
+    display: flex;
+    align-items: center;
 }
 
+/* Mengubah Tombol "Choose File" jadi Emas */
+#modalTambah input[type="file"]::file-selector-button {
+    background: #c18b4a;       /* Background Emas */
+    border: none;
+    color: #fff;               /* Teks Putih */
+    padding: 6px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-right: 12px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+#modalTambah input[type="file"]::file-selector-button:hover {
+    background: #d49a55;       /* Emas lebih terang saat hover */
+}
+
+/* 6. TOMBOL SAVE (SIMPAN) */
 #modalTambah .custom-btn-save {
     background: #c18b4a;
     border-radius: 8px;
-    padding: 8px 30px;
+    padding: 10px 30px;
     font-weight: 600;
     color: #fff;
     transition: .3s;
     border: none;
     font-size: 14px;
+    letter-spacing: 0.5px;
 }
+
 #modalTambah .custom-btn-save:hover {
-    background: #996d39;
+    background: #a67c42;       /* Warna menggelap dikit */
+    transform: translateY(-1px);
 }
 
+/* 7. TOMBOL CANCEL (BATAL) */
 #modalTambah .custom-btn-cancel {
-    background: #5b5b5b;
+    background: #333;
     border-radius: 8px;
-    padding: 8px 30px;
+    padding: 10px 30px;
     font-weight: 600;
-    color: #fff;
+    color: #bbb;
     transition: .3s;
-    border: none;
+    border: 1px solid #444;
     font-size: 14px;
 }
+
 #modalTambah .custom-btn-cancel:hover {
-    background: #3b3b3b;
+    background: #444;
+    color: #fff;
 }
 
+/* 8. TOMBOL SILANG (CLOSE) DI POJOK KANAN ATAS */
 #modalTambah .btn-close {
-    filter: invert(100%);
-    opacity: .7;
+    filter: invert(1) grayscale(100%) brightness(200%); /* Jadi Putih */
+    opacity: 0.8;
 }
 #modalTambah .btn-close:hover {
     opacity: 1;
 }
 
+/* LAYOUT SPACING */
 #modalTambah .row.g-4 {
-    row-gap: 15px !important;
+    row-gap: 20px !important; /* Jarak antar baris form */
 }
 
+/* RESPONSIVE HP */
 @media (max-width: 576px) {
     #modalTambah .custom-btn-save,
     #modalTambah .custom-btn-cancel {
-        width: 47%;
+        width: 100%;       /* Tombol jadi full width di HP */
+        margin-bottom: 10px;
     }
 }
 </style>
-
 
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">

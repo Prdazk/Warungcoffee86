@@ -1,71 +1,94 @@
 <style>
-/* Laptop */
+/* 1. Layout Grid Utama */
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 20px;
+    /* Jarak tetap 70px untuk Laptop */
+    gap: 70px; 
+    align-items: start; /* PENTING: Agar item bisa diatur naik-turunnya */
 }
 
-/* Item lebih pendek */
+/* 2. Container Item */
 .menu-item {
-    background: #2d1f16;
-    padding: 10px;
-    border-radius: 12px;
-    text-align: center;
-    min-height: 150px; /* pendek */
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0;
+    
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    
+    min-height: 180px; 
+    transition: all 0.3s ease; /* Biar smooth */
 }
 
-/* Gambar lebih rounded */
+/* 3. BAGIAN GAMBAR */
 .menu-item img {
-    width: 100%;
-    height: 80px;       /* pendek */
-    object-fit: cover;
-    border-radius: 20px; /* lebih bulat */
-    margin-bottom: 8px;
+    width: 100%;           
+    height: 130px;         
+    object-fit: contain;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    border-radius: 0;
+    margin-bottom: 10px;
+    
+    /* Efek bayangan */
+    filter: drop-shadow(0px 8px 8px rgba(0,0,0,0.4)); 
 }
 
+/* Text Nama Menu */
 .menu-name {
     font-size: 0.9rem;
     color: #e0a96d;
-    margin: 4px 0;
+    margin-top: 5px;
+    font-weight: bold;
 }
 
+/* Text Harga */
 .menu-detail p {
-    margin: 0;
     font-size: 0.85rem;
     color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
 
-/* HP: 3 kolom */
+/* ========================================= */
+/* KHUSUS TAMPILAN HP (Dibuat Zig-Zag)       */
+/* ========================================= */
 @media (max-width: 480px) {
     .menu-grid {
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 12px; /* jarak antar tabel lebih lega */
+        
+        /* Jarak kanan-kiri dirapatkan biar gambar agak besar */
+        column-gap: 10px; 
+        
+        /* Jarak atas-bawah DILONGGARKAN untuk memberi ruang efek zig-zag */
+        row-gap: 60px; 
     }
-
-    .menu-item {
-        padding: 6px;
-        min-height: 135px; /* lebih pendek lagi */
-    }
-
+    
     .menu-item img {
-        height: 70px;   /* pendek untuk HP */
-        border-radius: 15px; /* tetap rounded tapi lebih kecil */
+        height: 85px; /* Sesuaikan sedikit agar proporsional */
     }
-
+    
     .menu-name {
-        font-size: 0.8rem;
+        font-size: 0.7rem; 
+    }
+    
+    .menu-detail p {
+        font-size: 0.7rem;
     }
 
-    .menu-detail p {
-        font-size: 0.75rem;
+    /* --- LOGIKA ZIG-ZAG (Magic Code) --- */
+    
+    /* Target Kolom Tengah (Item ke-2, 5, 8, dst) */
+    /* Rumus 3n+2 artinya setiap kelipatan 3, ambil yg ke-2 */
+    .menu-item:nth-child(3n+2) {
+        margin-top: 45px; /* Turunkan item tengah sebanyak 45px */
     }
 }
 </style>
-
 
 <section id="popular-menu" class="menu-section" style="margin-top: 50px;">
   <div class="container">
