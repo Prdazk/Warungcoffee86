@@ -38,6 +38,6 @@ class Reservasi extends Model
     public function scopeAktif($query)
     {
         return $query->whereDate('tanggal', now()->toDateString())
-                     ->where('status', 'Dipesan');
+                     ->where('status', 'baru');
     }
 }

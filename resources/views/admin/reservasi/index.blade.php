@@ -59,18 +59,18 @@
                 <i class="fas fa-eye"></i> Lihat
               </button>
 
-              <button class="btn-edit" 
-                      data-bs-toggle="modal" data-bs-target="#editReservasiModal"
-                      data-id="{{ $r->id }}"
-                      data-nama="{{ $r->nama }}"
-                      data-jumlah="{{ $r->jumlah_orang }}"
-                      data-meja="{{ $meja ? $meja->id : '' }}"
-                      data-status="{{ $status }}"
-                      data-tanggal="{{ $r->tanggal }}"
-                      data-jam="{{ $r->jam }}"
-                      data-catatan="{{ $r->catatan ?? '' }}">
-                <i class="fas fa-edit"></i> Edit
+            <button class="btn-edit"
+                  data-id="{{ $r->id }}"
+                  data-nama="{{ $r->nama }}"
+                  data-jumlah="{{ $r->jumlah_orang }}"
+                  data-meja="{{ $r->meja_id ?? '' }}"
+                  data-status="{{ $r->status }}"
+                  data-tanggal="{{ $r->tanggal ? \Carbon\Carbon::parse($r->tanggal)->format('Y-m-d') : now()->format('Y-m-d') }}"
+                  data-jam="{{ $r->jam }}"
+                  data-catatan="{{ $r->catatan ?? '' }}">
+                  <i class="fas fa-edit"></i> Edit
               </button>
+
 
               <button type="button" class="btn-hapus" 
                       data-bs-toggle="modal" data-bs-target="#modalHapus"
@@ -125,49 +125,66 @@ document.addEventListener('DOMContentLoaded', () => {
     const end = start + pageSize;
     const pageData = reservasiData.slice(start, end);
 
-    pageData.forEach((r, i) => {
-      const meja = r.meja ? r.meja.nama_meja : '-';
-      const status = r.status ?? 'Dipesan';
-      const warna = status === "Dipesan" ? "#f44336" : "#4CAF50";
-      const catatan = r.catatan ? `<span class="catatan-pesan-baru">Pesan Baru</span>` : "-";
+   pageData.forEach((r, i) => {
+  const meja = r.meja ? r.meja.nama_meja : '-';
+  
+  // Ambil status
+  let status = r.status ?? 'Dipesan';
 
-      tbody.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${start + i + 1}</td>
-          <td>${r.nama}</td>
-          <td>${r.jumlah_orang}</td>
-          <td>${meja}</td>
-          <td><span class="status-label" style="background:${warna};">${status}</span></td>
-          <td>${new Date(r.tanggal).toLocaleDateString("id-ID")}</td>
-          <td>${r.jam}</td>
-          <td>${catatan}</td>
-          <td>
-            <div class="aksi-group">
-              <button class="btn-lihat" data-catatan="${r.catatan ?? '-'}">
-                <i class="fas fa-eye"></i> Lihat
-              </button>
-              <button class="btn-edit"
-                data-bs-toggle="modal" data-bs-target="#editReservasiModal"
-                data-id="${r.id}"
-                data-nama="${r.nama}"
-                data-jumlah="${r.jumlah_orang}"
-                data-meja="${r.meja ? r.meja.id : ''}"
-                data-status="${status}"
-                data-tanggal="${r.tanggal}"
-                data-jam="${r.jam}"
-                data-catatan="${r.catatan ?? ''}">
-                <i class="fas fa-edit"></i> Edit
-              </button>
-              <button type="button" class="btn-hapus"
-                data-bs-toggle="modal" data-bs-target="#modalHapus"
-                data-id="${r.id}">
-                <i class="fas fa-trash"></i> Hapus
-              </button>
-            </div>
-          </td>
-        </tr>
-      `);
-    });
+  // Cek 24 jam untuk ubah status ke Selesai
+  const reservasiTime = new Date(`${r.tanggal}T${r.jam}`);
+  const now = new Date();
+  if(status === 'Dipesan' && (now - reservasiTime) >= 24*60*60*1000){
+      status = 'Selesai';
+  }
+
+  // Tentukan warna sesuai status
+  let warna;
+  if(status === "Dipesan") warna = "#f44336";
+  else if(status === "Selesai") warna = "#4CAF50";
+  else if(status === "Dibatalkan") warna = "#424242"; // abu-abu gelap
+  else warna = "#4CAF50";
+
+  const catatan = r.catatan ? `<span class="catatan-pesan-baru">Pesan Baru</span>` : "-";
+
+  tbody.insertAdjacentHTML("beforeend", `
+    <tr>
+      <td>${start + i + 1}</td>
+      <td>${r.nama}</td>
+      <td>${r.jumlah_orang}</td>
+      <td>${meja}</td>
+      <td><span class="status-label" style="background:${warna};">${status}</span></td>
+      <td>${new Date(r.tanggal).toLocaleDateString("id-ID")}</td>
+      <td>${r.jam}</td>
+      <td>${catatan}</td>
+      <td>
+        <div class="aksi-group">
+          <button class="btn-lihat" data-catatan="${r.catatan ?? '-'}">
+            <i class="fas fa-eye"></i> Lihat
+          </button>
+          <button class="btn-edit"
+            data-bs-toggle="modal" data-bs-target="#editReservasiModal"
+            data-id="${r.id}"
+            data-nama="${r.nama}"
+            data-jumlah="${r.jumlah_orang}"
+            data-meja="${r.meja ? r.meja.id : ''}"
+            data-status="${status}"
+            data-tanggal="${r.tanggal}"
+            data-jam="${r.jam}"
+            data-catatan="${r.catatan ?? ''}">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button type="button" class="btn-hapus"
+            data-bs-toggle="modal" data-bs-target="#modalHapus"
+            data-id="${r.id}">
+            <i class="fas fa-trash"></i> Hapus
+          </button>
+        </div>
+      </td>
+    </tr>
+  `);
+});
+
 
     document.getElementById("prevBtn").disabled = currentPage === 1;
     document.getElementById("nextBtn").disabled = currentPage === totalPages;
@@ -192,10 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // === Buat fungsi global agar user JS bisa update tabel ===
-  window.updateAdminTable = function(data) {
-    reservasiData = data;
-    renderTable();
-  };
+ window.reloadAdminTable = function() {
+  loadReservasi();
+};
   // ==========================================================
 
   loadReservasi();

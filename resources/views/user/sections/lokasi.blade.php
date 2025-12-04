@@ -1,4 +1,4 @@
-<section id="lokasi" class="lokasi" style="margin-top: 5px; margin-bottom: 80px;">
+<section id="lokasi" class="lokasi" style="margin-top: 0px; margin-bottom: 80px;">
   <div class="container">
     
     <div class="lokasi-wrapper text-center">

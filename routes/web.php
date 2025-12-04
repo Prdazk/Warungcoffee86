@@ -10,15 +10,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\User\ReservasiController as UserReservasiController;
 
 
-/*
-| ROUTE API UNTUK REALTIME MENU USER
-*/
 Route::get('/api/menus', [MenuController::class, 'apiMenus'])->name('api.menus');
-/*
 
-/*
-| ROUTE USER
-*/
 Route::get('/', function () {
     return view('user.dashboard', [
         'menus' => \App\Models\Menu::all(),

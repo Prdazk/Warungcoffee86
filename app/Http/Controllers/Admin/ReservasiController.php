@@ -53,16 +53,29 @@ class ReservasiController extends Controller
     }
 
     public function latest()
-    {
-        $reservasis = Reservasi::with('meja')
-            ->orderBy('id', 'DESC')
-            ->get();
+{
+    $reservasis = Reservasi::with('meja')
+        ->orderBy('id', 'DESC')
+        ->get()
+        ->map(function($r) {
+            return [
+                'id' => $r->id,
+                'nama' => $r->nama,
+                'jumlah_orang' => $r->jumlah_orang,
+                'meja' => $r->meja ? ['id' => $r->meja->id, 'nama_meja' => $r->meja->nama_meja] : null,
+                'status' => $r->status,
+                'tanggal' => $r->tanggal ? $r->tanggal->format('Y-m-d') : null, // <- format YYYY-MM-DD
+                'jam' => $r->jam,
+                'catatan' => $r->catatan,
+            ];
+        });
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $reservasis
-        ]);
-    }
+    return response()->json([
+        'status' => 'success',
+        'data' => $reservasis
+    ]);
+}
+
     public function storeMeja(Request $request)
     {
         $request->validate([
@@ -139,102 +152,105 @@ class ReservasiController extends Controller
 
 
     public function update(Request $request, $id)
-    {
-        $reservasi = Reservasi::findOrFail($id);
+{
+    $reservasi = Reservasi::findOrFail($id);
 
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'jumlah_orang' => 'required|integer|min:1|max:' . $reservasi->meja->kapasitas,
-            'meja_id' => 'required|exists:mejas,id',
-            'tanggal' => 'required|date|after_or_equal:' . now()->format('Y-m-d'),
-            'jam' => 'required',
-            'catatan' => 'nullable|string|max:500',
-            'status' => 'required|in:Dipesan,Dibatalkan',
+    $request->validate([
+        'nama' => 'required|string|max:255',
+        'jumlah_orang' => 'required|integer|min:1|max:' . $reservasi->meja->kapasitas,
+        'meja_id' => 'required|exists:mejas,id',
+        'tanggal' => 'required|date|after_or_equal:' . now()->format('Y-m-d'),
+        'jam' => 'required',
+        'catatan' => 'nullable|string|max:500',
+        'status' => 'required|in:Dipesan,Dibatalkan',
+    ]);
+
+    DB::transaction(function () use ($request, $reservasi) {
+
+        $oldMejaId  = $reservasi->meja_id;
+        $newMejaId  = $request->meja_id;
+        $newStatus  = $request->status;
+
+        // Set status enum yang valid
+        $statusMeja = $newStatus === 'Dipesan' ? 'Terisi' : 'Kosong';
+
+        // Kosongkan meja lama jika berpindah
+        if ($oldMejaId && $oldMejaId != $newMejaId) {
+            Meja::where('id', $oldMejaId)->update([
+                'status_meja' => 'Kosong'
+            ]);
+        }
+
+        // Update status meja baru
+        Meja::where('id', $newMejaId)->update([
+            'status_meja' => $statusMeja
         ]);
 
-        DB::transaction(function () use ($request, $reservasi) {
+        // Update data reservasi
+        $reservasi->update(
+            $request->only(['nama', 'jumlah_orang', 'meja_id', 'tanggal', 'jam', 'catatan', 'status'])
+        );
 
-            $oldMejaId  = $reservasi->meja_id;
-            $newMejaId  = $request->meja_id;
-            $newStatus  = $request->status;
+        // Jika dibatalkan, pastikan meja kosong
+        if ($newStatus === 'Dibatalkan') {
+            Meja::where('id', $newMejaId)->update([
+                'status_meja' => 'Kosong'
+            ]);
+        }
+    });
 
-            if ($oldMejaId != $newMejaId && $oldMejaId) {
-                Meja::where('id', $oldMejaId)->update([
-                    'status_meja' => 'Kosong'
-                ]);
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Reservasi berhasil diperbarui.',
+        'data' => $reservasi->load('meja')
+    ]);
+}
+
+
+public function storeReservasi(Request $request)
+{
+    $request->validate([
+        'nama' => 'required|string|max:255',
+        'jumlah_orang' => 'required|integer|min:1|max:10',
+        'meja_id' => 'required|exists:mejas,id',
+        'tanggal' => 'required|date|after_or_equal:' . now()->format('Y-m-d'),
+        'jam' => 'required',
+        'catatan' => 'nullable|string|max:500',
+        'status' => 'required|in:Dipesan,Dibatalkan',
+    ]);
+
+    try {
+        $reservasi = DB::transaction(function () use ($request) {
+
+            $meja = Meja::findOrFail($request->meja_id);
+
+            if ($request->jumlah_orang > $meja->kapasitas) {
+                throw new \Exception('Jumlah orang melebihi kapasitas meja!');
             }
 
-            Meja::where('id', $newMejaId)->update([
-                'status_meja' => $newStatus === 'Dipesan' ? 'Terpakai' : 'Kosong'
-            ]);
+            // Set status enum yang valid
+            $statusMeja = $request->status === 'Dipesan' ? 'Terisi' : 'Kosong';
+            $meja->status_meja = $statusMeja;
+            $meja->save();
 
-            $reservasi->update(
+            return Reservasi::create(
                 $request->only(['nama', 'jumlah_orang', 'meja_id', 'tanggal', 'jam', 'catatan', 'status'])
             );
-
-            if ($newStatus === 'Dibatalkan') {
-                Meja::where('id', $newMejaId)->update([
-                    'status_meja' => 'Kosong'
-                ]);
-            }
         });
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Reservasi berhasil diperbarui.',
+            'message' => 'Reservasi berhasil ditambahkan.',
             'data' => $reservasi->load('meja')
         ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage() ?? 'Terjadi kesalahan saat menambahkan reservasi.'
+        ], 400);
     }
-    public function storeReservasi(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'jumlah_orang' => 'required|integer|min:1|max:10',
-            'meja_id' => 'required|exists:mejas,id',
-            'tanggal' => 'required|date|after_or_equal:' . now()->format('Y-m-d'),
-            'jam' => 'required',
-            'catatan' => 'nullable|string|max:500',
-            'status' => 'required|in:baru,Dipesan,selesai,Dibatalkan',
-        ]);
-
-        try {
-            $reservasi = DB::transaction(function () use ($request) {
-
-                $meja = Meja::findOrFail($request->meja_id);
-
-                if ($request->jumlah_orang > $meja->kapasitas) {
-                    throw new \Exception('Jumlah orang melebihi kapasitas meja!');
-                }
-
-                $meja->status_meja = $request->status === 'Dipesan' ? 'Terpakai' : 'Kosong';
-                $meja->save();
-
-                return Reservasi::create(
-                    $request->only([
-                        'nama',
-                        'jumlah_orang',
-                        'meja_id',
-                        'tanggal',
-                        'jam',
-                        'catatan',
-                        'status'
-                    ])
-                );
-            });
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Reservasi berhasil ditambahkan.',
-                'data' => $reservasi->load('meja')
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage() ?? 'Terjadi kesalahan saat menambahkan reservasi.'
-            ], 400);
-        }
-    }
+}
 
         public function availableMeja(Request $request)
     {

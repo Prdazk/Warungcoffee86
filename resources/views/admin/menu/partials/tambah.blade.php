@@ -142,6 +142,7 @@
 }
 </style>
 
+<!-- Modal Tambah Menu -->
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content custom-modal">
@@ -151,7 +152,7 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data">
+      <form id="formTambahMenu" action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="modal-body">
@@ -198,9 +199,57 @@
           <button type="button" class="btn custom-btn-cancel" data-bs-dismiss="modal">Batal</button>
           <button type="submit" class="btn custom-btn-save">Simpan</button>
         </div>
-
       </form>
 
     </div>
   </div>
 </div>
+
+<!-- SweetAlert2 -->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formTambahMenu');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Hentikan submit default
+
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                // Tutup modal
+                const modalEl = document.getElementById('modalTambah');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                modal.hide();
+
+                // Popup sukses
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                // Reset form
+                form.reset();
+
+                // Reload opsional
+                setTimeout(() => location.reload(), 2100);
+            } else {
+                Swal.fire('Gagal', 'Terjadi kesalahan', 'error');
+            }
+        })
+        .catch(() => Swal.fire('Gagal', 'Terjadi kesalahan server', 'error'));
+    });
+});
+</script>
+

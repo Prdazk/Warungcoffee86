@@ -71,30 +71,35 @@ class ReservasiController extends Controller
     /**
      * API: daftar meja sesuai tanggal & jam
      */
-    public function availableMeja(Request $request)
-    {
-        $tanggal = $request->query('tanggal');
-        $jam = $request->query('jam');
+   public function availableMeja(Request $request)
+{
+    $tanggal = $request->tanggal;
+    $jam = $request->jam;
 
-        $mejas = Meja::orderBy('id')->get()->map(function (Meja $meja) use ($tanggal, $jam) {
-            $dipakai = Reservasi::where([
-                'meja_id' => $meja->id,
-                'tanggal' => $tanggal,
-                'jam' => $jam,
-                'status' => 'Dipesan',
-            ])->exists();
-
-            $status = $dipakai ? 'Terpakai' : 'Kosong';
-
-            return [
-                'id' => $meja->id,
-                'nama_meja' => $meja->nama_meja,
-                'status_meja' => $status,
-            ];
-        });
-
-        return response()->json($mejas);
+    // Jika jam belum dipilih → tampilkan semua meja dengan status Kosong
+    if (!$jam) {
+        return response()->json(
+            Meja::where('status_meja', 'Kosong')
+                ->orderBy('id')
+                ->get()
+        );
     }
+
+    // Jika jam ada → cek meja yang digunakan
+    $mejaDipakai = Reservasi::where('tanggal', $tanggal)
+        ->where('jam', $jam)
+        ->pluck('meja_id')
+        ->toArray();
+
+    // Ambil meja kosong + tidak dipakai pada tanggal & jam tsb
+    $mejas = Meja::where('status_meja', 'Kosong')
+        ->whereNotIn('id', $mejaDipakai)
+        ->orderBy('id')
+        ->get();
+
+    return response()->json($mejas);
+}
+
 
     /**
      * Update reservasi user

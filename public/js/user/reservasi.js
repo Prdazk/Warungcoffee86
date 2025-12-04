@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const tanggal = tanggalInput.value;
         const jam = jamInput.value;
 
-        // jika belum pilih tanggal/jam -> biarkan opsi dari Blade (tidak diubah)
         if (!tanggal || !jam) return;
 
         try {
@@ -25,15 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error('Gagal fetch meja');
             const mejas = await res.json();
 
-            // reset dropdown
             mejaSelect.innerHTML = `<option value="">-- Pilih Meja --</option>`;
 
             mejas.forEach(m => {
-                // support old/new keys
                 const nama = m.nama ?? m.nama_meja ?? m.name ?? '';
                 const status = m.status ?? m.status_meja ?? (m.is_used ? 'Terpakai' : 'Kosong') ?? 'Kosong';
-
-                // tampilkan hanya meja Kosong (hilang jika Terpakai)
                 if (status !== 'Kosong') return;
 
                 const opt = document.createElement('option');
@@ -58,7 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(form);
         if (!formData.get('tanggal') || !formData.get('jam') || !formData.get('meja_id')) {
-            Swal.fire('Peringatan!', 'Mohon lengkapi semua data reservasi.', 'warning');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Mohon lengkapi semua data reservasi.',
+                width: '90%',
+                customClass: { popup: 'swal-popup-responsive' }
+            });
             submitBtn.disabled = false;
             submitBtn.textContent = 'Pesan Sekarang';
             return;
@@ -78,15 +79,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await res.json();
 
             if (res.ok && result.status === 'success') {
-                Swal.fire({ icon: 'success', title: 'Berhasil!', text: result.message, showConfirmButton: false, timer: 1500 });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: result.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                    width: '90%',
+                    customClass: { popup: 'swal-popup-responsive' }
+                });
                 form.reset();
-                // setelah sukses, refresh daftar meja (agar meja yang dipesan hilang)
                 setTimeout(updateAvailableMeja, 300);
             } else {
-                Swal.fire('Gagal!', result.message || 'Terjadi kesalahan.', 'error');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: result.message || 'Terjadi kesalahan.',
+                    width: '90%',
+                    customClass: { popup: 'swal-popup-responsive' }
+                });
             }
         } catch (err) {
-            Swal.fire('Error!', 'Koneksi gagal. Silakan coba lagi.', 'error');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Koneksi gagal. Silakan coba lagi.',
+                width: '90%',
+                customClass: { popup: 'swal-popup-responsive' }
+            });
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Pesan Sekarang';
@@ -98,10 +118,27 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener(event, updateAvailableMeja);
     });
 
-    // inisialisasi: jika sudah ada tanggal+jam diisi dari server, panggil update
     updateAvailableMeja();
 
     setInterval(() => {
         if (tanggalInput.value && jamInput.value) updateAvailableMeja();
     }, 5000);
+
+    // ================================
+    // Tambahkan CSS responsif untuk popup
+    // ================================
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .swal-popup-responsive {
+            max-width: 95% !important;
+            box-sizing: border-box;
+        }
+
+        @media (min-width: 480px) {
+            .swal-popup-responsive {
+                max-width: 400px !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 });

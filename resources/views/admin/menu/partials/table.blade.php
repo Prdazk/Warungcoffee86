@@ -51,11 +51,17 @@
                 </td>
                 <td class="d-flex justify-content-center gap-2">
       
-              <button type="button" class="btn btn-warning btn-sm"
-                  onclick="showEditModal({{ $menu->id }},'{{ addslashes($menu->nama) }}','{{ $menu->harga }}','{{ addslashes($menu->kategori) }}','{{ addslashes($menu->status) }}')"
-                  style="font-size:0.85rem; padding:0.35rem 0.6rem; border-radius:0.4rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
-                  ✏️ Edit
-              </button>
+             <button type="button" class="btn btn-warning btn-sm"
+                onclick="openEditModal({
+                    id: {{ $menu->id }},
+                    nama: '{{ addslashes($menu->nama) }}',
+                    harga: '{{ $menu->harga }}',
+                    kategori: '{{ addslashes($menu->kategori) }}',
+                    status: '{{ addslashes($menu->status) }}'
+                })"
+                style="font-size:0.85rem; padding:0.35rem 0.6rem; border-radius:0.4rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+                ✏️ Edit
+            </button>
 
            
               <button type="button" class="btn btn-danger btn-sm"

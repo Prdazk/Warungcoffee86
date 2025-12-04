@@ -40,12 +40,10 @@
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content shadow-lg border-0 rounded-4 bg-dark text-white">
 
-      {{-- Header Modal --}}
       <div class="modal-header border-0 justify-content-center position-relative">
 
         <h5 class="modal-title text-info fw-bold">Kelola Meja</h5>
 
-        <!-- Tombol Kembali di kiri → membuka modal Tambah Meja -->
         <button type="button" class="btn btn-outline-light btn-sm position-absolute start-0 ms-3"
                 data-bs-toggle="modal" data-bs-target="#tambahMejaModal"
                 data-bs-dismiss="modal">
@@ -173,8 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     const data = await res.json();
                     if(data.success){
+                        // Hapus dari tampilan admin
                         document.getElementById('rowMeja'+id).remove();
                         Swal.fire({ icon:'success', title:'Terhapus', timer:1200, showConfirmButton:false });
+
+                        // --- Dispatch event agar user/reservasi update realtime ---
+                        document.dispatchEvent(new CustomEvent('meja:removed', { detail: { id } }));
                     } else {
                         Swal.fire('Gagal','Gagal menghapus meja','error');
                     }
@@ -192,23 +194,61 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-
-{{-- ================= Style Modal & Meja ================= --}}
 <style>
-/* Efek tombol hover */
+/* ===========================
+   Efek tombol hover umum
+   =========================== */
 .btn-hover:hover { 
   transform: translateY(-2px); 
   box-shadow:0 4px 8px rgba(0,0,0,0.3); 
   transition:.2s; 
 }
 
-/* Warna tombol */
-.btn-warning { background:#c18b4a; border:none; }
-.btn-secondary { background:#5b5b5b; border:none; }
-.btn-info { background:#2779a7; border:none; }
-.btn-info:hover { background:#2d93c8; }
+/* ===========================
+   Warna tombol
+   =========================== */
+.btn-warning { 
+  background:#c18b4a; 
+  border:none; 
+}
 
-/* Input fokus */
+.btn-secondary { 
+  background:#5b5b5b; 
+  border:none; 
+}
+
+.btn-info { 
+  background:#2779a7; 
+  border:none; 
+}
+
+.btn-info:hover { 
+  background:#2d93c8; 
+}
+
+/* ===========================
+   Tombol Kelola Meja (selalu coklat)
+   =========================== */
+#btnOpenTambahFlex,
+button[data-bs-target="#kelolaMejaModal"] {
+    background-color: #c18b4a; /* coklat */
+    border-color: #c18b4a;
+    color: #fff;
+}
+
+#btnOpenTambahFlex:hover,
+button[data-bs-target="#kelolaMejaModal"]:hover,
+#btnOpenTambahFlex:focus,
+button[data-bs-target="#kelolaMejaModal"]:focus {
+    background-color: #c18b4a !important;
+    border-color: #c18b4a !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+/* ===========================
+   Input fokus modal
+   =========================== */
 .modal-body input:focus { 
   outline:none; 
   box-shadow:0 0 8px #ffc107; 
@@ -216,21 +256,25 @@ document.addEventListener('DOMContentLoaded', () => {
   transition:.3s; 
 }
 
-/* Scroll horizontal untuk meja */
+/* ===========================
+   Scroll horizontal untuk meja
+   =========================== */
 .meja-scroll {
   overflow-x: auto;
   white-space: nowrap;
   padding-bottom: 8px;
 }
 
-/* Kotak meja (lebih kecil) */
+/* ===========================
+   Kotak meja (lebih kecil)
+   =========================== */
 .meja-card {
   display: inline-block;
   background: linear-gradient(145deg, #1e1e1e, #2b2b2b);
   border-radius: 14px;
-  padding: 12px 15px; /* lebih kecil */
-  min-width: 150px;   /* sebelumnya 200px */
-  height: 90px;       /* sebelumnya 120px */
+  padding: 12px 15px;
+  min-width: 150px;
+  height: 90px;
   text-align: center;
   border: 1px solid #3e3e3e;
   position: relative;
@@ -247,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* Teks nama meja */
 .meja-text {
   font-weight: 700;
-  font-size: 16px; /* sebelumnya 20px */
+  font-size: 16px;
   color: #ffffff;
   margin-top: 5px;
 }
@@ -258,11 +302,12 @@ document.addEventListener('DOMContentLoaded', () => {
   bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 3px 6px; /* tetap kecil */
+  padding: 3px 6px;
 }
 
-
-/* Scrollbar gelap */
+/* ===========================
+   Scrollbar gelap
+   =========================== */
 .meja-scroll::-webkit-scrollbar { height: 8px; }
 .meja-scroll::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 10px; }
 .meja-scroll::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }

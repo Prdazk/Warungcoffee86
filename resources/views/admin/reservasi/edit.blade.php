@@ -44,7 +44,9 @@
 
             <div class="col-md-6">
               <label class="form-label" style="color:#c18b4a;">Tanggal</label>
-              <input type="date" name="tanggal" id="editTanggal" class="form-control" required style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;">
+              <input type="date" name="tanggal" id="editTanggal" class="form-control" required
+                style="background:#3a3a3a; color:#fff; border:none; border-radius:6px;"
+                min="{{ date('Y-m-d') }}">
             </div>
 
             <div class="col-md-6">
@@ -79,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModalEl = document.getElementById('editReservasiModal');
     const editModal   = new bootstrap.Modal(editModalEl);
 
-    // Event klik tombol edit di tabel admin
     document.querySelector('#reservasiTable tbody').addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-edit');
         if (!btn) return;
@@ -107,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         editModal.show();
     });
 
-    // Submit form edit reservasi
     editForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = editForm.querySelector('button[type="submit"]');
@@ -141,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 editForm.reset();
                 editModal.hide();
 
-                // --- Update tabel admin realtime ---
                 if (window.updateAdminTable) {
                     fetch("{{ url('/admin/reservasi/latest') }}")
                         .then(r => r.json())
@@ -150,9 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                 }
 
-                // --- Update meja user realtime ---
                 if (window.reloadUserMeja) {
-                    window.reloadUserMeja(); // panggil user JS untuk reload meja dropdown
+                    window.reloadUserMeja();
                 }
 
             } else {
@@ -166,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Reset form ketika modal ditutup
     editModalEl.addEventListener('hidden.bs.modal', () => editForm.reset());
 
 });

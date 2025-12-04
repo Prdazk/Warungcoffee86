@@ -15,6 +15,7 @@ class MenuController extends Controller
         return view('admin.menu.index', compact('menus'));
     }
 
+    // Tambah Menu
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,22 +38,23 @@ class MenuController extends Controller
             $validated['gambar'] = $filename;
         }
 
-        Menu::create($validated);
+        $menu = Menu::create($validated);
 
-        $perPage = 5;
-        $lastPage = ceil(Menu::count() / $perPage);
-
-        return redirect()
-            ->route('admin.menu.index', ['page' => $lastPage])
-            ->with('success', 'Menu berhasil ditambahkan');
+        return response()->json([
+            'success' => true,
+            'message' => 'Menu berhasil ditambahkan',
+            'menu'    => $menu
+        ]);
     }
 
+    // Edit Menu (ambil data)
     public function edit($id)
     {
         $menu = Menu::findOrFail($id);
-        return view('admin.menu.edit', compact('menu'));
+        return response()->json($menu);
     }
 
+    // Update Menu
     public function update(Request $request, $id)
     {
         $menu = Menu::findOrFail($id);
@@ -81,23 +83,31 @@ class MenuController extends Controller
 
         $menu->update($validated);
 
-        return redirect()
-            ->route('admin.menu.index')
-            ->with('success', 'Menu berhasil diperbarui');
+        return response()->json([
+            'success' => true,
+            'message' => 'Menu berhasil diperbarui',
+            'menu'    => $menu
+        ]);
     }
+
 
     public function destroy($id)
     {
         $menu = Menu::findOrFail($id);
-
         if ($menu->gambar && file_exists(public_path('images/' . $menu->gambar))) {
             @unlink(public_path('images/' . $menu->gambar));
         }
-
         $menu->delete();
 
-        return redirect()
-            ->route('admin.menu.index')
+        return redirect()->route('admin.menu.index')
             ->with('success', 'Menu berhasil dihapus');
+    }
+
+
+    // API untuk semua menu
+    public function apiMenus()
+    {
+        $menus = Menu::all();
+        return response()->json($menus);
     }
 }
