@@ -53,7 +53,6 @@ $mejaKosong = $mejaKosong ?? Meja::where('status_meja', 'Kosong')->orderBy('id')
 
                 </div>
 
-                <!-- FIXED: Hanya tampilkan meja kosong -->
                 <div class="full-width" style="margin-bottom:12px;">
                     <label style="font-size:12px;">Pilih Meja</label>
 
