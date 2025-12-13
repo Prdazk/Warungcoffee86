@@ -30,7 +30,7 @@
 }
 .menu-item img {
     width: 100%;           
-    height: 130px;         
+    height: 160px;         
     object-fit: contain;
     border: none !important;
     outline: none !important;
@@ -100,7 +100,7 @@
     /* ========================================= */
 
     .menu-item img { 
-        height: 210px; /* SEBELUMNYA 190px. Saya perbesar agar lebih jelas */
+        height: 250px; /* SEBELUMNYA 190px. Saya perbesar agar lebih jelas */
         margin-bottom: 10px !important; 
         object-position: bottom; 
     }
@@ -136,7 +136,7 @@
 
 <section id="popular-menu" class="menu-section" style="margin-top: 50px;">
   <div class="container">
-    <h3 class="menu-title text-center mb-4" style="margin-top: -20px;">MENU TERPOPULER</h3>
+    <h3 class="menu-title text-center mb-4" style="margin-top: -10px;">MENU TERPOPULER</h3>
 
     <h3 class="category-title" style="font-family: 'Brush Script MT', cursive;">Makanan</h3>
     <div class="menu-grid-wrapper">
